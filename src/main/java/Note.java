@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
  * A note is either a note or a rest. A note has a pitch, a duration and a number of punctuations.
  */
 public class Note implements Comparable<Note> {
-    public int getPitch() {
+    public short getPitch() {
         return pitch;
     }
 
