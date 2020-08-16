@@ -1,3 +1,5 @@
+package base;
+
 public enum KeySignature {
     //Major keys
     gFlat_M(-6),

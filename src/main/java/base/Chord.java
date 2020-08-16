@@ -1,6 +1,9 @@
+package base;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -67,7 +70,7 @@ public class Chord {
                 .collect(Collectors.toList());
     }
 
-    public ChordType getChordType(List<Short> notes) {
+    public Optional<ChordType> getChordType(List<Short> notes) {
         if (notes.size() < 2)
             return null;
         switch (notes.get(1)) {
@@ -79,6 +82,8 @@ public class Chord {
         // 0 4 7 9 Major sixth
         // 0 4 7 9 2 Major sixth ninth (6 add 9) TODO think about modeling larger than one octave. Simply add another octave? Or is this equivalent to 0 2 4 7 9? (No)
         // Idea : Instead of modeling from 0 and looking at relative piches, look at intervals.
+        
+        return Optional.empty();
     }
 }
 

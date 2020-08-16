@@ -1,3 +1,4 @@
+import base.Note;
 import org.junit.jupiter.api.Assertions;
 
 class NoteTest {

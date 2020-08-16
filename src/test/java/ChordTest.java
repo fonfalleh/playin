@@ -1,3 +1,5 @@
+import base.Chord;
+import base.Note;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -8,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ChordTest {
 
     /**
-     * Tests that getNotes() returns the notes the chord contains. Note that they are sorted by pitch.
+     * Tests that getNotes() returns the notes the chord contains. base.Note that they are sorted by pitch.
      * Not sure if this is a good idea yet, but I hope so :)
      */
     @Test
