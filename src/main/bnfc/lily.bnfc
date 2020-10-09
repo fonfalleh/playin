@@ -1,0 +1,62 @@
+-- Lilypond: http://lilypond.org/doc/v2.20/Documentation/notation/structure-of-a-score
+-- BNFC grammar for C: https://github.com/BNFC/bnfc/blob/master/examples/C/C.cf
+{--
+A \score block must contain a single music expression delimited by curly brackets:
+\score {
+  …
+}
+--}
+
+entrypoints Score ;
+ScoreBlock .  Score ::= "\score" "{" MusicExpr "}" ;
+-- List
+CompoundExp . Exp   ::= "{" Exp "}" ;
+ExpList .     Exp   ::= [Exp];
+NoteExp .     Exp   ::= Note ;
+
+{-
+\version "2.20.0"
+
+This single music expression may be of any size, and may contain other music expressions to any complexity. All of these examples are music expressions:
+
+    { c'4 c' c' c' }
+
+    {
+      { c'4 c' c' c' }
+      { d'4 d' d' d' }
+    }
+
+    <<
+      \new Staff { c'4 c' c' c' }
+      \new Staff { d'4 d' d' d' }
+    >>
+
+    {
+      \new GrandStaff <<
+        \new StaffGroup <<
+          \new Staff { \flute }
+          \new Staff { \oboe }
+        >>
+        \new StaffGroup <<
+          \new Staff { \violinI }
+          \new Staff { \violinII }
+        >>
+      >>
+    }
+-}
+
+
+{-
+To enter music with more voices or more staves, we combine expressions in parallel. To indicate that two voices should play at the same time, simply enter a simultaneous combination of music expressions. A ‘simultaneous’ music expression is formed by enclosing expressions inside << and >>. In the following example, three sequences (all containing two separate notes) are combined simultaneously:
+
+
+
+    <<
+      \relative { a'2 g }
+      \relative { f'2 e }
+      \relative { d'2 b }
+    >>
+
+-}
+comment "%{" "%}" ;
+comment "%";
