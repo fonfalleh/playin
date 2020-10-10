@@ -7,12 +7,23 @@ A \score block must contain a single music expression delimited by curly bracket
 }
 --}
 
+VersionDef .    Def        ::= "\\version" "\"" String "\"" ;
+
+
 entrypoints Score ;
-ScoreBlock .  Score ::= "\score" "{" MusicExpr "}" ;
+
+ScoreBlock .    Score      ::= "\\score" "{" MusicExpr "}" ;
 -- List
-CompoundExp . Exp   ::= "{" Exp "}" ;
-ExpList .     Exp   ::= [Exp];
-NoteExp .     Exp   ::= Note ;
+RelativeBlock . MusicExpr  ::= "\\relative" NoteToken "{" MusicExpr "}" ;
+CompoundExp .   MusicExpr  ::= "{" MusicExpr "}" ;
+ExpList .       MusicExpr  ::= [MusicExpr];
+NoteExp .       MusicExpr  ::= NoteToken ;
+
+token NoteToken ["abcdefgr"]({"es"} | {"is"})*["\',"]*(digit)*["."]* ;
+-- From Earlier: Wrong? Uppercase notenames are not vaild.
+-- token NoteToken "([A-Ha-hr])(es|is)*([',])*(\\d)*(\\.)*";
+
+separator MusicExpr "" ;
 
 {-
 \version "2.20.0"
@@ -48,8 +59,6 @@ This single music expression may be of any size, and may contain other music exp
 
 {-
 To enter music with more voices or more staves, we combine expressions in parallel. To indicate that two voices should play at the same time, simply enter a simultaneous combination of music expressions. A ‘simultaneous’ music expression is formed by enclosing expressions inside << and >>. In the following example, three sequences (all containing two separate notes) are combined simultaneously:
-
-
 
     <<
       \relative { a'2 g }
