@@ -7,34 +7,44 @@ A \score block must contain a single music expression delimited by curly bracket
 }
 --}
 
-VersionDef .    Def        ::= "\\version" "\"" String "\"" ;
+-- TODO top level defs are entrypoint?
+--entrypoints Score, Def ; -- Score block works without entrypoints, but not other combinations?
+
+ScoreFile . Entry ::= [Def] ;
+separator Def "" ;
+entrypoints Entry ;
+
+--VersionDef .    Def        ::= "\\version" "\"" String "\"" ;
+VersionDef .    Def        ::= "\\version" String ;
 GlobalDef .     Def        ::= "global" "=" "{" MusicExpr "}" ;
 
-VariableDecl .  Def        ::= Ident "=" MusicExpr ;
+VariableDef .   Def        ::= Ident "=" MusicExpr ;
 
--- TODO top level defs are entrypoint?
-entrypoints Score ;
+ScoreDef .      Def        ::= Score ;
+
 
 ScoreBlock .    Score      ::= "\\score" "{" MusicExpr "}" ;
 -- List
-RelativeBlock . MusicExpr  ::= "\\relative" NoteToken "{" MusicExpr "}" ;
-CompoundExp .   MusicExpr  ::= "{" MusicExpr "}" ;
-ExpList .       MusicExpr  ::= [MusicExpr];
-NoteExp .       MusicExpr  ::= NoteToken ;
-KeyExp .        MusicExpr  ::= "\\key" NoteToken MajMin ;
-TimeExp .       MusicExpr  ::= "\\time" Integer "/" Integer ; -- TODO verify later with other time signatures
-VarExp .        MusicExpr  ::= VarToken ;
-FermExp .       MusicExpr  ::= "\\fermata" ;
-StaffExpWith .  MusicExpr  ::= "\\new Staff" WithBlock MusicExpr; -- TODO probably create more general \new Type --Also, precedence / nesting
-StaffExp .      MusicExpr  ::= "\\new Staff" MusicExpr;
-LayoutBlock .   MusicExpr  ::= "\\layout" "{" "}" ; -- TODO find out what can be here
-MidiBlock .     MusicExpr  ::= "\\midi" "{"  "}"; -- TODO not actually a musicexpr? Who knows?
+coercions MusicExpr 3 ;
+ExpList .       MusicExpr1  ::= [ MusicExpr2 ] ;
+RelativeBlock . MusicExpr1  ::= "\\relative" NoteToken "{" MusicExpr "}" ;
+CompoundExp .   MusicExpr2  ::= "{" MusicExpr1 "}" ;
+NoteExp .       MusicExpr2  ::= NoteToken ;
+KeyExp .        MusicExpr1  ::= "\\key" NoteToken MajMin ;
+TimeExp .       MusicExpr1  ::= "\\time" Integer "/" Integer ; -- TODO verify later with other time signatures
+VarExp .        MusicExpr1  ::= VarToken ;
+FermExp .       MusicExpr1  ::= "\\fermata" ;
+StaffExpWith .  MusicExpr1  ::= "\\new Staff" WithBlock MusicExpr; -- TODO probably create more general \new Type --Also, precedence / nesting
+StaffExp .      MusicExpr1  ::= "\\new Staff" MusicExpr;
+LayoutBlock .   MusicExpr1  ::= "\\layout" "{" "}" ; -- TODO find out what can be here
+MidiBlock .     MusicExpr1  ::= "\\midi" "{" "}"; -- TODO not actually a musicexpr? Who knows?
+
 
 Major .         MajMin     ::= "\\major" ;-- TODO What more can fit in this? Going with majmin for now.
 Minor .         MajMin     ::= "\\minor" ;
 
 With .          WithBlock  ::= "\\with" "{" [StrDef] "}" ;
-StringDef .     StrDef     ::= Ident "=" "\"" String "\"" ;
+StringDef .     StrDef     ::= Ident "=" String ;
 
 separator StrDef "" ;
 
@@ -44,7 +54,7 @@ token NoteToken ["abcdefgr"]({"es"} | {"is"})*["\',"]*(digit)*["."]* ;
 -- token NoteToken "([A-Ha-hr])(es|is)*([',])*(\\d)*(\\.)*";
 token VarToken {"\\"} letter+ ;
 
-separator MusicExpr "" ;
+terminator MusicExpr2 "" ;
 {-
 
 global = {
