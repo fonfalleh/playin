@@ -1,3 +1,4 @@
+% Some structures generated with Frescobaldi
 \version "2.20.0"
 
 global = {
@@ -10,7 +11,6 @@ trumpetC = \relative c'' {
   % Music follows here.
   c8 c c4 e g 
   c4 \fermata
-  
 }
 
 \score {

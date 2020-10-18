@@ -1,4 +1,6 @@
 -- Lilypond: http://lilypond.org/doc/v2.20/Documentation/notation/structure-of-a-score
+-- http://lilypond.org/doc/v2.20/Documentation/notation/cheat-sheet
+-- http://lilypond.org/doc/v2.20/Documentation/learning/introduction-to-the-lilypond-file-structure
 -- BNFC grammar for C: https://github.com/BNFC/bnfc/blob/master/examples/C/C.cf
 {--
 A \score block must contain a single music expression delimited by curly brackets:
@@ -16,34 +18,46 @@ entrypoints Entry ;
 
 --VersionDef .    Def        ::= "\\version" "\"" String "\"" ;
 VersionDef .    Def        ::= "\\version" String ;
-GlobalDef .     Def        ::= "global" "=" "{" MusicExpr "}" ;
+--GlobalDef .     Def        ::= "global" "=" MusicExpr ;
 
 VariableDef .   Def        ::= Ident "=" MusicExpr ;
 
 ScoreDef .      Def        ::= Score ;
 
 
-ScoreBlock .    Score      ::= "\\score" "{" MusicExpr "}" ;
+ScoreBlock .    Score      ::= "\\score" "{" MusicExpr "}" [ScoreDef] ;
 -- List
 coercions MusicExpr 3 ;
-ExpList .       MusicExpr1  ::= [ MusicExpr2 ] ;
-RelativeBlock . MusicExpr1  ::= "\\relative" NoteToken "{" MusicExpr "}" ;
-CompoundExp .   MusicExpr2  ::= "{" MusicExpr1 "}" ;
+-- not quite true. ExpList .       MusicExpr1  ::= [ MusicExpr2 ] ;
+RelativeExp .   MusicExpr1  ::= "\\relative" NoteToken MusicExpr ; -- ""\relative startpitch musicexpr"
+CompoundExp .   MusicExpr2  ::= "{" [ MusicExpr ] "}" ;
 NoteExp .       MusicExpr2  ::= NoteToken ;
-KeyExp .        MusicExpr1  ::= "\\key" NoteToken MajMin ;
+KeyExpMajmin .  MusicExpr1  ::= "\\key" NoteToken MajMin ;
+KeyExp .        MusicExpr1  ::= "\\key" NoteToken ;
 TimeExp .       MusicExpr1  ::= "\\time" Integer "/" Integer ; -- TODO verify later with other time signatures
 VarExp .        MusicExpr1  ::= VarToken ;
 FermExp .       MusicExpr1  ::= "\\fermata" ;
-StaffExpWith .  MusicExpr1  ::= "\\new Staff" WithBlock MusicExpr; -- TODO probably create more general \new Type --Also, precedence / nesting
-StaffExp .      MusicExpr1  ::= "\\new Staff" MusicExpr;
-LayoutBlock .   MusicExpr1  ::= "\\layout" "{" "}" ; -- TODO find out what can be here
-MidiBlock .     MusicExpr1  ::= "\\midi" "{" "}"; -- TODO not actually a musicexpr? Who knows?
+StaffExpWith .  MusicExpr1  ::= "\\new" "Staff" WithBlock MusicExpr; -- TODO probably create more general \new Type --Also, precedence / nesting
+StaffExp .      MusicExpr1  ::= "\\new" "Staff" MusicExpr;
+
+LayoutBlock .   ScoreDef   ::= "\\layout" "{" "}" ; -- TODO find out what can be here
+MidiBlock .     ScoreDef   ::= "\\midi" "{" MidiDef "}";
+separator ScoreDef "" ;
+
+MidiTempo .     MidiDef    ::= "\\tempo" Integer "=" Integer ;
 
 
 Major .         MajMin     ::= "\\major" ;-- TODO What more can fit in this? Going with majmin for now.
 Minor .         MajMin     ::= "\\minor" ;
 
-With .          WithBlock  ::= "\\with" "{" [StrDef] "}" ;
+With .          WithBlock  ::= "\\with" "{" [WithDef] "}" ;  -- https://lilypond.org/doc/v2.20/Documentation/notation/changing-context-default-settings#changing-just-one-specific-context
+InstName .      WithDef    ::= "instrumentName"      "=" String ; -- In the example #"Violin" ? So not Actually String? Token?
+ShortInstName . WithDef    ::= "shortInstrumentName" "=" String ; -- In the example #"Vln. " ?
+MidiInst .      WithDef    ::= "midiInstrument" "=" String ; -- TODO Also available as inline? http://lilypond.org/doc/v2.19/Documentation/notation/using-midi-instruments
+
+separator WithDef "" ;
+
+--http://lilypond.org/doc/v2.18/Documentation/notation/writing-parts#instrument-names
 StringDef .     StrDef     ::= Ident "=" String ;
 
 separator StrDef "" ;
@@ -54,7 +68,7 @@ token NoteToken ["abcdefgr"]({"es"} | {"is"})*["\',"]*(digit)*["."]* ;
 -- token NoteToken "([A-Ha-hr])(es|is)*([',])*(\\d)*(\\.)*";
 token VarToken {"\\"} letter+ ;
 
-terminator MusicExpr2 "" ;
+terminator MusicExpr "" ;
 {-
 
 global = {
