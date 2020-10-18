@@ -25,7 +25,7 @@ VariableDef .   Def        ::= Ident "=" MusicExpr ;
 ScoreDef .      Def        ::= Score ;
 
 
-ScoreBlock .    Score      ::= "\\score" "{" MusicExpr "}" [ScoreDef] ;
+ScoreBlock .    Score      ::= "\\score" "{" MusicExpr [ScoreDef] "}" ;
 -- List
 coercions MusicExpr 3 ;
 -- not quite true. ExpList .       MusicExpr1  ::= [ MusicExpr2 ] ;
