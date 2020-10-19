@@ -16,12 +16,8 @@ ScoreFile . Entry ::= [Def] ;
 separator Def "" ;
 entrypoints Entry ;
 
---VersionDef .    Def        ::= "\\version" "\"" String "\"" ;
 VersionDef .    Def        ::= "\\version" String ;
---GlobalDef .     Def        ::= "global" "=" MusicExpr ;
-
 VariableDef .   Def        ::= Ident "=" MusicExpr ;
-
 ScoreDef .      Def        ::= Score ;
 
 
@@ -39,6 +35,36 @@ VarExp .        MusicExpr1  ::= VarToken ;
 FermExp .       MusicExpr1  ::= "\\fermata" ;
 StaffExpWith .  MusicExpr1  ::= "\\new" "Staff" WithBlock MusicExpr; -- TODO probably create more general \new Type --Also, precedence / nesting
 StaffExp .      MusicExpr1  ::= "\\new" "Staff" MusicExpr;
+TextExp .       MusicExpr1  ::= DirectionIndicator InlineText ;
+BarExp .        MusicExpr1  ::= "|" ;
+CreStartExp .   MusicExpr1  ::= "\\<" ;
+DeCreStartExp . MusicExpr1  ::= "\\>" ;
+CreEndExp .     MusicExpr1  ::= "\\!" ;
+RepeatExpr .    MusicExpr1  ::= "\\repeat" RepeatKind Integer MusicExpr ; -- http://lilypond.org/doc/v2.20/Documentation/notation/repeats
+RepeatExprWithAlt . MusicExpr1  ::= "\\repeat" RepeatKind Integer MusicExpr RepeatEnding ;
+SlurStartExp .  MusicExpr1  ::= "(" ; -- TODO somehow can't parse simple slurs yet...
+--TODO Test slurs as tokens? Check other backends?
+SlurEndExp .    MusicExpr1  ::= ")" ;
+
+VoltaRepeat .   RepeatKind  ::= "volta" ;
+UnfoldRepeat .  RepeatKind  ::= "unfold" ;
+PercentRepeat . RepeatKind  ::= "percent" ;
+TremoloRepeat . RepeatKind  ::= "tremolo" ;
+
+AlternativeBlock . RepeatEnding ::= "\\alternative" "{" [MusicExpr] "}";
+
+-- https://lilypond.org/doc/v2.20/Documentation/notation/writing-text
+-- CreEndExp .     MusicExpr1  ::= "\\!" ; --\markup{ \italic "ten." }|-- https://lilypond.org/doc/v2.20/Documentation/notation/formatting-text
+
+-- textExpression? Articulation
+-- https://lilypond.org/doc/v2.20/Documentation/notation/direction-and-placement#articulation-direction-indicators
+UpDirection .      DirectionIndicator ::= "^" ;
+DownDirection .    DirectionIndicator ::= "_" ;
+DefaultDirection . DirectionIndicator ::= "-" ;
+NoDirection .      DirectionIndicator ::= ;
+
+InlineString . InlineText ::= String ;
+MarkupBlock .  InlineText ::= "\\markup" "{" "}" ; -- Quite extensive... https://lilypond.org/doc/v2.20/Documentation/notation/text-markup-commands
 
 LayoutBlock .   ScoreDef   ::= "\\layout" "{" "}" ; -- TODO find out what can be here
 MidiBlock .     ScoreDef   ::= "\\midi" "{" MidiDef "}";

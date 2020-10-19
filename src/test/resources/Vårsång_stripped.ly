@@ -19,12 +19,12 @@ sopranoNotes = \relative g' {
  d4\cresc d8. d16 |  g4 g8. g16 g4 fis |  e\f e8. e16 e4 e8. e16 |
  fis4 e8. e16 d2 |  fis4 e8. e16 d2 |  d4\p d8 d d4 d8 d |
  d4 d8 d d2 |  d4 d8 d d2 |  cis4\< cis8. cis16\! d2\laissezVibrer
- ^\markup{ \italic "ten." }|
+ ^\markup{ }|
  \pageBreak
 
  d4\p d8. d16 d4 d8. c16 |  b4 b8 b b4 b |
  c4\cresc c8. c16 b4 b8. b16 |  a4 a8. a16 a4 ais8. ais16 |
- b4 b8 b d4\! d |  g4 g8.\f g16 g2^\markup {\italic "ten."} |
+ b4 b8 b d4\! d |  g4 g8.\f g16 g2^\markup { } |
  g4. g8 d4 d8 d |  d4 e8 fis g2 |  d4 e8 fis
  g4 r |  r2 r4 d8\ff g |  b2 a4. g8 |  g1\fermata
 
