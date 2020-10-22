@@ -23,28 +23,39 @@ ScoreDef .      Def        ::= Score ;
 
 ScoreBlock .    Score      ::= "\\score" "{" MusicExpr [ScoreDef] "}" ;
 -- List
-coercions MusicExpr 3 ;
--- not quite true. ExpList .       MusicExpr1  ::= [ MusicExpr2 ] ;
-RelativeExp .   MusicExpr1  ::= "\\relative" NoteToken MusicExpr ; -- ""\relative startpitch musicexpr"
-CompoundExp .   MusicExpr2  ::= "{" [ MusicExpr ] "}" ;
-NoteExp .       MusicExpr2  ::= NoteToken ;
-KeyExpMajmin .  MusicExpr1  ::= "\\key" NoteToken MajMin ;
-KeyExp .        MusicExpr1  ::= "\\key" NoteToken ;
-TimeExp .       MusicExpr1  ::= "\\time" Integer "/" Integer ; -- TODO verify later with other time signatures
-VarExp .        MusicExpr1  ::= VarToken ;
-FermExp .       MusicExpr1  ::= "\\fermata" ;
-StaffExpWith .  MusicExpr1  ::= "\\new" "Staff" WithBlock MusicExpr; -- TODO probably create more general \new Type --Also, precedence / nesting
-StaffExp .      MusicExpr1  ::= "\\new" "Staff" MusicExpr;
-TextExp .       MusicExpr1  ::= DirectionIndicator InlineText ;
-BarExp .        MusicExpr1  ::= "|" ;
-CreStartExp .   MusicExpr1  ::= "\\<" ;
-DeCreStartExp . MusicExpr1  ::= "\\>" ;
-CreEndExp .     MusicExpr1  ::= "\\!" ;
-RepeatExpr .    MusicExpr1  ::= "\\repeat" RepeatKind Integer MusicExpr ; -- http://lilypond.org/doc/v2.20/Documentation/notation/repeats
-RepeatExprWithAlt . MusicExpr1  ::= "\\repeat" RepeatKind Integer MusicExpr RepeatEnding ;
-SlurStartExp .  MusicExpr1  ::= "(" ; -- TODO somehow can't parse simple slurs yet...
---TODO Test slurs as tokens? Check other backends?
-SlurEndExp .    MusicExpr1  ::= ")" ;
+-- coercions MusicExpr 3 ; Breaks slurs: (). _. Exp3 ::= "(" Exp ")" ;
+
+RelativeExp .   MusicExpr  ::= "\\relative" NoteToken MusicExpr ; -- ""\relative startpitch musicexpr"
+CompoundExp .   MusicExpr  ::= "{" [ MusicExpr ] "}" ;
+NoteExp .       MusicExpr  ::= NoteToken ;
+KeyExpMajmin .  MusicExpr  ::= "\\key" NoteToken MajMin ;
+KeyExp .        MusicExpr  ::= "\\key" NoteToken ;
+TimeExp .       MusicExpr  ::= "\\time" Integer "/" Integer ; -- TODO verify later with other time signatures
+VarExp .        MusicExpr  ::= VarToken ;
+FermExp .       MusicExpr  ::= "\\fermata" ;
+StaffExpWith .  MusicExpr  ::= "\\new" "Staff" WithBlock MusicExpr; -- TODO probably create more general \new Type --Also, precedence / nesting
+StaffExp .      MusicExpr  ::= "\\new" "Staff" MusicExpr;
+TypesetExp .    MusicExpr  ::= DirectionIndicator TypesetItem ; -- TODO come up with better name
+BarExp .        MusicExpr  ::= "|" ;
+CreStartExp .   MusicExpr  ::= "\\<" ;
+DeCreStartExp . MusicExpr  ::= "\\>" ;
+CreEndExp .     MusicExpr  ::= "\\!" ;
+RepeatExpr .    MusicExpr  ::= "\\repeat" RepeatKind Integer MusicExpr ; -- http://lilypond.org/doc/v2.20/Documentation/notation/repeats
+RepeatExprWithAlt . MusicExpr  ::= "\\repeat" RepeatKind Integer MusicExpr RepeatEnding ;
+SlurStartExp .  MusicExpr  ::= "(" ;
+SlurEndExp .    MusicExpr  ::= ")" ;
+ClefExp .       MusicExpr  ::= "\\clef" ClefName ;
+SimultExps .    MusicExpr  ::= "<<" [MusicExpr] ">>" ;
+TieExp .        MusicExpr  ::= "~" ;
+NewVoiceExp .   MusicExpr  ::= "\\new" "Voice" "=" String MusicExpr ;
+NewNullVoiceExp . MusicExpr  ::= "\\new" "NullVoice" "=" String MusicExpr ;
+NewStaffExp .   MusicExpr  ::= "\\new" "Staff" MusicExpr ;
+NewNamedStaffExp .   MusicExpr  ::= "\\new" "Staff" "=" String MusicExpr ;
+NewChoirStaffExp .   MusicExpr  ::= "\\new" "ChoirStaff" MusicExpr ;
+
+Gclef .     ClefName ::= "G" ;
+G8clef .    ClefName ::= "\"G_8\"" ; -- TODO Hmm... sometimes quoted? Also missing clef http://lilypond.org/doc/v2.19/Documentation/notation/clef-styles
+Bassclef .  ClefName ::= "bass" ;
 
 VoltaRepeat .   RepeatKind  ::= "volta" ;
 UnfoldRepeat .  RepeatKind  ::= "unfold" ;
@@ -63,8 +74,30 @@ DownDirection .    DirectionIndicator ::= "_" ;
 DefaultDirection . DirectionIndicator ::= "-" ;
 NoDirection .      DirectionIndicator ::= ;
 
-InlineString . InlineText ::= String ;
-MarkupBlock .  InlineText ::= "\\markup" "{" "}" ; -- Quite extensive... https://lilypond.org/doc/v2.20/Documentation/notation/text-markup-commands
+DynamicItem .      TypesetItem ::= Dynamic ;
+TextItem .         TypesetItem ::= Text ;
+InlineString .     Text ::= String ;
+MarkupBlock .      Text ::= "\\markup" "{" "}" ; -- Quite extensive... https://lilypond.org/doc/v2.20/Documentation/notation/text-markup-commands
+
+PDyn .     Dynamic ::= "\\p" ;
+PpDyn .    Dynamic ::= "\\pp" ;
+PppDyn .   Dynamic ::= "\\ppp" ;
+PpppDyn .  Dynamic ::= "\\pppp" ;
+PppppDyn . Dynamic ::= "\\ppppp" ;
+FDyn .     Dynamic ::= "\\f" ;
+FFDyn .    Dynamic ::= "\\ff" ;
+FffDyn .   Dynamic ::= "\\fff" ;
+FfffDyn .  Dynamic ::= "\\ffff" ;
+FffffDyn . Dynamic ::= "\\fffff" ;
+MpDyn .    Dynamic ::= "\\mp" ;
+MfDyn .    Dynamic ::= "\\mf" ;
+FpDyn .    Dynamic ::= "\\fp" ;
+SfDyn .    Dynamic ::= "\\sf" ;
+SffDyn .   Dynamic ::= "\\sff" ;
+SfzDyn .   Dynamic ::= "\\sfz" ;
+SpDyn .    Dynamic ::= "\\sp" ;
+SppDyn .   Dynamic ::= "\\spp" ;
+RfsDyn .   Dynamic ::= "\\rfz" ;
 
 LayoutBlock .   ScoreDef   ::= "\\layout" "{" "}" ; -- TODO find out what can be here
 MidiBlock .     ScoreDef   ::= "\\midi" "{" MidiDef "}";
@@ -95,55 +128,6 @@ token NoteToken ["abcdefgr"]({"es"} | {"is"})*["\',"]*(digit)*["."]* ;
 token VarToken {"\\"} letter+ ;
 
 terminator MusicExpr "" ;
-{-
-
-global = {
-  \key c \major
-  \time 4/4
-}
-
-\new Staff \with {
-    instrumentName = "Trumpet in C"
-    midiInstrument = "trumpet"
-  }
-    \layout { }
-    \midi {
-      \tempo 4=100
-    }
--}
-
-
-{-
-\version "2.20.0"
-
-This single music expression may be of any size, and may contain other music expressions to any complexity. All of these examples are music expressions:
-
-    { c'4 c' c' c' }
-
-    {
-      { c'4 c' c' c' }
-      { d'4 d' d' d' }
-    }
-
-    <<
-      \new Staff { c'4 c' c' c' }
-      \new Staff { d'4 d' d' d' }
-    >>
-
-    {
-      \new GrandStaff <<
-        \new StaffGroup <<
-          \new Staff { \flute }
-          \new Staff { \oboe }
-        >>
-        \new StaffGroup <<
-          \new Staff { \violinI }
-          \new Staff { \violinII }
-        >>
-      >>
-    }
--}
-
 
 {-
 To enter music with more voices or more staves, we combine expressions in parallel. To indicate that two voices should play at the same time, simply enter a simultaneous combination of music expressions. A ‘simultaneous’ music expression is formed by enclosing expressions inside << and >>. In the following example, three sequences (all containing two separate notes) are combined simultaneously:

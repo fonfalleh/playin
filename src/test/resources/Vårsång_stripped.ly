@@ -84,7 +84,7 @@ bassNotes = \relative c' {
  d4 d8 d d2 |  d4 d8 d d2 |  ees4\< ees8. ees16\! d2\laissezVibrer |
  g4\p g8. g16 fis4 fis8. fis16 |  e4 e8 e d4 d |
  c4\cresc c8. c16 g4 b8. b16 |  d4 d8. d16 d4 d8. d16 |
- g,4 g8 g d'4\! c |  b e8.\f e16 ees2_\markup{\italic "ten."} |
+ g,4 g8 g d'4\! c |  b e8.\f e16 ees2 _\markup{ } | % TODO ees2_\markup{ } can't parse yet, need space?
  d4. d8 d4 d8 d |  d4 d8 d g,2 |  d'4 d8 d
  g,4  << { d'8 d |  b4 g8 b d2 |  d~ d4. g,8 |  g1 }
               \new NullVoice = "bassSolo" {
