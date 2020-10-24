@@ -67,7 +67,7 @@ public class Note implements Comparable<Note> {
         return new Note((short) (this.pitch + jump), this.duration);
     }
 
-    private static String lilyPattern = "([A-Ha-hr])(es|is)*([',])*(\\d)*(\\.)*";
+    private static String lilyPattern = "([A-Ha-hr])(es|is)*([',])*(\\d)*(\\.)*"; // TODO WRONG, uppercase notenames are not supported.
     static final int octaveSize = 12;
 
     /**

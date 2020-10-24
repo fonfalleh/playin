@@ -21,7 +21,7 @@ VariableDef .   Def        ::= Ident "=" MusicExpr ;
 ScoreDef .      Def        ::= Score ;
 
 
-ScoreBlock .    Score      ::= "\\score" "{" MusicExpr [ScoreDef] "}" ;
+ScoreBlock .    Score      ::= "\\score" "{" MusicExpr [InScoreDef] "}" ;
 -- List
 -- coercions MusicExpr 3 ; Breaks slurs: (). _. Exp3 ::= "(" Exp ")" ;
 
@@ -99,9 +99,9 @@ SpDyn .    Dynamic ::= "\\sp" ;
 SppDyn .   Dynamic ::= "\\spp" ;
 RfsDyn .   Dynamic ::= "\\rfz" ;
 
-LayoutBlock .   ScoreDef   ::= "\\layout" "{" "}" ; -- TODO find out what can be here
-MidiBlock .     ScoreDef   ::= "\\midi" "{" MidiDef "}";
-separator ScoreDef "" ;
+LayoutBlock .   InScoreDef   ::= "\\layout" "{" "}" ; -- TODO find out what can be here
+MidiBlock .     InScoreDef   ::= "\\midi" "{" MidiDef "}";
+separator InScoreDef "" ;
 
 MidiTempo .     MidiDef    ::= "\\tempo" Integer "=" Integer ;
 
@@ -123,21 +123,9 @@ separator StrDef "" ;
 
 
 token NoteToken ["abcdefgr"]({"es"} | {"is"})*["\',"]*(digit)*["."]* ;
--- From Earlier: Wrong? Uppercase notenames are not vaild.
--- token NoteToken "([A-Ha-hr])(es|is)*([',])*(\\d)*(\\.)*";
 token VarToken {"\\"} letter+ ;
 
 terminator MusicExpr "" ;
 
-{-
-To enter music with more voices or more staves, we combine expressions in parallel. To indicate that two voices should play at the same time, simply enter a simultaneous combination of music expressions. A ‘simultaneous’ music expression is formed by enclosing expressions inside << and >>. In the following example, three sequences (all containing two separate notes) are combined simultaneously:
-
-    <<
-      \relative { a'2 g }
-      \relative { f'2 e }
-      \relative { d'2 b }
-    >>
-
--}
 comment "%{" "%}" ;
 comment "%";
