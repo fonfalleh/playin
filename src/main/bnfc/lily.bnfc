@@ -17,7 +17,7 @@ separator Def "" ;
 entrypoints Entry ;
 
 VersionDef .    Def        ::= "\\version" String ;
-VariableDef .   Def        ::= Ident "=" MusicExpr ;
+VariableDef .   Def        ::= VarToken "=" MusicExpr ;
 ScoreDef .      Def        ::= Score ;
 
 
@@ -31,11 +31,10 @@ NoteExp .       MusicExpr  ::= NoteToken ;
 KeyExpMajmin .  MusicExpr  ::= "\\key" NoteToken MajMin ;
 KeyExp .        MusicExpr  ::= "\\key" NoteToken ;
 TimeExp .       MusicExpr  ::= "\\time" Integer "/" Integer ; -- TODO verify later with other time signatures
-VarExp .        MusicExpr  ::= VarToken ;
+VarRefExp .     MusicExpr  ::= VarRefToken ;
 FermExp .       MusicExpr  ::= "\\fermata" ;
-StaffExpWith .  MusicExpr  ::= "\\new" "Staff" WithBlock MusicExpr; -- TODO probably create more general \new Type --Also, precedence / nesting
-StaffExp .      MusicExpr  ::= "\\new" "Staff" MusicExpr;
-TypesetExp .    MusicExpr  ::= DirectionIndicator TypesetItem ; -- TODO come up with better name
+TypesetExp .    MusicExpr2  ::= TypesetItem ; -- TODO come up with better name
+DirTypesetExp . MusicExpr2  ::= DirectionIndicator TypesetItem ; -- TODO come up with better name -- TODO
 BarExp .        MusicExpr  ::= "|" ;
 CreStartExp .   MusicExpr  ::= "\\<" ;
 DeCreStartExp . MusicExpr  ::= "\\>" ;
@@ -49,9 +48,14 @@ SimultExps .    MusicExpr  ::= "<<" [MusicExpr] ">>" ;
 TieExp .        MusicExpr  ::= "~" ;
 NewVoiceExp .   MusicExpr  ::= "\\new" "Voice" "=" String MusicExpr ;
 NewNullVoiceExp . MusicExpr  ::= "\\new" "NullVoice" "=" String MusicExpr ;
+StaffExpWith .  MusicExpr  ::= "\\new" "Staff" WithBlock MusicExpr; -- TODO probably create more general \new Type --Also, precedence / nesting
+-- TODO see http://lilypond.org/doc/v2.20/Documentation/notation/contexts-explained and http://lilypond.org/doc/v2.20/Documentation/learning/creating-contexts
+StaffExp .      MusicExpr  ::= "\\new" "Staff" MusicExpr;
 NewStaffExp .   MusicExpr  ::= "\\new" "Staff" MusicExpr ;
 NewNamedStaffExp .   MusicExpr  ::= "\\new" "Staff" "=" String MusicExpr ;
 NewChoirStaffExp .   MusicExpr  ::= "\\new" "ChoirStaff" MusicExpr ;
+
+_ . MusicExpr ::= MusicExpr2 ;
 
 Gclef .     ClefName ::= "G" ;
 G8clef .    ClefName ::= "\"G_8\"" ; -- TODO Hmm... sometimes quoted? Also missing clef http://lilypond.org/doc/v2.19/Documentation/notation/clef-styles
@@ -72,7 +76,6 @@ AlternativeBlock . RepeatEnding ::= "\\alternative" "{" [MusicExpr] "}";
 UpDirection .      DirectionIndicator ::= "^" ;
 DownDirection .    DirectionIndicator ::= "_" ;
 DefaultDirection . DirectionIndicator ::= "-" ;
-NoDirection .      DirectionIndicator ::= ;
 
 DynamicItem .      TypesetItem ::= Dynamic ;
 TextItem .         TypesetItem ::= Text ;
@@ -117,13 +120,14 @@ MidiInst .      WithDef    ::= "midiInstrument" "=" String ; -- TODO Also availa
 separator WithDef "" ;
 
 --http://lilypond.org/doc/v2.18/Documentation/notation/writing-parts#instrument-names
-StringDef .     StrDef     ::= Ident "=" String ;
+StringDef .     StrDef     ::= VarToken "=" String ; --TODO IDENT BROKE EVERYTHING?!?!?!?
 
 separator StrDef "" ;
 
 
-token NoteToken ["abcdefgr"]({"es"} | {"is"})*["\',"]*(digit)*["."]* ;
-token VarToken {"\\"} letter+ ;
+token NoteToken ["abcdefgr"]({"es"} | {"is"})*["\',"]*(digit)*["."]* ; -- TODO break out rest as own token
+token VarRefToken {"\\"} letter+ ;
+token VarToken letter+ ;
 
 terminator MusicExpr "" ;
 
