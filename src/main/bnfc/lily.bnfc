@@ -27,7 +27,7 @@ ScoreBlock .    Score      ::= "\\score" "{" MusicExpr [InScoreDef] "}" ;
 
 RelativeExp .   MusicExpr  ::= "\\relative" NoteToken MusicExpr ; -- ""\relative startpitch musicexpr"
 CompoundExp .   MusicExpr  ::= "{" [ MusicExpr ] "}" ;
-NoteExp .       MusicExpr  ::= NoteToken ;
+NoteExp .       MusicExpr  ::= NoteObject ;
 KeyExpMajmin .  MusicExpr  ::= "\\key" NoteToken MajMin ;
 KeyExp .        MusicExpr  ::= "\\key" NoteToken ;
 TimeExp .       MusicExpr  ::= "\\time" Integer "/" Integer ; -- TODO verify later with other time signatures
@@ -56,6 +56,22 @@ NewNamedStaffExp .   MusicExpr  ::= "\\new" "Staff" "=" String MusicExpr ;
 NewChoirStaffExp .   MusicExpr  ::= "\\new" "ChoirStaff" MusicExpr ;
 
 _ . MusicExpr ::= MusicExpr2 ;
+
+Note . NoteObject ::= PitchToken [AccidentalToken] [OctaveToken] [Punctuation] ;
+NoteWithDur . NoteObject ::= PitchToken [AccidentalToken] [OctaveToken] Integer [Punctuation] ;
+
+Rest . NoteObject ::= "r" [Punctuation] ;
+RestWithDur . NoteObject ::= "r" Integer [Punctuation] ;
+
+token PitchToken ["abcdefg"] ;
+token AccidentalToken ({"es"} | {"is"}) ;
+token OctaveToken ["\',"] ;
+token Punctuation {"."} ;
+
+separator AccidentalToken "" ;
+separator OctaveToken "" ;
+separator Punctuation "" ;
+
 
 Gclef .     ClefName ::= "G" ;
 G8clef .    ClefName ::= "\"G_8\"" ; -- TODO Hmm... sometimes quoted? Also missing clef http://lilypond.org/doc/v2.19/Documentation/notation/clef-styles
