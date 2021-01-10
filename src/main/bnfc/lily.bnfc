@@ -25,11 +25,11 @@ ScoreBlock .    Score      ::= "\\score" "{" MusicExpr [InScoreDef] "}" ;
 -- List
 -- coercions MusicExpr 3 ; Breaks slurs: (). _. Exp3 ::= "(" Exp ")" ;
 
-RelativeExp .   MusicExpr  ::= "\\relative" NoteToken MusicExpr ; -- ""\relative startpitch musicexpr"
+RelativeExp .   MusicExpr  ::= "\\relative" NoteObject MusicExpr ; -- ""\relative startpitch musicexpr"
 CompoundExp .   MusicExpr  ::= "{" [ MusicExpr ] "}" ;
 NoteExp .       MusicExpr  ::= NoteObject ;
-KeyExpMajmin .  MusicExpr  ::= "\\key" NoteToken MajMin ;
-KeyExp .        MusicExpr  ::= "\\key" NoteToken ;
+KeyExpMajmin .  MusicExpr  ::= "\\key" NoteObject MajMin ; -- Not quite true, keys can only have pitches
+KeyExp .        MusicExpr  ::= "\\key" NoteObject ;
 TimeExp .       MusicExpr  ::= "\\time" Integer "/" Integer ; -- TODO verify later with other time signatures
 VarRefExp .     MusicExpr  ::= VarRefToken ;
 FermExp .       MusicExpr  ::= "\\fermata" ;
@@ -57,7 +57,27 @@ NewChoirStaffExp .   MusicExpr  ::= "\\new" "ChoirStaff" MusicExpr ;
 
 _ . MusicExpr ::= MusicExpr2 ;
 
-Note . NoteObject ::= PitchToken [AccidentalToken] [OctaveToken] [Punctuation] ;
+--Note . NoteObject ::= PitchToken [AccidentalToken] [OctaveToken] [Punctuation] ;
+Note . NoteObject ::= PitchObject ;
+Pitch . PitchObject ::= PitchToken ;
+
+NoteWithIs . NoteObject ::= NoteObject "is" ;
+NoteWithOctave . NoteObject ::= NoteObject "\'" ;
+
+
+{--
+EsObj . NoteObject2 ::= NoteObject2 "es" ;
+IsObj . NoteObject2 ::= NoteObject2 "is" ;
+
+
+
+_. NoteObject  ::= NoteObject1 ;
+_. NoteObject1 ::= NoteObject2 ;
+_. NoteObject2 ::= NoteObject3 ;
+_. NoteObject3 ::= NoteObject4 ;
+--}
+
+Octave . OctaveObject ::= OctaveToken ;
 NoteWithDur . NoteObject ::= PitchToken [AccidentalToken] [OctaveToken] Integer [Punctuation] ;
 
 Rest . NoteObject ::= "r" [Punctuation] ;
@@ -70,6 +90,7 @@ token Punctuation {"."} ;
 
 separator AccidentalToken "" ;
 separator OctaveToken "" ;
+separator OctaveObject "" ;
 separator Punctuation "" ;
 
 
@@ -141,7 +162,7 @@ StringDef .     StrDef     ::= VarToken "=" String ; --TODO IDENT BROKE EVERYTHI
 separator StrDef "" ;
 
 
-token NoteToken ["abcdefgr"]({"es"} | {"is"})*["\',"]*(digit)*["."]* ; -- TODO break out rest as own token
+-- token NoteToken ["abcdefgr"]({"es"} | {"is"})*["\',"]*(digit)*["."]* ; -- TODO break out rest as own token
 token VarRefToken {"\\"} letter+ ;
 token VarToken letter+ ;
 
