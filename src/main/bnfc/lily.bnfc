@@ -54,12 +54,19 @@ StaffExp .      MusicExpr  ::= "\\new" "Staff" MusicExpr;
 NewStaffExp .   MusicExpr  ::= "\\new" "Staff" MusicExpr ;
 NewNamedStaffExp .   MusicExpr  ::= "\\new" "Staff" "=" String MusicExpr ;
 NewChoirStaffExp .   MusicExpr  ::= "\\new" "ChoirStaff" MusicExpr ;
+PartialMeasureExp .  MusicExpr  ::= "\\partial" Integer ;
+BeamMusicExp .       MusicExpr  ::= BeamExp ;
+BarNumberCheckExp .  MusicExpr  ::= "\\barNumberCheck" "#" Integer ;
+
+StartBeam . BeamExp ::= "[" ; -- http://lilypond.org/doc/v2.18/Documentation/notation/beams#manual-beams
+StopBeam  . BeamExp ::= "]" ;
 
 _ . MusicExpr ::= MusicExpr2 ;
 
-Gclef .     ClefName ::= "G" ;
-G8clef .    ClefName ::= "\"G_8\"" ; -- TODO Hmm... sometimes quoted? Also missing clef http://lilypond.org/doc/v2.19/Documentation/notation/clef-styles
-Bassclef .  ClefName ::= "bass" ;
+Gclef .      ClefName ::= "G" ;
+G8clef .     ClefName ::= "\"G_8\"" ; -- TODO Hmm... sometimes quoted? Also missing clef http://lilypond.org/doc/v2.19/Documentation/notation/clef-styles
+Bassclef .   ClefName ::= "bass" ;
+ClefString . ClefName ::= String ;
 
 VoltaRepeat .   RepeatKind  ::= "volta" ;
 UnfoldRepeat .  RepeatKind  ::= "unfold" ;
