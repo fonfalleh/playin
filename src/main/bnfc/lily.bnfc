@@ -132,7 +132,7 @@ StringDef .     StrDef     ::= VarToken "=" String ; --TODO IDENT BROKE EVERYTHI
 separator StrDef "" ;
 
 
-token NoteToken ["abcdefgr"]({"es"} | {"is"})*["\',"]*(digit)*["."]* ; -- TODO break out rest as own token
+token NoteToken (["abcdefgr"]|{"es"})({"es"} | {"is"})*["\',"]*(digit)*["."]* ; -- TODO break out rest as own token?
 token VarRefToken {"\\"} letter+ ;
 token VarToken letter+ ;
 
