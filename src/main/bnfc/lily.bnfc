@@ -19,6 +19,16 @@ entrypoints Entry ;
 VersionDef .    Def        ::= "\\version" String ;
 VariableDef .   Def        ::= VarToken "=" MusicExpr ;
 ScoreDef .      Def        ::= Score ;
+PointClickDef . Def        ::= PointClick ;
+HeaderDef     . Def        ::= "\\header" "{" [StrDef] "}" ;
+-- TODO Seems fun.... SchemeDef     . Def        ::= "#" SchemeExpr ;
+
+-- http://lilypond.org/doc/v2.18/Documentation/extending/lilypond-scheme-syntax
+-- SchemeSchemeExpr ::=
+
+
+PointClickOff . PointClick ::= "\\pointAndClickOff" ;
+PointClickOn  . PointClick ::= "\\pointAndClickOn" ;
 
 
 ScoreBlock .    Score      ::= "\\score" "{" MusicExpr [InScoreDef] "}" ;
@@ -46,17 +56,33 @@ SlurEndExp .    MusicExpr  ::= ")" ;
 ClefExp .       MusicExpr  ::= "\\clef" ClefName ;
 SimultExps .    MusicExpr  ::= "<<" [MusicExpr] ">>" ;
 TieExp .        MusicExpr  ::= "~" ;
-NewVoiceExp .   MusicExpr  ::= "\\new" "Voice" "=" String MusicExpr ;
-NewNullVoiceExp . MusicExpr  ::= "\\new" "NullVoice" "=" String MusicExpr ;
-StaffExpWith .  MusicExpr  ::= "\\new" "Staff" WithBlock MusicExpr; -- TODO probably create more general \new Type --Also, precedence / nesting
--- TODO see http://lilypond.org/doc/v2.20/Documentation/notation/contexts-explained and http://lilypond.org/doc/v2.20/Documentation/learning/creating-contexts
-StaffExp .      MusicExpr  ::= "\\new" "Staff" MusicExpr;
-NewStaffExp .   MusicExpr  ::= "\\new" "Staff" MusicExpr ;
+NewContextExp . MusicExpr  ::= "\\new" ContextDef ;
+CtxContextExp . MusicExpr  ::= "\\context" ContextDef ;
 NewNamedStaffExp .   MusicExpr  ::= "\\new" "Staff" "=" String MusicExpr ;
 NewChoirStaffExp .   MusicExpr  ::= "\\new" "ChoirStaff" MusicExpr ;
 PartialMeasureExp .  MusicExpr  ::= "\\partial" Integer ;
 BeamMusicExp .       MusicExpr  ::= BeamExp ;
 BarNumberCheckExp .  MusicExpr  ::= "\\barNumberCheck" "#" Integer ;
+SetExpr .            MusicExpr  ::= "\\set" SetDef ;
+
+-- \set ContextName.propertyName = #value
+-- http://lilypond.org/doc/v2.22/Documentation/learning/modifying-context-properties
+--TODO Scheme stuff...
+SetProperty .     SetDef ::= VarToken "=" String ;
+SetQualProperty . SetDef ::= QualVarToken "=" String ;
+
+ContextDef .       ContextDef ::=  ContextType MusicExpr ;
+NamedContextDef .  ContextDef ::=  ContextType "=" String MusicExpr ;
+WithContextDef .   ContextDef ::=  ContextType WithBlock MusicExpr ;
+--StaffExpWith .  MusicExpr  ::= "\\new" "Staff" WithBlock MusicExpr; -- TODO probably create more general \new Type --Also, precedence / nesting
+-- TODO see http://lilypond.org/doc/v2.20/Documentation/notation/contexts-explained and http://lilypond.org/doc/v2.20/Documentation/learning/creating-contexts
+
+ScoreType . ContextType ::= "Score" ;
+VoiceType . ContextType ::= "Voice" ;
+VoiceType . ContextType ::= "NullVoice" ;
+StaffType . ContextType ::= "Staff" ;
+StaffType . ContextType ::= "StaffGroup" ;
+StaffType . ContextType ::= "ChoirStaff" ;
 
 StartBeam . BeamExp ::= "[" ; -- http://lilypond.org/doc/v2.18/Documentation/notation/beams#manual-beams
 StopBeam  . BeamExp ::= "]" ;
@@ -87,7 +113,18 @@ DefaultDirection . DirectionIndicator ::= "-" ;
 DynamicItem .      TypesetItem ::= Dynamic ;
 TextItem .         TypesetItem ::= Text ;
 InlineString .     Text ::= String ;
-MarkupBlock .      Text ::= "\\markup" "{" "}" ; -- Quite extensive... https://lilypond.org/doc/v2.20/Documentation/notation/text-markup-commands
+MarkupBlock .      Text ::= "\\markup" "{" [MarkupText] "}" ; -- Quite extensive... https://lilypond.org/doc/v2.20/Documentation/notation/text-markup-commands
+
+ModifiedMarkupItem . MarkupText ::= MarkupModifier MarkupText ;
+TextMarkupItem .     MarkupText ::= VarToken ; -- TODO feels off, but let's go with this for now
+StringMarkupItem .   MarkupText ::= String ; -- TODO feels off, but let's go with this for now
+BlockMarkupItem .    MarkupText ::= "{" MarkupText "}" ; -- TODO feels off, but let's go with this for now
+
+terminator MarkupText "" ;
+
+BoldModifier . MarkupModifier ::= "\\bold" ;
+
+--TextBody MarkupBody ::= String ;
 
 PDyn .     Dynamic ::= "\\p" ;
 PpDyn .    Dynamic ::= "\\pp" ;
@@ -135,6 +172,7 @@ separator StrDef "" ;
 token NoteToken (["abcdefgr"]|{"es"})({"es"} | {"is"})*["\',"]*(digit)*["."]* ; -- TODO break out rest as own token?
 token VarRefToken {"\\"} letter+ ;
 token VarToken letter+ ;
+token QualVarToken letter+ {"."} letter+ ; -- Perhaps a bit lazy.
 
 terminator MusicExpr "" ;
 

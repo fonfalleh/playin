@@ -1,10 +1,10 @@
 \version "2.22.0"
 % automatically converted by musicxml2ly from Till_skogs_en_liten_fogel_floeg2.mxl
-%\pointAndClickOff TODO Def
+\pointAndClickOff
 
 PartPOneVoiceOne =  \relative d {
     \clef "treble_8" \time 6/8 \key g \major \partial 8 \stemUp d8
-    %^\markup{ \bold {Andantino} } | % 1
+    ^\markup{ \bold {Andantino} } | % 1
     \stemUp b'4 \stemUp b8 \stemUp a8. [ \stemUp b16 \stemUp a8 ] | % 2
     \stemUp d4 \stemUp d8 \stemUp d4 \stemUp c8 | % 3
     \stemUp b4 \stemUp d8 \stemUp g4 \stemUp a8 | % 4
