@@ -44,3 +44,26 @@ Lily:
 Idea:
 Analysis pass like lucene or LLVM
 
+----
+# Indexing in Solr
+
+- Have base format as input as reference (abc? lily?)
+ - good for both indexing and searching
+- Have different kinds of analysis WITH example configs
+  - strip octave?
+  - key-agnostic - relative pitches
+  - with or without rests and repeats
+- Indexing vs Querying
+ - index many formats (midi, xml, lily), query by abc/lily
+
+- Indexing midi
+ - Channel by channel? No "standard form"... 
+
+Must know
+- how to turn notation into indexed tokens ("light lilypond parsing")
+ - first step is just to take a list (whitespace separated string) of notes rather than implementing a complete parser? 
+- c in lilypond represents what pitch?
+- how to write a nice analysis step for solr. See solr source code for examples.
+
+parsing lilypond/other notation requires state: key signature, relative pitch, etc.
+

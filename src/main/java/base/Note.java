@@ -29,6 +29,7 @@ public class Note implements Comparable<Note> {
     // 48 is middle c, ~131hz
     private short pitch; // 69 is 440hz A
 
+    // TODO Make this better. Have some fraction instead? Also combine with punctuation?
     // Durations, as in Lilypond they are written as 4 for quarter notes, etc.
     private byte duration;
 
@@ -70,6 +71,7 @@ public class Note implements Comparable<Note> {
     private static String lilyPattern = "([A-Ha-hr])(es|is)*([',])*(\\d)*(\\.)*"; // TODO WRONG, uppercase notenames are not supported.
     static final int octaveSize = 12;
 
+    // TODO break out into some Lilypond package and rework logic
     /**
      * Method for creating instances frmo lilypond-style input.
      *
@@ -146,6 +148,7 @@ public class Note implements Comparable<Note> {
         return new Note(pitch, duration, punctuations, isRest);
     }
 
+    // TODO what is this name
     private static short baseNoteToShort(char baseNote) {
         short pitch;
         switch (Character.toLowerCase(baseNote)) { // octaves start at c, so a is above.
@@ -173,7 +176,7 @@ public class Note implements Comparable<Note> {
             default:
                 return 0; // TODO throw exception?
         }
-        if (Character.isUpperCase(baseNote)) {
+        if (Character.isUpperCase(baseNote)) { // TODO not correct, lilypond does not support these
             pitch -= 12;
         }
         return pitch;
