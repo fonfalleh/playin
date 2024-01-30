@@ -107,7 +107,13 @@ see `midi2ly` and `musicxml2ly`.
 
 Not great as I remember, but always something.
 
+Good as query language but perhaps not as indexing language?
+
 ## Musicxml
 Can be exported to from most formats, probably makes most sense to do "partwise".
 
-Can be parsed in Java.
+Can be parsed in Java. (See schema in some tests)
+
+## MIDI
+
+Has official java package. See 
