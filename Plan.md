@@ -47,6 +47,8 @@ Analysis pass like lucene or LLVM
 ----
 # Indexing in Solr
 
+- Java 11 required for solr 9 (not necessary for plugins, but assume jdk 11 ok)
+
 - Have base format as input as reference (abc? lily?)
  - good for both indexing and searching
 - Have different kinds of analysis WITH example configs
@@ -67,3 +69,45 @@ Must know
 
 parsing lilypond/other notation requires state: key signature, relative pitch, etc.
 
+Probably much easier to import MIDI rather than parse other formats.
+ - Have some testsuite for guaranteed compatibility from/to MIDI from musescore and lilypond
+ - have simple suite for generating from/to different formats
+# Format cross-compatibility
+
+Good to have some basis for how to convert from/to equivalent parts in formats.
+
+Structure and such will probably be lost, but part/voice-data and metadata can probably be kept from/to formats.
+
+## Musescore
+```
+Usage: musescore [options] [scorefile]
+...
+  -o, --export-to <file>                  Export to 'file'. Format depends on
+                                          file's extension
+...
+  --score-meta                            Export score metadata to JSON
+                                          document and print it to stdout
+  --score-parts                           Generate parts data for the given
+                                          score and save them to separate mscz
+                                          files
+  --score-parts-pdf                       Generate parts data for the given
+                                          score and export the data to a single
+                                          JSON file, print it to stdout
+  --score-transpose <options>             Transpose the given score and export
+                                          the data to a single JSON file, print
+                                          it to stdout
+
+```
+
+Interesting!
+
+## Lilypond
+
+see `midi2ly` and `musicxml2ly`.
+
+Not great as I remember, but always something.
+
+## Musicxml
+Can be exported to from most formats, probably makes most sense to do "partwise".
+
+Can be parsed in Java.
