@@ -116,4 +116,34 @@ Can be parsed in Java. (See schema in some tests)
 
 ## MIDI
 
-Has official java package. See 
+Has official java package. See documentation...
+
+----
+
+### scratchpad
+
+midi debugging c_scale.midi:
+
+first impressions:
+.ly has generated 2 tracks.
+Should contain 8 notes.
+
+track[0] seems like metadata, ignore for now?
+track[1] has 18 events - seems like metadata, 8 start + 8 stop events + end of track
+
+tick size... sequence has "resolution" = 384, seems to be the lenght of a quarter note.
+
+Almost everything here is lilypond defaults, possibly version specific (although I've omitted version string, so that might change?)
+
+// TODO Idea: Have another test for checking resolution and the like?
+
+Hmm. A sequence has tracks, tracks has list of messages. Messages can be notes on/off.
+
+((FastShortMessage) sequence.tracks.get(1).eventsList.get(1).message).getData1() -> 48
+pitch of first NOTE_ON event 48 = c in lilypond. Yay!
+
+Also, ((FastShortMessage) sequence.getTracks()[1].get(1).getMessage()).getData1()
+
+The subsequent events seem to increase in data1(pitch) as expected accoring to the c scale.
+Diatonic major: HHhHHHh  
+[0,2,4,5,7,9,11,12]
