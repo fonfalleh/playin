@@ -109,8 +109,11 @@ Not great as I remember, but always something.
 
 Good as query language but perhaps not as indexing language?
 
+!!! Can only import xml, not export! (official)
+
 ## Musicxml
 Can be exported to from most formats, probably makes most sense to do "partwise".
+(Lilypont can _not_ export musicxml)
 
 Can be parsed in Java. (See schema in some tests)
 
@@ -147,3 +150,18 @@ Also, ((FastShortMessage) sequence.getTracks()[1].get(1).getMessage()).getData1(
 The subsequent events seem to increase in data1(pitch) as expected accoring to the c scale.
 Diatonic major: HHhHHHh  
 [0,2,4,5,7,9,11,12]
+
+----
+
+Musescore sheets and exports done for c_scale and repeats.
+Musescore has lots of settings for export, took some defaults.
+
+TODO do tests, and do something for musicxml.
+
+Musicxml nice because pitch names are present
+
+TODO check enharmonic equivalences, such as cis/des to see if that info is stored.
+
+mxl unusable, it seems, as it's compressed and can't be read
+
+TODO later: multiple parts/voices, and chords

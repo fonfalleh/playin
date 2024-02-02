@@ -4,5 +4,6 @@
       g a b c'} |
     c' b a g
   }
+  \layout {}
   \midi {}
 }
