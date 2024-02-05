@@ -1,8 +1,11 @@
+\version "2.22.1"
 \score {
-  { c d e f | 
-    \repeat volta 2 {
-      g a b c'} |
-    c' b a g
+  \unfoldRepeats {
+    { c d e f |
+      \repeat volta 2 {
+        g a b c'} |
+      c' b a g
+    }
   }
   \layout {}
   \midi {}

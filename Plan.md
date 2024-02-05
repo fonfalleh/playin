@@ -121,6 +121,8 @@ Can be parsed in Java. (See schema in some tests)
 
 Has official java package. See documentation...
 
+Also some snippets https://stackoverflow.com/questions/3850688/reading-midi-files-in-java
+
 ----
 
 ### scratchpad
@@ -165,3 +167,23 @@ TODO check enharmonic equivalences, such as cis/des to see if that info is store
 mxl unusable, it seems, as it's compressed and can't be read
 
 TODO later: multiple parts/voices, and chords
+
+----
+
+Seems like lilypond with repeats don't work well for midi output? Strange.
+TODO investigate later? Seems easier with musescore for now...  
+Oh, because of https://lilypond.org/doc/v2.22/Documentation/notation/using-repeats-with-midi
+
+musescore midi does not have the same metadata track on track[0] as lilypond... So song info is all in track[0] (at least for one voice)
+
+seems like there is 25 ticks between note_off and note_on, unlike on in lilypond
+...
+Something is weird with notes, both in lilypond and in musescore.
+```
+Index: 16, Command: 144, Data1: 48
+Index: 17, Command: 144, Data1: 48
+Index: 18, Command: 144, Data1: 50
+Index: 19, Command: 144, Data1: 50
+```
+Command 144 = NOTE_ON, i.e start of note. Two ONs but no OFFs?  
+Ah, because Data2 (velocity) is 0 on the second of these. Added condition for Data2 > 0.
