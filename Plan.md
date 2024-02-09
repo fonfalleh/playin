@@ -187,3 +187,50 @@ Index: 19, Command: 144, Data1: 50
 ```
 Command 144 = NOTE_ON, i.e start of note. Two ONs but no OFFs?  
 Ah, because Data2 (velocity) is 0 on the second of these. Added condition for Data2 > 0.
+
+----
+Started looking at xml. Many options, and many outdated.
+
+Already tried using musicxml xsd schema to generate classes, but it would be nice to not have to do that.
+Just do some manual extraction of notes, without bothering with 
+
+First, lazy approach to just use Jackson? Actually a json lib... well...  
+Yeah, sure, for initial demoing?
+
+Consider streaming otherwise?:
+https://docs.oracle.com/javase/tutorial/jaxp/stax/why.html
+
+Seems like it's more efficient and would perhaps be better for using in a plugin
+
+----
+
+About input formats vs displaying results...
+
+Midi/pitches very easy and straightforward to index, it's just a string of integers (/bytes)  
+It is a lossy conversion though, and c# and db are indistinguishable with this approach. Also, displaying what matched is not very pretty.
+Idea: Start trivial as POC, do some post-search magic to invoke soure data after match has been found?
+
+----
+
+Keeping it simple in the beginning:
+
+repeats, ties, slurs, etc might become complicated. Don't overcomplicate from the start, but remember that it might get tricky.
+
+repeats:
+```
+    <measure number="2">
+      <barline location="left">
+        <bar-style>heavy-light</bar-style>
+        <repeat direction="forward"/>
+        </barline>
+...
+      <barline location="right">
+        <bar-style>light-heavy</bar-style>
+        <repeat direction="backward"/>
+        </barline>
+      </measure>
+```
+
+Seems simple enough? Let's see when codas and segnos are introduced...
+
+On the other hand... what's the use case here? Maybe just unroll midi?
