@@ -234,3 +234,27 @@ repeats:
 Seems simple enough? Let's see when codas and segnos are introduced...
 
 On the other hand... what's the use case here? Maybe just unroll midi?
+
+----
+# Solr stoff!
+
+Really interesting field format! :D
+https://solr.apache.org/guide/solr/9_4/indexing-guide/external-files-processes.html#the-preanalyzedfield-type
+
+Actually really, really cool! Why didn't I know about it earlier?
+
+Idea: With this, is it possible to do highlighting? That would make it possible to map query to actual score. ALso measures etc.
+
+This is actually awesome :D
+
+for higlighting: indexed, stored, termVectors, termPositions
+
+TODO for cool stuff!
+- create util for mapping source to `SimplePreAnalyzedParser` syntax along with tokens
+- create solr core for demoing
+- create demo schema with appropriate fields
+ - searchable, both json and simple fields
+ - appropriate query analysis
+  - multiple formats as well (in one field)? (can they be combined?) (passthrough for midi, translate for abc) 
+- create util to manage structure for collection of songs with different formats and metadata, and join for indexing
+- something like postman that isn't postman
