@@ -258,3 +258,55 @@ TODO for cool stuff!
   - multiple formats as well (in one field)? (can they be combined?) (passthrough for midi, translate for abc) 
 - create util to manage structure for collection of songs with different formats and metadata, and join for indexing
 - something like postman that isn't postman
+
+
+----
+Testing with simple preanalyzer
+```
+{
+    "add-field-type": {
+        "name": "preanalyzed",
+        "class": "solr.PreAnalyzedField",
+        "parserImpl": "org.apache.solr.schema.SimplePreAnalyzedParser",
+        "queryAnalyzer": {
+            "tokenizer": {
+                "class": "solr.WhitespaceTokenizerFactory"
+            }
+        }
+    }
+}
+```
+
+resulting entry in schema:
+```
+  <fieldType name="preanalyzed" class="solr.PreAnalyzedField" parserImpl="solr.SimplePreAnalyzedParser">
+    <analyzer type="query">
+      <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+    </analyzer>
+  </fieldType>
+```
+create field simplepre
+
+create testdoc:
+```
+{
+    "id":"test",
+    "simplepre": "1 =a b c= 1,s=0,e=1 2,s=2,e=5"
+}
+```
+stored: "a b c", indexed tokens "1" "2" "3". 2 has offset 2 to 5, so match on 2 should highlight "b c".
+
+See syntax in doc. Probably more clean to implement using json, but much easier to write simple syntax by hand for testing.
+
+`q=simplepre:2&hl=true&hl.fl=simplepre`
+
+http://localhost:8983/solr/gettingstarted/select?hl.fl=simplepre&hl=true&indent=true&q=simplepre%3A2
+
+```
+"highlighting":{
+    "test":{
+        "simplepre":["a <em>b c</em>"]
+    }
+```
+<3<3<3
+Exactly what I wanted!
