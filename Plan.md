@@ -294,7 +294,7 @@ create testdoc:
     "simplepre": "1 =a b c= 1,s=0,e=1 2,s=2,e=5"
 }
 ```
-stored: "a b c", indexed tokens "1" "2" "3". 2 has offset 2 to 5, so match on 2 should highlight "b c".
+stored: "a b c", indexed tokens "1" "2". 2 has offset 2 to 5, so match on 2 should highlight "b c".
 
 See syntax in doc. Probably more clean to implement using json, but much easier to write simple syntax by hand for testing.
 
@@ -310,3 +310,6 @@ http://localhost:8983/solr/gettingstarted/select?hl.fl=simplepre&hl=true&indent=
 ```
 <3<3<3
 Exactly what I wanted!
+
+Also, phrase search seems to work!
+`fq=simplepre:"1 2"` matches!
