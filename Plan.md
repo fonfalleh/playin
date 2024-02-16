@@ -258,10 +258,24 @@ TODO for cool stuff!
   - multiple formats as well (in one field)? (can they be combined?) (passthrough for midi, translate for abc) 
 - create util to manage structure for collection of songs with different formats and metadata, and join for indexing
 - something like postman that isn't postman
+ - hoppscotch? 
 
+More concretely:
+- (actually implement stuff and not just testfiles for establishing standards)
+- "midi to relative midi"-step as lib for querytime relative searches
+ - Rather, int to relative int step... tokenfilter with memory of last token
+- create a minimal solr core config for use in docker compose (use )
+- see how techproducts load in data in solr examples, create sample dataset
+ - also some kind of util for taking files and indexing them?
+- ??? simple js-page for actually searching in solr when done?
+- very simple lilypond-to-midi-pitch converter (no interpretation, straight transform)
+ - start with absolute, then think about relative stoff?
+ - for relative, have some interface with different modes?
+ - future work: actually interpret lilypond? Research project :P
 
 ----
-Testing with simple preanalyzer
+# Testing PreAnalyzedField with simple parser
+Creating a field type:
 ```
 {
     "add-field-type": {
@@ -285,7 +299,7 @@ resulting entry in schema:
     </analyzer>
   </fieldType>
 ```
-create field simplepre
+create field simplepre in schema in GUI
 
 create testdoc:
 ```
@@ -303,10 +317,12 @@ See syntax in doc. Probably more clean to implement using json, but much easier 
 http://localhost:8983/solr/gettingstarted/select?hl.fl=simplepre&hl=true&indent=true&q=simplepre%3A2
 
 ```
+[...]
 "highlighting":{
     "test":{
         "simplepre":["a <em>b c</em>"]
     }
+[...]
 ```
 <3<3<3
 Exactly what I wanted!
