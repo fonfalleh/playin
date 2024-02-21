@@ -49,6 +49,13 @@ public class TestMidi {
         assertEquals(REPEATS_EXPECTED_PITCHES, pitchesFromTrack);
     }
 
+    @Test
+    public void testLilyPitchesMidi() throws InvalidMidiDataException, IOException {
+        Sequence sequence = loadMidiSequenceFromResource("/ly_midi/pitches.midi");
+        List<Integer> pitchesFromTrack = getPitchesFromTrack(sequence.getTracks()[1]);
+        assertEquals(List.of(48, 48, 48, 72, 24), pitchesFromTrack);
+    }
+
     public static Sequence loadMidiSequenceFromResource(String path) throws InvalidMidiDataException, IOException {
         String testFile = TestMidi.class.getResource(path).getFile();
         return MidiSystem.getSequence(new File(testFile));

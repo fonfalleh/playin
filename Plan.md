@@ -329,3 +329,20 @@ Exactly what I wanted!
 
 Also, phrase search seems to work!
 `fq=simplepre:"1 2"` matches!
+
+----
+# 2024-02-21
+
+This is not intended as a diary, just making notes on progress in order to write something clever later.
+
+Created naive translator that can be used for translating queries in (very restricted subset of) lilypond. 
+Added some more examples with tests.  
+Still need to actually put some code into a package and not just tests :P 
+
+started looking at maven archetype for building libs for including in solr token filter  
+see `mvn archetype:generate`
+
+Though, perhaps just have the code in the solr plugin? But then there will be duplication if that's wanted in more places... decisions, decisions!
+
+Also looked at examples on how to implement token filters - `LowerCaseFilter` looks simple enough!
+TODO next: try to actually create a TokenFilter and include the code
