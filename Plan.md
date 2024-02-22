@@ -346,3 +346,92 @@ Though, perhaps just have the code in the solr plugin? But then there will be du
 
 Also looked at examples on how to implement token filters - `LowerCaseFilter` looks simple enough!
 TODO next: try to actually create a TokenFilter and include the code
+
+
+----
+# 2024-02-22
+
+https://solr.apache.org/guide/8_4/libs.html#lib-directories
+
+https://cwiki.apache.org/confluence/display/solr/SolrPlugins
+
+Really lacking in doc... as is tradition.
+
+Schema api could use a lot more examples ()
+
+https://solr.cool - cool solr stoff?
+
+searched github for solr tokenfilter, found the following project + pom:
+
+https://github.com/edmeister/solr-classical-greek-tokenfilter/blob/master/pom.xml
+```
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-test-framework -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-test-framework</artifactId>
+            <version>4.10.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-core -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>4.10.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-analyzers-common -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-analyzers-common</artifactId>
+            <version>4.10.2</version>
+        </dependency>
+
+    </dependencies>
+```
+
+quite old but should match our expectations.
+
+Time to start locking down versions!
+solr 9.5 released recently... let's go!
+...which depends on lucene 9.9.2
+
+Last commit on branch 9_5? No, tag `releases/solr/9.5.0` probably better idea.
+
+hmm. many shenanigans!
+
+Created test tokenfilter (which is just LowerCaseFilter with a new name)
+
+Also pasted maven archetype stoff so a jar is produced with mvn install.
+
+Added as field type!
+```
+{
+  "add-field-type": {
+    "name": "testTokenFilter",
+    "class": "solr.TextField",
+    "queryAnalyzer": {
+      "filters": [
+        {
+          "class": "io.github.fonfalleh.formats.midi.SolrTestTokenFilterFactory"
+        }
+      ],
+      "tokenizer": {
+        "class": "solr.WhitespaceTokenizerFactory"
+      }
+    }
+  }
+}
+```
+
+Tested with solr 9.5.0 in docker.
+Some annoyances with paths, and SPI (which I don't know anything about, and I didn't get it to work), but it worked with class in the end!
+
+one default lib dir: `<solr_home>/lib/`. `solr.solr.home=/var/solr/data` in some cases, such as the dockerfile
+
+Had to do `docker cp <jar> <container>:/var/solr/data/lib` and then docker restart before it could work? Not sure.
+Potentially, mount a volume with `/var/solr/data/lib` or create own docker image which fixes stuff beforehand.
+Something nice in a compose-file.
+
+TODO next: actually create token filter which translates lily to midi? Maybe!
+TODO Also docker niceties.
+TODO also fix maven plugins as wanted, and package in nice fashion.
