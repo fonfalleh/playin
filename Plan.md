@@ -395,6 +395,8 @@ Time to start locking down versions!
 solr 9.5 released recently... let's go!
 ...which depends on lucene 9.9.2
 
+Note: Got an error, looked at lucene source, and fixed that `lucene-analyzers-common` has changed name to `lucene-analysis-common`.
+
 Last commit on branch 9_5? No, tag `releases/solr/9.5.0` probably better idea.
 
 hmm. many shenanigans!
@@ -435,3 +437,57 @@ Something nice in a compose-file.
 TODO next: actually create token filter which translates lily to midi? Maybe!
 TODO Also docker niceties.
 TODO also fix maven plugins as wanted, and package in nice fashion.
+
+
+```
+{
+  "add-field-type": {
+    "name": "naiveMidiPreanalyzed",
+    "class": "solr.PreAnalyzedField",
+    "parserImpl": "org.apache.solr.schema.SimplePreAnalyzedParser",
+    "queryAnalyzer": {
+      "filters": [
+        {
+          "class": "io.github.fonfalleh.formats.solr.NaiveLilyToMidiTokenFilterFactory"
+        }
+      ],
+      "tokenizer": {
+        "class": "solr.WhitespaceTokenizerFactory"
+      }
+    }
+  }
+}
+```
+
+Ok, this calls for ~~celebration~~ debugging!
+
+...
+
+Ok, now time to celebrate!
+
+(query analysis)
+```
+WT      c   cis d   dis ees
+NLTMTF  48  49  50  51  51
+```
+
+**This is insanely cool! (if you're like me)**
+
+```
+// NOTE: The returned buffer may be larger than the valid length().
+public char[] buffer();
+```
+
+TODO cleanup, tests :) 
+
+TODO setup maven project alongside compose.yml which makes an easy launch of solr with plugins possible :)
+
+For docker-compose
+```
+solr-precreate: args
+# Create a core on disk
+# arguments are: corename configdir
+```
+
+
+`docker cp 92c4b6122321:/var/solr/data/testcore testcore`
