@@ -491,3 +491,33 @@ solr-precreate: args
 
 
 `docker cp 92c4b6122321:/var/solr/data/testcore testcore`
+
+----
+# 2024-03-21+
+
+More hacking and trying things out in lucene. I must say the semantics of some things are ... not quite obvious, to say the least.
+Perhaps there is info in some documentation somewhere, but googling and looking at source code has been my way forward, which is a path filled with trial and error.
+
+Thought about making a filter that makes use of lookahead, but that was... not trivial.
+
+Anyway, a naive implementation of calculating relative pitch is implemented, but also a little broken in this wip commit...
+
+```
+{
+  "add-field-type": {
+    "name": "relativePitch2",
+    "class": "solr.TextField",
+    "queryAnalyzer": {
+      "filters": [
+        {
+          "class": "io.github.fonfalleh.formats.solr.RelativePitchFilterFactory",
+          "skipRepeats": true
+        }
+      ],
+      "tokenizer": {
+        "class": "solr.WhitespaceTokenizerFactory"
+      }
+    }
+  }
+}
+```
