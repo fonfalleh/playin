@@ -499,6 +499,11 @@ More hacking and trying things out in lucene. I must say the semantics of some t
 Perhaps there is info in some documentation somewhere, but googling and looking at source code has been my way forward, which is a path filled with trial and error.
 
 Thought about making a filter that makes use of lookahead, but that was... not trivial.
+Looked at WordDelimiter, which uses lookahead, but it was way to much overhead and not part of lucene core, so I ignored lookahead for now.
+
+Dropping/removing tokens was not obvious (I produced some empty tokens instead), but looking at StopFilter, it seems like one can just increment input to drop a token.
+returning false on `incrementToken()` aborts the filtering, and setting buffer to empty produces empty tokens.
+
 
 Anyway, a naive implementation of calculating relative pitch is implemented, but also a little broken in this wip commit...
 
@@ -521,3 +526,41 @@ Anyway, a naive implementation of calculating relative pitch is implemented, but
   }
 }
 ```
+
+It works!
+
+TODO nice package with examples...
+
+
+Perhaps consider asciidoc for documentation? Can work with both graphviz and lilypond
+https://docs.asciidoctor.org/diagram-extension/latest/diagram_types/graphviz/  
+https://docs.asciidoctor.org/diagram-extension/latest/diagram_types/lilypond/  
+
+
+```
+{
+  "add-field-type": {
+    "name": "relativeLilyField",
+    "class": "solr.TextField",
+    "analyzer": {
+      "filters": [
+        {
+          "class": "io.github.fonfalleh.formats.solr.NaiveLilyToMidiTokenFilterFactory"
+        },
+        {
+          "class": "io.github.fonfalleh.formats.solr.RelativePitchFilterFactory",
+          "skipRepeats": false
+        }
+      ],
+      "tokenizer": {
+        "class": "solr.WhitespaceTokenizerFactory"
+      }
+    }
+  }
+}
+```
+
+woo! 
+"a b c'" matches "c d ees"!!  
+Coolio!
+-----

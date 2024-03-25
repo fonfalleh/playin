@@ -8,6 +8,8 @@ import java.io.IOException;
 
 public class RelativePitchFilter extends TokenFilter {
     private final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
+    //TODO position increment? Do we need to implement better for phrase search?
+    //TODO perhaps a naive new incremental (destructive) order?
 
     protected RelativePitchFilter(TokenStream input, boolean skipRepeats) {
         super(input);
@@ -21,24 +23,34 @@ public class RelativePitchFilter extends TokenFilter {
     @Override
     public final boolean incrementToken() throws IOException {
         if (input.incrementToken()) {
-            //TODO graceful error handling
-            int pitch = Integer.parseInt(new String(termAtt.buffer(), 0, termAtt.length()));
-
             if (previousPitch == -1) {
-                previousPitch = pitch;
-                termAtt.setEmpty(); // TODO verify. We ignore the first token.
-                //TODO perhaps check other filters if this is not the way to do it
-                return true; // TODO fix
+                //TODO graceful error handling
+                previousPitch = Integer.parseInt(new String(termAtt.buffer(), 0, termAtt.length()));;
+                // From my understanding (looking at StopFilter), we can just increment input to not output the first token.
+                if (!input.incrementToken()) {
+                    // work on next token instead, abort if we reach end of stream (only one token in stream)
+                    return false;
+                }
             }
+            int pitchDiff;
+            while (true) {
+                //TODO graceful error handling
+                int pitch = Integer.parseInt(new String(termAtt.buffer(), 0, termAtt.length()));
 
-            int pitchDiff = pitch - previousPitch;
-            previousPitch = pitch;
+                pitchDiff = pitch - previousPitch;
+                previousPitch = pitch;
 
-            // Possibly skip tokens to ignore repeated notes
-            if (skipRepeats && pitchDiff == 0) {
-                termAtt.setEmpty(); // TODO verify. We ignore the first token.
-                //TODO perhaps check other filters if this is not the way to do it
-                return true;
+                // Possibly skip tokens by looping increments to ignore repeated notes
+                if (skipRepeats && pitchDiff == 0) {
+                    if (!input.incrementToken()) {
+                        return false;
+                    } else {
+                        // duplicate found and there is a next token, keep checking diff
+                        continue;
+                    }
+                } else {
+                    break;
+                }
             }
 
             String diffToken = Integer.toString(pitchDiff);
