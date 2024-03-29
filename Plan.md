@@ -125,7 +125,7 @@ Also some snippets https://stackoverflow.com/questions/3850688/reading-midi-file
 
 ----
 
-### scratchpad
+# scratchpad
 
 midi debugging c_scale.midi:
 
@@ -258,11 +258,11 @@ TODO for cool stuff!
   - multiple formats as well (in one field)? (can they be combined?) (passthrough for midi, translate for abc) 
 - create util to manage structure for collection of songs with different formats and metadata, and join for indexing
 - something like postman that isn't postman
- - hoppscotch? 
+  - [Bruno](https://www.usebruno.com/)!
 
 More concretely:
 - (actually implement stuff and not just testfiles for establishing standards)
-- "midi to relative midi"-step as lib for querytime relative searches
+- DONE "midi to relative midi"-step as lib for querytime relative searches
  - Rather, int to relative int step... tokenfilter with memory of last token
 - create a minimal solr core config for use in docker compose (use )
 - see how techproducts load in data in solr examples, create sample dataset
@@ -560,7 +560,32 @@ https://docs.asciidoctor.org/diagram-extension/latest/diagram_types/lilypond/
 }
 ```
 
+
 woo! 
 "a b c'" matches "c d ees"!!  
 Coolio!
 -----
+
+TODO probably change package name  
+TODO eventually structure things so everything isn't in one fat jar, just the analysis stuff with dependencies  
+TODO test with elasticsearch? Current plugins are pure lucene, so they should work in elastic as well? But needs packaging.
+
+Cool demo MVP:
+- Have demo structure of some song
+  - one dir per song with input formats + metadata in plaintext
+- Have indexing thing ready
+  - SolrJ
+  - Document structure: midi as tracks, other fields from metadata?
+- Have appropriate fields in solr (kinda done?)
+- Have some way to query things if not comfortable with Solr syntax?
+  - bruno template?
+  - learn javascript?
+  - create a solr GUI?
+  - create a search request handler with predefined params for edismax search?
+- Docker compose?
+
+----
+# 2024-03-29
+
+Moved some things around, removed some things, and started on an Indexer-tool.
+Quite WIP, but seems to construct a correct solr document. Need to create appropriate fields in solr demo and save config as deployable.

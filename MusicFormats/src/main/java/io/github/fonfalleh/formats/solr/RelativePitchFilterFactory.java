@@ -2,14 +2,13 @@
 
 package io.github.fonfalleh.formats.solr;
 
-import io.github.fonfalleh.formats.midi.SolrTestTokenFilter;
 import org.apache.lucene.analysis.TokenFilterFactory;
 import org.apache.lucene.analysis.TokenStream;
 
 import java.util.Map;
 
 /**
- * Factory for {@link SolrTestTokenFilter}.
+ * Factory for {@link RelativePitchFilter}.
  *
  * //TODO example for using this with analysis
  * <pre class="prettyprint">

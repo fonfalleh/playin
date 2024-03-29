@@ -1,15 +1,12 @@
-//TODO verify things, just copypasted this from the example from earlier
-
 package io.github.fonfalleh.formats.solr;
 
-import io.github.fonfalleh.formats.midi.SolrTestTokenFilter;
 import org.apache.lucene.analysis.TokenFilterFactory;
 import org.apache.lucene.analysis.TokenStream;
 
 import java.util.Map;
 
 /**
- * Factory for {@link SolrTestTokenFilter}.
+ * Factory for {@link NaiveLilyToMidiTokenFilter}.
  *
  * //TODO example for using this with query time analysis
  * <pre class="prettyprint">
