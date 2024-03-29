@@ -27,6 +27,7 @@ public class NaiveLilyToMidiTokenFilter extends TokenFilter {
         if (input.incrementToken()) {
             //termAtt.buffer() might return garbage data after buffer[length]...
             char[] buffer = Arrays.copyOf(termAtt.buffer(), termAtt.length());
+            // TODO passthrough of midi tokens, i.e. numbers.
             int pitch = LilyToMidi.lilyPitchToMidiPitch(buffer);
             String pitchToken = Integer.toString(pitch);
 

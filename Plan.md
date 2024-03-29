@@ -589,3 +589,80 @@ Cool demo MVP:
 
 Moved some things around, removed some things, and started on an Indexer-tool.
 Quite WIP, but seems to construct a correct solr document. Need to create appropriate fields in solr demo and save config as deployable.
+
+id
+composer : string
+editor : string
+source : string
+pitches : multiValued midi
+
+https://maven.apache.org/shared/maven-filtering/index.html
+
+https://github.com/br4chu/docker-compose-maven-plugin
+
+----
+
+```
+{
+  "add-field-type": {
+    "name": "midiWithLilyQuery",
+    "class": "solr.TextField",
+    "indexAnalyzer": {
+      "tokenizer": {
+        "class": "solr.WhitespaceTokenizerFactory"
+      }
+    },
+    "queryAnalyzer": {
+      "filters": [
+        {
+          "class": "io.github.fonfalleh.formats.solr.NaiveLilyToMidiTokenFilterFactory"
+        }
+      ],
+      "tokenizer": {
+        "class": "solr.WhitespaceTokenizerFactory"
+      }
+    }
+  }
+}
+```
+
+pitches_relative:
+```
+{
+  "add-field-type": {
+    "name": "relativeMidiWithLilyQuery",
+    "class": "solr.TextField",
+    "indexAnalyzer": {
+      "filters": [
+        {
+          "class": "io.github.fonfalleh.formats.solr.RelativePitchFilterFactory",
+          "skipRepeats": false
+        }
+      ],
+      "tokenizer": {
+        "class": "solr.WhitespaceTokenizerFactory"
+      }
+    },
+    "queryAnalyzer": {
+      "filters": [
+        {
+          "class": "io.github.fonfalleh.formats.solr.NaiveLilyToMidiTokenFilterFactory"
+        },
+        {
+          "class": "io.github.fonfalleh.formats.solr.RelativePitchFilterFactory",
+          "skipRepeats": false
+        }
+      ],
+      "tokenizer": {
+        "class": "solr.WhitespaceTokenizerFactory"
+      }
+    }
+  }
+}
+```
+
+TODO consider highlighting options, consider not storing relative fields when they are copyfields.
+
+
+TODO take schema from testcore (fields are added), add to git repo with docker compose and examples  
+TODO rename core to ... playin?
