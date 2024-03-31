@@ -666,3 +666,11 @@ TODO consider highlighting options, consider not storing relative fields when th
 
 TODO take schema from testcore (fields are added), add to git repo with docker compose and examples  
 TODO rename core to ... playin?
+
+Some fighting with the docker setup...
+
+Problem lies in mounting a lib dir on /var/solr/data/lib
+
+/var/solr/data/ is populated on first startup, and mounting /var/solr/data/lib
+
+Some progress with putting docker in resources and use templating and resource moving

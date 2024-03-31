@@ -6,3 +6,4 @@ target/
 *.hi
 *.bak
 *.midi
+MusicFormats/docker

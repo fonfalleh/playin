@@ -16,7 +16,7 @@ public class Indexer {
 
     SolrClient client = new Http2SolrClient
             .Builder("http://localhost:8983/solr")
-                    .withDefaultCollection("testcore")
+                    .withDefaultCollection("playin")
                     .build();
 
     public static void main(String[] args) throws SolrServerException, IOException {
@@ -38,7 +38,9 @@ public class Indexer {
                 .collect(Collectors.toList());
 
 
-        new Indexer().sendDocumentsForIndexing(docs);
+        Indexer indexer = new Indexer();
+        indexer.sendDocumentsForIndexing(docs);
+        indexer.client.close();
     }
 
     /*

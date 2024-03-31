@@ -1,0 +1,24 @@
+version: '3'
+name: playin
+services:
+  solr:
+    image: solr:@solr.version@
+    ports:
+      - "8983:8983"
+      - "8000:8000"
+    volumes:
+      - solr_home:/var/solr
+      #- ./lib:/var/solr/data/lib # this does not work on first startup, breaks permissions
+      - ./lib:/opt/solr-@solr.version@/lib # Seems to work but version needed. Solved with maven filters for now.
+      - ./conf:/conf
+    command:
+      - solr-precreate
+      - playin
+      - '/conf/playin'
+    environment:
+      # For debugging on port 8000
+      SOLR_OPTS: -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
+      # For verbose output of solr scripts
+      # VERBOSE: yes
+volumes:
+  solr_home:
