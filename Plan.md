@@ -168,6 +168,11 @@ mxl unusable, it seems, as it's compressed and can't be read
 
 TODO later: multiple parts/voices, and chords
 
+Chords and simultaneous sounds like a research project on it's own, but perhaps cool to investigate different ways to accomplish this.
+We either have timestamps or beats that can be used to at least figure out which things start at the same time relatively easily.
+
+TODO Can synonyms or graphs be used to handle tricky situations and/or chords? Practically only usable at query time though...
+
 ----
 
 Seems like lilypond with repeats don't work well for midi output? Strange.
@@ -345,7 +350,7 @@ see `mvn archetype:generate`
 Though, perhaps just have the code in the solr plugin? But then there will be duplication if that's wanted in more places... decisions, decisions!
 
 Also looked at examples on how to implement token filters - `LowerCaseFilter` looks simple enough!
-TODO next: try to actually create a TokenFilter and include the code
+DONE next: try to actually create a TokenFilter and include the code
 
 
 ----
@@ -434,8 +439,8 @@ Had to do `docker cp <jar> <container>:/var/solr/data/lib` and then docker resta
 Potentially, mount a volume with `/var/solr/data/lib` or create own docker image which fixes stuff beforehand.
 Something nice in a compose-file.
 
-TODO next: actually create token filter which translates lily to midi? Maybe!
-TODO Also docker niceties.
+DONE next: actually create token filter which translates lily to midi? Maybe!
+DONE Also docker niceties.
 TODO also fix maven plugins as wanted, and package in nice fashion.
 
 
@@ -480,7 +485,7 @@ public char[] buffer();
 
 TODO cleanup, tests :) 
 
-TODO setup maven project alongside compose.yml which makes an easy launch of solr with plugins possible :)
+DONE setup maven project alongside compose.yml which makes an easy launch of solr with plugins possible :)
 
 For docker-compose
 ```
@@ -567,22 +572,26 @@ Coolio!
 -----
 
 TODO probably change package name  
-TODO eventually structure things so everything isn't in one fat jar, just the analysis stuff with dependencies  
+TODO eventually structure things so everything isn't in one fat jar (it's not that fat yet though), just the analysis stuff with dependencies  
 TODO test with elasticsearch? Current plugins are pure lucene, so they should work in elastic as well? But needs packaging.
 
-Cool demo MVP:
-- Have demo structure of some song
+Cool demo PoC:
+- DONE Have demo structure of some song
   - one dir per song with input formats + metadata in plaintext
-- Have indexing thing ready
-  - SolrJ
-  - Document structure: midi as tracks, other fields from metadata?
-- Have appropriate fields in solr (kinda done?)
+- Have songs (go with public domain)
+  1. Vårsång (glad sås)
+- DONE Have indexing thing ready
+  - DONE SolrJ
+  - DONE Document structure: midi as tracks, other fields from metadata?
+- DONE Have appropriate fields in solr (kinda done?)
 - Have some way to query things if not comfortable with Solr syntax?
   - bruno template?
-  - learn javascript?
+  - learn javascript? :'(
+    - https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs/Fetching_data Byotiful
   - create a solr GUI?
   - create a search request handler with predefined params for edismax search?
-- Docker compose?
+    - Could be nice. 
+- DONE Docker compose
 
 ----
 # 2024-03-29
@@ -664,8 +673,8 @@ pitches_relative:
 TODO consider highlighting options, consider not storing relative fields when they are copyfields.
 
 
-TODO take schema from testcore (fields are added), add to git repo with docker compose and examples  
-TODO rename core to ... playin?
+DONE take schema from testcore (fields are added), add to git repo with docker compose and examples  
+DONE rename core to ... playin?
 
 Some fighting with the docker setup...
 

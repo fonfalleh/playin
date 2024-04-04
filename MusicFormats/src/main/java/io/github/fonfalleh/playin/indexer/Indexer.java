@@ -12,6 +12,10 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+/**
+ * PoC class for indexing songs as metadata + midi pitches into solr.
+ * One song per dir, and a <code>metadata</code> file with an id is required per song.
+ */
 public class Indexer {
 
     SolrClient client = new Http2SolrClient
@@ -77,6 +81,9 @@ public class Indexer {
                         || name.toLowerCase().endsWith(".mid");
             }
         });
+
+        //TODO idea:
+        // Have interface for "extracting" music, create map of (file endings -> extractors)
 
         // Extract midifiles
         List<String> pitches = new ArrayList<>();
