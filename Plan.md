@@ -683,3 +683,18 @@ Problem lies in mounting a lib dir on /var/solr/data/lib
 /var/solr/data/ is populated on first startup, and mounting /var/solr/data/lib
 
 Some progress with putting docker in resources and use templating and resource moving
+
+TODO don't structure solr config under docker config, combine them using maven resources.
+
+----
+# 2024-04-04+
+
+Why does `docker run -dit --name my-apache-app -p 8080:80 -v "$PWD":/usr/local/apache2/htdocs/ httpd:2.4` but compose doesn't work?!?!?
+
+Ok, I have no idea why, but launching the container via intellij's docker compose plugin somehow works.  
+Good enough for now.
+
+Something about it needing to be detached as well? But `docker compose run -d apache` didn't work either. Maybe `... up -d`?
+
+So, I've added docker compose config for apache server, and included an example webpage from mdn to serve as playground for GUI https://github.com/mdn/learning-area/tree/main/javascript/apis/fetching-data/can-store  
+Also, I've removed the images to avoid bloating the git repo.

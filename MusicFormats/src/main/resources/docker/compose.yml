@@ -20,5 +20,11 @@ services:
       SOLR_OPTS: -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
       # For verbose output of solr scripts
       # VERBOSE: yes
+  apache:
+    image: httpd:2.4
+    ports:
+      - '8080:80'
+    volumes:
+      - ./website:/usr/local/apache2/htdocs
 volumes:
   solr_home:
