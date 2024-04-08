@@ -228,7 +228,7 @@
   <field name="_text_" type="text_general" multiValued="true" indexed="true" stored="false"/>
   <field name="_version_" type="plong" indexed="false" stored="false"/>
   <field name="composer" type="text_general" uninvertible="true" indexed="true" stored="true"/>
-  <field name="composer_facet" type="string" uninvertible="true" docValues="true" multiValued="true" indexed="true" stored="true"/>
+  <field name="composer_facet" type="string" uninvertible="true" docValues="true" multiValued="true" indexed="true" stored="false"/>
   <field name="editor" type="text_general" uninvertible="true" indexed="true" stored="true"/>
   <field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
   <field name="pitches" type="midiWithLilyQuery" uninvertible="true" multiValued="true" indexed="true" stored="true"/>

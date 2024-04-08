@@ -53,25 +53,18 @@ public class Indexer {
     per folder with things,
     create solr document for indexing, add to queue
      */
+
+    /**
+     * Produces a {@link SolrInputDocument} from a directory.
+     * @param file Input directory. Needs at least a <code>metadata</code>-file.
+     * @return doc A document if successful, otherwise empty.
+     */
     static Optional<SolrInputDocument> solrDocFromDirectory(File file) {
-        File metaFile = new File(file, "metadata");
-        if (!metaFile.canRead()) {
-            return Optional.empty();
+        Optional<SolrInputDocument> maybeDoc = createDocFromMetadata(file);
+        if (maybeDoc.isEmpty()) {
+            return maybeDoc;
         }
-        SolrInputDocument doc = new SolrInputDocument();
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(metaFile));
-            reader.lines().forEach(s -> {
-                String[] split = s.split(":", 2);
-                doc.addField(split[0], split[1]);
-            });
-        } catch (FileNotFoundException e) {
-            System.out.println("No metadata file found");
-            return Optional.empty();
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("Malformed metadata file: " + file.getPath());
-            return Optional.empty();
-        }
+        SolrInputDocument doc = maybeDoc.get();
 
         // Handle midifiles
         File[] midifiles = file.listFiles(new FilenameFilter() {
@@ -108,6 +101,30 @@ public class Indexer {
         }
         doc.addField("pitches", pitches);
 
+        return Optional.of(doc);
+    }
+private static final String metadataMultiValueSeparator = ";";
+    public static Optional<SolrInputDocument> createDocFromMetadata(File file) {
+        File metaFile = new File(file, "metadata");
+        if (!metaFile.canRead()) {
+            return Optional.empty();
+        }
+        SolrInputDocument doc = new SolrInputDocument();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(metaFile));
+            //TODO do cleaning here? Or moderate metadata. Or have util/app/page for creating metadata.
+            reader.lines().forEach(s -> {
+                String[] split = s.split(":", 2);
+                Arrays.stream(split[1].split(metadataMultiValueSeparator)).forEach(
+                        m -> doc.addField(split[0], m.trim()));
+            });
+        } catch (FileNotFoundException e) {
+            System.out.println("No metadata file found");
+            return Optional.empty();
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Malformed metadata file: " + file.getPath());
+            return Optional.empty();
+        }
         return Optional.of(doc);
     }
 
