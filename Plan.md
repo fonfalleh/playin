@@ -698,3 +698,30 @@ Something about it needing to be detached as well? But `docker compose run -d ap
 
 So, I've added docker compose config for apache server, and included an example webpage from mdn to serve as playground for GUI https://github.com/mdn/learning-area/tree/main/javascript/apis/fetching-data/can-store  
 Also, I've removed the images to avoid bloating the git repo.
+
+# 2024-04-07
+
+TODO have wildcard-field for defining metadata fields without having to update the schema?  
+TODO copyfield from composer, author, lyricist, etc. to "creators?"  
+TODO have facet fields metadata-fields? (All of them?)  
+TODO consider lyrics of midifiles/other source, or separate lyrics file? Probably undecidable, there's just no standard.  
+TODO standardize things more. Standard fields, standard source for info, etc.  
+TODO how to deal with arrangements, like Pacius/Bellman? arranger-copyfield to author (along with composer)?
+TODO multivalue-separator for metadata?
+
+TODO Dreaming big: Have score with lyrics mapped to notes (somehow), searches for lyrics should highlight notes. Probably not that hard if deciding on a standard procedure on how to produce output, but probably impossible to generate from a great majority of sources.  
+Unless! write "parser" for lyrics with milisms and other ties of words.
+
+However, from recreating some scores in musescore (mainly Pacius), I've had to do some silly workarounds that would probably render the lyrics very broken if parsed from start to finish.
+
+
+Anyway, added more songs, example response with json, and modified website files so that "results" are displayed! It looks terrible :D
+
+TODO version control schema changes.  
+Well, turns out I had only added parts and never actually copied the whole schema, so there's a lot more diffs than expected.
+Wait... the order is deterministic, right? RIGHT? TODO verify or ... abandon sanity
+
+TODO TODO did the wildcard string field break multivalued=false where unspecified? Doesn't that work for managed schema?  
+The example response uses multivalued for fields that maybe shouldn't. Oh well, easy to see when/if it breaks.
+
+TODO can/should facets be stored=false and docValues=true? Can't remember.

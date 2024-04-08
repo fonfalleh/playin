@@ -1,8 +1,8 @@
-// use fetch to retrieve the products and pass them to init
+// use fetch to retrieve the query response and pass it to init
 // report any errors that occur in the fetch operation
-// once the products have been successfully loaded and formatted as a JSON object
+// once the response has been successfully loaded and formatted as a JSON object
 // using response.json(), run the initialize() function
-fetch('products.json') // TODO actual call to solr
+fetch('response.json') // TODO actual call to solr
   .then( response => {
     if (!response.ok) {
       throw new Error(`HTTP error: ${response.status}`);
@@ -13,7 +13,7 @@ fetch('products.json') // TODO actual call to solr
   .catch( err => console.error(`Fetch problem: ${err.message}`) );
 
 // sets up the app logic, declares required variables, contains all the other functions
-function initialize(products) {
+function initialize(response) {
   // grab the UI elements that we need to manipulate
   const category = document.querySelector('#category');
   const searchTerm = document.querySelector('#searchTerm');
@@ -34,6 +34,7 @@ function initialize(products) {
 
   // To start with, set finalGroup to equal the entire products database
   // then run updateDisplay(), so ALL products are displayed initially.
+  let products = response.response.docs; // TODO lol testing
   finalGroup = products;
   updateDisplay();
 
@@ -66,6 +67,7 @@ function initialize(products) {
       // In this case we want to select all products, then filter them by the search
       // term, so we just set categoryGroup to the entire JSON object, then run selectProducts()
       if (category.value === 'All') {
+
         categoryGroup = products;
         selectProducts();
       // If a specific category is chosen, we need to filter out the products not in that
@@ -91,8 +93,10 @@ function initialize(products) {
     // If no search term has been entered, just make the finalGroup array equal to the categoryGroup
     // array — we don't want to filter the products further.
     if (searchTerm.value.trim() === '') {
+    // TODO This is the nice path
       finalGroup = categoryGroup;
     } else {
+    // TODO search stoff
       // Make sure the search term is converted to lower case before comparison. We've kept the
       // product names all lower case to keep things simple
       const lowerCaseSearchTerm = searchTerm.value.trim().toLowerCase();
@@ -117,14 +121,14 @@ function initialize(products) {
       main.appendChild(para);
     // for each product we want to display, pass its product object to fetchBlob()
     } else {
-      for (const product of finalGroup) {
-        fetchBlob(product);
+      for (const song of finalGroup) {
+        showSong(song);
       }
     }
   }
-
+/*
   // fetchBlob uses fetch to retrieve the image for that product, and then sends the
-  // resulting image display URL and product object on to showProduct() to finally
+  // resulting image display URL and product object on to showSong() to finally
   // display it
   function fetchBlob(product) {
     // construct the URL path to the image file from the product.image property
@@ -140,13 +144,13 @@ function initialize(products) {
       })
       .then( blob => showProduct(blob, product) )
       .catch( err => console.error(`Fetch problem: ${err.message}`) );
-  }
+  }*/
 
   // Display a product inside the <main> element
-  function showProduct(blob, product) {
+  function showSong(song) {
     // Convert the blob to an object URL — this is basically an temporary internal URL
     // that points to an object stored inside the browser
-    const objectURL = URL.createObjectURL(blob);
+    //const objectURL = URL.createObjectURL(blob);
     // create <section>, <h2>, <p>, and <img> elements
     const section = document.createElement('section');
     const heading = document.createElement('h2');
@@ -154,16 +158,16 @@ function initialize(products) {
     //const image = document.createElement('img');
 
     // give the <section> a classname equal to the product "type" property so it will display the correct icon
-    section.setAttribute('class', product.type);
+    section.setAttribute('class', 'song');
 
     // Give the <h2> textContent equal to the product "name" property, but with the first character
     // replaced with the uppercase version of the first character
-    heading.textContent = product.name.replace(product.name.charAt(0), product.name.charAt(0).toUpperCase());
+    heading.textContent = song.title[0];
 
     // Give the <p> textContent equal to the product "price" property, with a $ sign in front
     // toFixed(2) is used to fix the price at 2 decimal places, so for example 1.40 is displayed
     // as 1.40, not 1.4.
-    para.textContent = `$${product.price.toFixed(2)}`;
+    para.textContent = song.composer[0];
 
     // Set the src of the <img> element to the ObjectURL, and the alt to the product "name" property
     //image.src = objectURL;
