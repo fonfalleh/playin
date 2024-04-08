@@ -724,4 +724,10 @@ Wait... the order is deterministic, right? RIGHT? TODO verify or ... abandon san
 TODO TODO did the wildcard string field break multivalued=false where unspecified? Doesn't that work for managed schema?  
 The example response uses multivalued for fields that maybe shouldn't. Oh well, easy to see when/if it breaks.
 
-TODO can/should facets be stored=false and docValues=true? Can't remember.
+DONE can/should facets be stored=false and docValues=true? Can't remember.  
+yes
+
+TODO website: play around with css so it's not broken :) 
+
+TODO plugins: passthrough of unexpected tokens/don't crash bad queries 
+

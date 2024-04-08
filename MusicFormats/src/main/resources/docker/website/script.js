@@ -1,8 +1,35 @@
+/** TODO restructure, refactor, and rename things.
+Also, filtering is not clientside
+
+Basically, check params *1, construct solr query from params
+display every matching song that is returned
+display facets, make an entry selected if params are there
+  if selecting a filter/facet, update params
+if searching, add to params, refresh?
+
+
+*/
+
+//TODO actual query. Go 100% json query? json facet responses are structured nicely, and it could be weird to mix payload and queryString
+// json queries could be fun, they are new to me. More like elastic than earlier (bool queries and whatnot)
+/*
+https://stackoverflow.com/questions/29775797/fetch-post-json-data
+  const rawResponse = await fetch('https://httpbin.org/post', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({a: 1, b: 'Textual content'})
+  });
+  const content = await rawResponse.json();
+*/
+
 // use fetch to retrieve the query response and pass it to init
 // report any errors that occur in the fetch operation
 // once the response has been successfully loaded and formatted as a JSON object
 // using response.json(), run the initialize() function
-fetch('response.json') // TODO actual call to solr
+fetch('response_json_facet.json') // TODO actual call to solr
   .then( response => {
     if (!response.ok) {
       throw new Error(`HTTP error: ${response.status}`);
@@ -15,10 +42,15 @@ fetch('response.json') // TODO actual call to solr
 // sets up the app logic, declares required variables, contains all the other functions
 function initialize(response) {
   // grab the UI elements that we need to manipulate
-  const category = document.querySelector('#category');
+  const category = document.querySelector('#composer');
   const searchTerm = document.querySelector('#searchTerm');
   const searchBtn = document.querySelector('button');
   const main = document.querySelector('main');
+
+  // TODO
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const selectedComposer = urlParams.get('composer')
 
   // keep a record of what the last category and search term entered were
   let lastCategory = category.value;
@@ -35,6 +67,7 @@ function initialize(response) {
   // To start with, set finalGroup to equal the entire products database
   // then run updateDisplay(), so ALL products are displayed initially.
   let products = response.response.docs; // TODO lol testing
+  let composerFacets = response.facets.composer.buckets;
   finalGroup = products;
   updateDisplay();
 
@@ -114,6 +147,13 @@ function initialize(response) {
       main.removeChild(main.firstChild);
     }
 
+    for (const composer of composerFacets) {
+        const option = document.createElement('option');
+        option.value = composer.val;
+        option.innerHTML = composer.val + " (" + composer.count +")";
+        category.appendChild(option);
+    }
+
     // if no products match the search term, display a "No results to display" message
     if (finalGroup.length === 0) {
       const para = document.createElement('p');
@@ -159,15 +199,18 @@ function initialize(response) {
 
     // give the <section> a classname equal to the product "type" property so it will display the correct icon
     section.setAttribute('class', 'song');
+    //TODO hmm
 
     // Give the <h2> textContent equal to the product "name" property, but with the first character
     // replaced with the uppercase version of the first character
     heading.textContent = song.title[0];
+    // TODO change when tilte is singlevalued
 
     // Give the <p> textContent equal to the product "price" property, with a $ sign in front
     // toFixed(2) is used to fix the price at 2 decimal places, so for example 1.40 is displayed
     // as 1.40, not 1.4.
     para.textContent = song.composer[0];
+    // TODO multiValued
 
     // Set the src of the <img> element to the ObjectURL, and the alt to the product "name" property
     //image.src = objectURL;
