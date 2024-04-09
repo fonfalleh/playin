@@ -1,3 +1,5 @@
+package io.github.fonfalleh.formats;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.junit.jupiter.api.Test;

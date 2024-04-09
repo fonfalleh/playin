@@ -1,9 +1,8 @@
 package io.github.fonfalleh.formats;
 
 public class LilyToMidi {
-    //TODO potentially make this the main method and let the String-call convert to char[]
-    public static int lilyPitchToMidiPitch(char[] note) {
-        return lilyPitchToMidiPitch(String.valueOf(note));
+    public static int lilyPitchToMidiPitch(String note) {
+        return lilyPitchToMidiPitch(note.toCharArray());
     }
 
     /**
@@ -11,9 +10,9 @@ public class LilyToMidi {
      * @param note
      * @return
      */
-    public static int lilyPitchToMidiPitch(String note) {
+    public static int lilyPitchToMidiPitch(char[] note) {
         int pitch;
-        switch (note.charAt(0)) {
+        switch (note[0]) {
                 case 'c' :
                     pitch = 48;
                     break;
@@ -36,15 +35,13 @@ public class LilyToMidi {
                     pitch = 59;
                     break;
                 default:
-                    // TODO error handling?
-                    pitch = 0;
-                    break;
+                    return -1;
         }
         int index = 1;
         // this one allows things like c'is,es which is illegal in lilypond
         // technically, it's pitch[accidentals][octaves]
-        while (index < note.length()) {
-            switch (note.charAt(index)) {
+        while (index < note.length) {
+            switch (note[index]) {
                 case 'i' :
                     pitch++;
                     index += 2;
@@ -62,8 +59,7 @@ public class LilyToMidi {
                     index++;
                     break;
                 default:
-                    index++;
-                    //TODO error handling?
+                    return -1;
             }
         }
         return pitch;

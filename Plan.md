@@ -729,5 +729,10 @@ yes
 
 TODO website: play around with css so it's not broken :) 
 
-TODO plugins: passthrough of unexpected tokens/don't crash bad queries 
+DONE? plugins: passthrough of unexpected tokens/don't crash bad queries  
+NaiveLily lets integers through (configurable), removes all other tokens.
 
+WIP tests. Lucene testsuite requires junit4... Eh.
+
+TODO TODO check junit4 vs junit5... ANnoying. mvn works for junit4 tests, 5 are not run. Did they do that earlier? Or is it the naming of the classes that hinders execution?  
+Oh, I was just using an old version of surfire plugin. ... but mvn generated it, is everything out ot date?
