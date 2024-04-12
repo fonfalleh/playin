@@ -736,3 +736,54 @@ WIP tests. Lucene testsuite requires junit4... Eh.
 
 TODO TODO check junit4 vs junit5... ANnoying. mvn works for junit4 tests, 5 are not run. Did they do that earlier? Or is it the naming of the classes that hinders execution?  
 Oh, I was just using an old version of surfire plugin. ... but mvn generated it, is everything out ot date?
+
+# 2024-04-11
+
+Testing some solr json queries.
+
+fun with query expansion!
+POST http://localhost:8983/solr/playin/select?facetfield=title
+```json
+{
+  "query": "*:*",
+  "facet": {
+    "composer": {
+      "type": "terms",
+      "field": "${facetfield:composer_facet}"
+    }
+  }
+}
+```
+
+TODO add bruno files
+
+Playing around with "macros", can solr queries can reference querystring from json body :D i.e. perhaps a static json query can be used and just change url params to modify query?
+```
+{
+  "query": {
+    "edismax": {
+      "query": "${QUERY:*}",
+      "qf": [
+        "title",
+        "composer",
+        "pitches",
+        "pitches_relative"
+      ]
+    }
+  },
+  "facet": {
+    "composer": {
+      "type": "terms",
+      "field": "composer_facet",
+      "domain": { "query" : "*:*"}
+    }
+  },
+  "filter": {
+    "#tag": "composer:${COMOPSER:*}"
+  },
+  "params": {
+    //"debug": "true",
+    "hl": "true"
+  }
+}
+```
