@@ -8,6 +8,26 @@ display facets, make an entry selected if params are there
 if searching, add to params, refresh?
 
 
+https://www.sitepoint.com/get-url-parameters-with-javascript/
+TLDR:
+```
+const queryString = window.location.search;
+console.log(queryString);
+// ?product=shirt&color=blue&newuser&size=m
+
+const urlParams = new URLSearchParams(queryString);
+
+const product = urlParams.get('product')
+console.log(product);
+// shirt
+
+console.log(urlParams.has('product'));
+// true
+
+console.log(urlParams.getAll('size'));
+// [ 'm' ]
+```
+
 */
 
 //TODO actual query. Go 100% json query? json facet responses are structured nicely, and it could be weird to mix payload and queryString
@@ -24,12 +44,59 @@ https://stackoverflow.com/questions/29775797/fetch-post-json-data
   });
   const content = await rawResponse.json();
 */
+const solrUrl = 'http://localhost:8983/solr/playin/select'
+//const solrUrl = 'http://solr:8983/solr/playin/select'
+const queryBody =
+{
+   "query": {
+     "edismax": {
+       "query": "${QUERY:*}",
+       "qf": [
+         "title",
+         "composer",
+         "pitches",
+         "pitches_relative"
+       ]
+     }
+   },
+   "facet": {
+     "composer": {
+       "type": "terms",
+       "field": "composer_facet",
+       "domain": { "query" : "*:*"}
+     }
+   },
+   "filter": {
+     "#tag": "composer:${COMOPSER:*}"
+   },
+   "params": {
+     "hl": "true"
+   }
+ }
+
+fetch(solrUrl , {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(queryBody)
+  })
+  .then( response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then( json => initialize(json) )
+    .catch( err => console.error(`Fetch problem: ${err.message}`) );
 
 // use fetch to retrieve the query response and pass it to init
 // report any errors that occur in the fetch operation
 // once the response has been successfully loaded and formatted as a JSON object
 // using response.json(), run the initialize() function
-fetch('response_json_facet.json') // TODO actual call to solr
+
+/*fetch('response_json_facet.json') // TODO actual call to solr
   .then( response => {
     if (!response.ok) {
       throw new Error(`HTTP error: ${response.status}`);
@@ -38,7 +105,7 @@ fetch('response_json_facet.json') // TODO actual call to solr
   })
   .then( json => initialize(json) )
   .catch( err => console.error(`Fetch problem: ${err.message}`) );
-
+*/
 // sets up the app logic, declares required variables, contains all the other functions
 function initialize(response) {
   // grab the UI elements that we need to manipulate

@@ -149,7 +149,7 @@ section img {
 section p {
   color: yellow;
   background: black;
-  width: 50px;
+  /*width: 50px;*/
   height: 50px;
   line-height: 50px;
   text-align: center;

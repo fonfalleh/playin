@@ -787,3 +787,29 @@ Playing around with "macros", can solr queries can reference querystring from js
   }
 }
 ```
+
+Bah, cors...
+
+experimented with apache, but hasn't worked yet...  
+Try in solr: https://github.com/docker-solr/docker-solr/issues/182#issuecomment-699559615
+
+Finally made it work! Very unsafe for production, but that's ok!
+Followed this one:
+http://marianoguerra.org/posts/enable-cors-in-apache-solr.html
+
+solr 9.5.0 has jetty 10.0.19, so:  
+https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-servlets/10.0.19  
+https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-util/10.0.19  
+
+TODO download those with maven?
+
+Now things sorta works!
+Also, somehow I forgot that no web server is needed for this to work. Well then.
+
+TODO have profiles for local, unsafe development?
+
+TODO reorganize files so that everything is not under docker, and so things are more "separation of concerns"-y
+
+WIP TODO: Make CORS fixes (web.xml) work in docker. Create own dockerfile? It's getting silly with all volumes...
+
+see `solr/etc/webdefault.xml`? (Before extraction? Find out...) 
