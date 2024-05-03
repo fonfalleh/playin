@@ -813,3 +813,21 @@ TODO reorganize files so that everything is not under docker, and so things are 
 WIP TODO: Make CORS fixes (web.xml) work in docker. Create own dockerfile? It's getting silly with all volumes...
 
 see `solr/etc/webdefault.xml`? (Before extraction? Find out...) 
+
+----
+
+# 2024-05-03~
+
+Finally solved cors errors and incorporated it in build process
+
+To build and run solr in docker with cors fix from scratch:
+(From MusicFormats):  
+```
+mvn clean package
+cd docker
+docker compose build
+docker compose up solr_cors
+```
+
+New Dockerfiles added to be more in line with how to actually use docker + compose
+Cool beans!
