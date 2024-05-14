@@ -44,8 +44,7 @@ https://stackoverflow.com/questions/29775797/fetch-post-json-data
   });
   const content = await rawResponse.json();
 */
-const solrUrl = 'http://localhost:8983/solr/playin/select'
-//const solrUrl = 'http://solr:8983/solr/playin/select'
+const solrBaseUrl = 'http://localhost:8983/solr/playin/select'
 const queryBody =
 {
    "query": {
@@ -74,7 +73,25 @@ const queryBody =
    }
  }
 
-fetch(solrUrl , {
+
+// TODO fill search box with query param
+// TODO update page to do new search
+// TODO link button and enter to trigger new URL + refresh
+// TODO update so composer facet reflects param
+// Build solr query params
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+
+var params = "?"
+
+if (urlParams.has("query")) {
+  params += "QUERY=" + urlParams.get("query")
+}
+if (urlParams.has("composer")) {
+  params += "&COMPOSER=" + urlParams.get("composer")
+}
+
+fetch(solrBaseUrl + params , {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -114,10 +131,6 @@ function initialize(response) {
   const searchBtn = document.querySelector('button');
   const main = document.querySelector('main');
 
-  // TODO
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const selectedComposer = urlParams.get('composer')
 
   // keep a record of what the last category and search term entered were
   let lastCategory = category.value;
@@ -210,6 +223,7 @@ function initialize(response) {
   // start the process of updating the display with the new set of products
   function updateDisplay() {
     // remove the previous contents of the <main> element
+    //TODO only makes sense when updating query without updating page?
     while (main.firstChild) {
       main.removeChild(main.firstChild);
     }
