@@ -66,7 +66,7 @@ const queryBody =
      }
    },
    "filter": {
-     "#tag": "composer:${COMOPSER:*}"
+     "#tag": "composer:${COMPOSER:*}"
    },
    "params": {
      "hl": "true"
@@ -74,21 +74,21 @@ const queryBody =
  }
 
 
-// TODO update so composer facet reflects param
-// Build solr query params
+
+// Build solr query url
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 
-var params = "?"
+var solrUrl = new URL(solrBaseUrl);
 
 if (urlParams.has("query")) {
-  params += "QUERY=" + urlParams.get("query")
+  solrUrl.searchParams.set("QUERY", urlParams.get("query"))
 }
 if (urlParams.has("composer")) {
-  params += "&COMPOSER=" + urlParams.get("composer")
+  solrUrl.searchParams.set("COMPOSER", urlParams.get("composer"))
 }
 
-fetch(solrBaseUrl + params , {
+fetch(solrUrl , {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -123,7 +123,7 @@ fetch(solrBaseUrl + params , {
 // sets up the app logic, declares required variables, contains all the other functions
 function initialize(response) {
   // grab the UI elements that we need to manipulate
-  const category = document.querySelector('#composer');
+  const composerSelector = document.querySelector('#composer');
   const searchBox = document.getElementById('searchBox');
   const searchBtn = document.querySelector('button');
   const main = document.querySelector('main');
@@ -132,12 +132,6 @@ function initialize(response) {
     searchBox.value = urlParams.get("query");
   }
   
-
-  // keep a record of what the last category and search term entered were
-  let lastCategory = category.value;
-  // no search has been made yet
-  let lastSearch = '';
-
   // these contain the results of filtering by category, and search term
   // finalGroup will contain the products that need to be displayed after
   // the searching has been done. Each will be an array containing objects.
@@ -167,50 +161,33 @@ function initialize(response) {
     
     if (!(searchBox.value.trim() === '')) {
       urlParams.set("query", searchBox.value);
+    } else {
+      urlParams.delete("query");
+    }
+
+    if (composerSelector.value === 'All') {
+      urlParams.delete('composer')
+    } else {
+      urlParams.set('composer', composerSelector.value)
     }
     
     window.location.search = urlParams.toString();
   }
 
-  // selectProducts() Takes the group of products selected by selectCategory(), and further
-  // filters them by the tiered search term (if one has been entered)
-  function selectProducts() {
-    // If no search term has been entered, just make the finalGroup array equal to the categoryGroup
-    // array — we don't want to filter the products further.
-    if (searchBox.value.trim() === '') {
-    // TODO This is the nice path
-      finalGroup = categoryGroup;
-    } else {
-    // TODO search stoff
-      // Make sure the search term is converted to lower case before comparison. We've kept the
-      // product names all lower case to keep things simple
-      const lowerCaseSearchTerm = searchBox.value.trim().toLowerCase();
-      // Filter finalGroup to contain only products whose name includes the search term
-      finalGroup = categoryGroup.filter( product => product.name.includes(lowerCaseSearchTerm));
-    }
-    // Once we have the final group, update the display
-    updateDisplay();
-  }
-
   // start the process of updating the display with the new set of products
   function updateDisplay() {
-    // remove the previous contents of the <main> element
-    //TODO only makes sense when updating query without updating page?
-    while (main.firstChild) {
-      main.removeChild(main.firstChild);
-    }
 
     for (const composer of composerFacets) {
         const option = document.createElement('option');
         option.value = composer.val;
         option.innerHTML = composer.val + " (" + composer.count +")";
-        category.appendChild(option);
+        composerSelector.appendChild(option);
     }
 
     // Update selected facet in the dropdown.
     // TODO This only works if the param matches the returned facets. Add workaround?
     if (urlParams.has("composer")) {
-      category.value=urlParams.get("composer");
+      composerSelector.value=urlParams.get("composer");
     }
 
     // if no products match the search term, display a "No results to display" message
