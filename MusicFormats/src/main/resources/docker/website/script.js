@@ -74,9 +74,6 @@ const queryBody =
  }
 
 
-// TODO fill search box with query param
-// TODO update page to do new search
-// TODO link button and enter to trigger new URL + refresh
 // TODO update so composer facet reflects param
 // Build solr query params
 const queryString = window.location.search;
@@ -127,10 +124,14 @@ fetch(solrBaseUrl + params , {
 function initialize(response) {
   // grab the UI elements that we need to manipulate
   const category = document.querySelector('#composer');
-  const searchTerm = document.querySelector('#searchTerm');
+  const searchBox = document.getElementById('searchBox');
   const searchBtn = document.querySelector('button');
   const main = document.querySelector('main');
 
+  if (urlParams.has("query")) {
+    searchBox.value = urlParams.get("query");
+  }
+  
 
   // keep a record of what the last category and search term entered were
   let lastCategory = category.value;
@@ -157,47 +158,18 @@ function initialize(response) {
 
   // when the search button is clicked, invoke selectCategory() to start
   // a search running to select the category of products we want to display
-  searchBtn.addEventListener('click', selectCategory);
+  searchBtn.addEventListener('click', reloadWithNewSearch);
 
-  function selectCategory(e) {
+  function reloadWithNewSearch(e) {
     // Use preventDefault() to stop the form submitting — that would ruin
     // the experience
     e.preventDefault();
-
-    // Set these back to empty arrays, to clear out the previous search
-    categoryGroup = [];
-    finalGroup = [];
-
-    // if the category and search term are the same as they were the last time a
-    // search was run, the results will be the same, so there is no point running
-    // it again — just return out of the function
-    if (category.value === lastCategory && searchTerm.value.trim() === lastSearch) {
-      return;
-    } else {
-      // update the record of last category and search term
-      lastCategory = category.value;
-      lastSearch = searchTerm.value.trim();
-      // In this case we want to select all products, then filter them by the search
-      // term, so we just set categoryGroup to the entire JSON object, then run selectProducts()
-      if (category.value === 'All') {
-
-        categoryGroup = products;
-        selectProducts();
-      // If a specific category is chosen, we need to filter out the products not in that
-      // category, then put the remaining products inside categoryGroup, before running
-      // selectProducts()
-      } else {
-        // the values in the <option> elements are uppercase, whereas the categories
-        // store in the JSON (under "type") are lowercase. We therefore need to convert
-        // to lower case before we do a comparison
-        const lowerCaseType = category.value.toLowerCase();
-        // Filter categoryGroup to contain only products whose type includes the category
-        categoryGroup = products.filter( product => product.type === lowerCaseType );
-
-        // Run selectProducts() after the filtering has been done
-        selectProducts();
-      }
+    
+    if (!(searchBox.value.trim() === '')) {
+      urlParams.set("query", searchBox.value);
     }
+    
+    window.location.search = urlParams.toString();
   }
 
   // selectProducts() Takes the group of products selected by selectCategory(), and further
@@ -205,14 +177,14 @@ function initialize(response) {
   function selectProducts() {
     // If no search term has been entered, just make the finalGroup array equal to the categoryGroup
     // array — we don't want to filter the products further.
-    if (searchTerm.value.trim() === '') {
+    if (searchBox.value.trim() === '') {
     // TODO This is the nice path
       finalGroup = categoryGroup;
     } else {
     // TODO search stoff
       // Make sure the search term is converted to lower case before comparison. We've kept the
       // product names all lower case to keep things simple
-      const lowerCaseSearchTerm = searchTerm.value.trim().toLowerCase();
+      const lowerCaseSearchTerm = searchBox.value.trim().toLowerCase();
       // Filter finalGroup to contain only products whose name includes the search term
       finalGroup = categoryGroup.filter( product => product.name.includes(lowerCaseSearchTerm));
     }
@@ -233,6 +205,12 @@ function initialize(response) {
         option.value = composer.val;
         option.innerHTML = composer.val + " (" + composer.count +")";
         category.appendChild(option);
+    }
+
+    // Update selected facet in the dropdown.
+    // TODO This only works if the param matches the returned facets. Add workaround?
+    if (urlParams.has("composer")) {
+      category.value=urlParams.get("composer");
     }
 
     // if no products match the search term, display a "No results to display" message
