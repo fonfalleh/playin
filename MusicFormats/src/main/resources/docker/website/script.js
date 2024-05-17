@@ -79,13 +79,16 @@ const queryBody =
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 
+const queryParamName = 'query';
+const composerParamName = 'composer';
+
 var solrUrl = new URL(solrBaseUrl);
 
-if (urlParams.has("query")) {
-  solrUrl.searchParams.set("QUERY", urlParams.get("query"))
+if (urlParams.has(queryParamName)) {
+  solrUrl.searchParams.set("QUERY", urlParams.get(queryParamName))
 }
-if (urlParams.has("composer")) {
-  solrUrl.searchParams.set("COMPOSER", urlParams.get("composer"))
+if (urlParams.has(composerParamName)) {
+  solrUrl.searchParams.set("COMPOSER", urlParams.get(composerParamName))
 }
 
 fetch(solrUrl , {
@@ -128,27 +131,15 @@ function initialize(response) {
   const searchBtn = document.querySelector('button');
   const main = document.querySelector('main');
 
-  if (urlParams.has("query")) {
-    searchBox.value = urlParams.get("query");
+  if (urlParams.has(queryParamName)) {
+    searchBox.value = urlParams.get(queryParamName);
   }
   
-  // these contain the results of filtering by category, and search term
-  // finalGroup will contain the products that need to be displayed after
-  // the searching has been done. Each will be an array containing objects.
-  // Each object will represent a product
-  let categoryGroup;
-  let finalGroup;
 
-  // To start with, set finalGroup to equal the entire products database
-  // then run updateDisplay(), so ALL products are displayed initially.
-  let products = response.response.docs; // TODO lol testing
-  let composerFacets = response.facets.composer.buckets;
-  finalGroup = products;
+  const matchingSongs = response.response.docs;
+  const composerFacets = response.facets.composer.buckets;
+
   updateDisplay();
-
-  // Set both to equal an empty array, in time for searches to be run
-  categoryGroup = [];
-  finalGroup = [];
 
   // when the search button is clicked, invoke selectCategory() to start
   // a search running to select the category of products we want to display
@@ -160,9 +151,9 @@ function initialize(response) {
     e.preventDefault();
     
     if (!(searchBox.value.trim() === '')) {
-      urlParams.set("query", searchBox.value);
+      urlParams.set(queryParamName, searchBox.value);
     } else {
-      urlParams.delete("query");
+      urlParams.delete(queryParamName);
     }
 
     if (composerSelector.value === 'All') {
@@ -185,19 +176,25 @@ function initialize(response) {
     }
 
     // Update selected facet in the dropdown.
-    // TODO This only works if the param matches the returned facets. Add workaround?
-    if (urlParams.has("composer")) {
-      composerSelector.value=urlParams.get("composer");
+    if (urlParams.has(composerParamName)) {
+      composerSelector.value = urlParams.get(composerParamName);
+      // If composer param is supplied but doesn't match a facet returned.
+      if(!composerSelector.value) {
+        const option = document.createElement('option');
+        option.value = urlParams.get(composerParamName);
+        option.innerHTML = urlParams.get(composerParamName) + " (0)";
+        composerSelector.appendChild(option);
+        composerSelector.value = urlParams.get(composerParamName);
+      }
     }
 
-    // if no products match the search term, display a "No results to display" message
-    if (finalGroup.length === 0) {
+    // if no songs match the search term, display a "No results to display" message
+    if (matchingSongs.length === 0) {
       const para = document.createElement('p');
       para.textContent = 'No results to display!';
       main.appendChild(para);
-    // for each product we want to display, pass its product object to fetchBlob()
     } else {
-      for (const song of finalGroup) {
+      for (const song of matchingSongs) {
         showSong(song);
       }
     }
