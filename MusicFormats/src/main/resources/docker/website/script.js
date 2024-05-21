@@ -1,63 +1,31 @@
-/** TODO restructure, refactor, and rename things.
-Also, filtering is not clientside
 
-Basically, check params *1, construct solr query from params
-display every matching song that is returned
-display facets, make an entry selected if params are there
-  if selecting a filter/facet, update params
-if searching, add to params, refresh?
-
-
-https://www.sitepoint.com/get-url-parameters-with-javascript/
-TLDR:
-```
-const queryString = window.location.search;
-console.log(queryString);
-// ?product=shirt&color=blue&newuser&size=m
-
-const urlParams = new URLSearchParams(queryString);
-
-const product = urlParams.get('product')
-console.log(product);
-// shirt
-
-console.log(urlParams.has('product'));
-// true
-
-console.log(urlParams.getAll('size'));
-// [ 'm' ]
-```
-
-*/
-
-//TODO actual query. Go 100% json query? json facet responses are structured nicely, and it could be weird to mix payload and queryString
-// json queries could be fun, they are new to me. More like elastic than earlier (bool queries and whatnot)
-/*
-https://stackoverflow.com/questions/29775797/fetch-post-json-data
-  const rawResponse = await fetch('https://httpbin.org/post', {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({a: 1, b: 'Textual content'})
-  });
-  const content = await rawResponse.json();
-*/
 const solrBaseUrl = 'http://localhost:8983/solr/playin/select'
 const queryBody =
 {
-   "query": {
-     "edismax": {
-       "query": "${QUERY:*}",
-       "qf": [
-         "title",
-         "composer",
-         "pitches",
-         "pitches_relative"
-       ]
-     }
-   },
+  "query": {
+    "bool" : {
+      "should": [
+        {
+          "edismax": {
+            "query": "${QUERY:*}",
+            "qf": [
+              "title",
+              "composer"
+            ]
+          }
+        },
+        {
+          "edismax": {
+            "query": "\"${QUERY:\"\"}\"",
+            "qf": [
+              "pitches",
+              "pitches_relative"
+            ]
+          }
+        }
+      ]
+    }
+  },
    "facet": {
      "composer": {
        "type": "terms",
@@ -72,8 +40,6 @@ const queryBody =
      "hl": "true"
    }
  }
-
-
 
 // Build solr query url
 const queryString = window.location.search;
@@ -113,7 +79,7 @@ fetch(solrUrl , {
 // once the response has been successfully loaded and formatted as a JSON object
 // using response.json(), run the initialize() function
 
-/*fetch('response_json_facet.json') // TODO actual call to solr
+/*fetch('response_json_facet.json')
   .then( response => {
     if (!response.ok) {
       throw new Error(`HTTP error: ${response.status}`);
@@ -123,6 +89,7 @@ fetch(solrUrl , {
   .then( json => initialize(json) )
   .catch( err => console.error(`Fetch problem: ${err.message}`) );
 */
+
 // sets up the app logic, declares required variables, contains all the other functions
 function initialize(response) {
   // grab the UI elements that we need to manipulate
@@ -141,8 +108,6 @@ function initialize(response) {
 
   updateDisplay();
 
-  // when the search button is clicked, invoke selectCategory() to start
-  // a search running to select the category of products we want to display
   searchBtn.addEventListener('click', reloadWithNewSearch);
 
   function reloadWithNewSearch(e) {
@@ -157,15 +122,15 @@ function initialize(response) {
     }
 
     if (composerSelector.value === 'All') {
-      urlParams.delete('composer')
+      urlParams.delete(composerParamName)
     } else {
-      urlParams.set('composer', composerSelector.value)
+      urlParams.set(composerParamName, composerSelector.value)
     }
     
     window.location.search = urlParams.toString();
   }
 
-  // start the process of updating the display with the new set of products
+  // populate search results and facets
   function updateDisplay() {
 
     for (const composer of composerFacets) {
@@ -178,7 +143,8 @@ function initialize(response) {
     // Update selected facet in the dropdown.
     if (urlParams.has(composerParamName)) {
       composerSelector.value = urlParams.get(composerParamName);
-      // If composer param is supplied but doesn't match a facet returned.
+      
+      // Workaround for if composer param is supplied but doesn't match a facet returned
       if(!composerSelector.value) {
         const option = document.createElement('option');
         option.value = urlParams.get(composerParamName);
@@ -219,7 +185,7 @@ function initialize(response) {
       .catch( err => console.error(`Fetch problem: ${err.message}`) );
   }*/
 
-  // Display a product inside the <main> element
+  // Display a song inside the <main> element
   function showSong(song) {
     // Convert the blob to an object URL — this is basically an temporary internal URL
     // that points to an object stored inside the browser
@@ -239,11 +205,10 @@ function initialize(response) {
     heading.textContent = song.title[0];
     // TODO change when tilte is singlevalued
 
-    // Give the <p> textContent equal to the product "price" property, with a $ sign in front
-    // toFixed(2) is used to fix the price at 2 decimal places, so for example 1.40 is displayed
-    // as 1.40, not 1.4.
-    para.textContent = song.composer[0];
-    // TODO multiValued
+
+    // TODO make pretty
+    para.textContent = song.composer.join(',\n');
+    
 
     // Set the src of the <img> element to the ObjectURL, and the alt to the product "name" property
     //image.src = objectURL;
