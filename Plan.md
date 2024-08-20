@@ -717,7 +717,7 @@ However, from recreating some scores in musescore (mainly Pacius), I've had to d
 
 Anyway, added more songs, example response with json, and modified website files so that "results" are displayed! It looks terrible :D
 
-TODO version control schema changes.  
+DONE version control schema changes.  
 Well, turns out I had only added parts and never actually copied the whole schema, so there's a lot more diffs than expected.
 Wait... the order is deterministic, right? RIGHT? TODO verify or ... abandon sanity
 
@@ -801,7 +801,7 @@ solr 9.5.0 has jetty 10.0.19, so:
 https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-servlets/10.0.19  
 https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-util/10.0.19  
 
-TODO download those with maven?
+DONE download those with maven?
 
 Now things sorta works!
 Also, somehow I forgot that no web server is needed for this to work. Well then.
@@ -810,7 +810,7 @@ TODO have profiles for local, unsafe development?
 
 TODO reorganize files so that everything is not under docker, and so things are more "separation of concerns"-y
 
-WIP TODO: Make CORS fixes (web.xml) work in docker. Create own dockerfile? It's getting silly with all volumes...
+DONE Make CORS fixes (web.xml) work in docker. Create own dockerfile? It's getting silly with all volumes...
 
 see `solr/etc/webdefault.xml`? (Before extraction? Find out...) 
 
@@ -831,3 +831,32 @@ docker compose up solr_cors
 
 New Dockerfiles added to be more in line with how to actually use docker + compose
 Cool beans!
+
+# 2024-05-22~
+
+Kinda basic demo, "easily" launchable available!
+What to focus on next? ...
+
+TODO:  
+- Overview
+  - Some documentation about what this is, and quickstart-notes?
+  - Some actual definition of what this is. What is this?
+  - Some light illustrations to explain concepts and link them to code or such
+  - Explain limitations
+  - Explain challenges / future work
+- Example data
+  - More songs
+  - Make it easy to have more songs (It sort of is, but it's manual. Perhaps some light crawling of resources?)
+  - Have example with musicXML?
+  - Index more things than songs? Composers, etc.
+- Web 
+  - Security + all that jazz. Not have everything fully exposed, etc. Proper webapp? "Middleware"?
+    - Don't have query visible in source code?
+    - Cors set inside solr for now
+  - more metadata visible, searchable, clickable, filterable
+  - somehow visualize results. Can be ~~hard~~ impossible without more data + context...
+- Project structure and features
+  - refactor and publish to maven central? solr.cool?
+  - extract metadata from formats
+  - derived metadata, highest-lowest note etc.
+  - way to "run passes" (such as for deriving metadata or analyzing something) on different parts 
