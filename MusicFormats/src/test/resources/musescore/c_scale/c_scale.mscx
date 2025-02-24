@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<museScore version="4.10">
-  <programVersion>4.1.1</programVersion>
-  <programRevision>e4d1ddf</programRevision>
+<museScore version="4.40">
+  <programVersion>4.4.4</programVersion>
+  <programRevision>2232670</programRevision>
+  <LastEID>460</LastEID>
   <Score>
     <Division>480</Division>
     <showInvisible>1</showInvisible>
@@ -10,6 +11,7 @@
     <showMargins>0</showMargins>
     <open>1</open>
     <metaTag name="arranger"></metaTag>
+    <metaTag name="audioComUrl"></metaTag>
     <metaTag name="composer">Composer / arranger</metaTag>
     <metaTag name="copyright"></metaTag>
     <metaTag name="creationDate">2024-02-02</metaTag>
@@ -137,15 +139,20 @@
     <Staff id="1">
       <VBox>
         <height>10</height>
+        <sizeIsSpatiumDependent>1</sizeIsSpatiumDependent>
+        <eid>25769803898</eid>
         <Text>
+          <eid>30064771077</eid>
           <style>title</style>
           <text>c scale</text>
           </Text>
         <Text>
+          <eid>34359738373</eid>
           <style>subtitle</style>
           <text>Subtitle</text>
           </Text>
         <Text>
+          <eid>38654705669</eid>
           <style>composer</style>
           <text>Composer / arranger</text>
           </Text>
@@ -153,36 +160,63 @@
       <Measure>
         <voice>
           <KeySig>
+            <eid>51539607575</eid>
             <concertKey>0</concertKey>
             </KeySig>
           <TimeSig>
+            <eid>60129542169</eid>
             <sigN>4</sigN>
             <sigD>4</sigD>
             </TimeSig>
           <Chord>
+            <eid>68719476851</eid>
             <durationType>quarter</durationType>
+            <Lyrics>
+              <eid>1662152343592</eid>
+              <text>do</text>
+              </Lyrics>
             <Note>
+              <eid>81604378644</eid>
               <pitch>48</pitch>
               <tpc>14</tpc>
               </Note>
             </Chord>
           <Chord>
+            <eid>90194313331</eid>
             <durationType>quarter</durationType>
+            <Lyrics>
+              <eid>1696512081960</eid>
+              <text>re</text>
+              </Lyrics>
             <Note>
+              <eid>103079215124</eid>
               <pitch>50</pitch>
               <tpc>16</tpc>
               </Note>
             </Chord>
           <Chord>
+            <eid>111669149811</eid>
             <durationType>quarter</durationType>
+            <Lyrics>
+              <eid>1730871820328</eid>
+              <text>mi</text>
+              </Lyrics>
             <Note>
+              <eid>124554051604</eid>
               <pitch>52</pitch>
               <tpc>18</tpc>
               </Note>
             </Chord>
           <Chord>
+            <eid>133143986291</eid>
             <durationType>quarter</durationType>
+            <Lyrics>
+              <syllabic>begin</syllabic>
+              <eid>1765231558696</eid>
+              <text>a</text>
+              </Lyrics>
             <Note>
+              <eid>146028888084</eid>
               <pitch>53</pitch>
               <tpc>13</tpc>
               </Note>
@@ -192,29 +226,52 @@
       <Measure>
         <voice>
           <Chord>
+            <eid>163208757363</eid>
             <durationType>quarter</durationType>
+            <Lyrics>
+              <syllabic>end</syllabic>
+              <eid>1791001362472</eid>
+              <text>a</text>
+              </Lyrics>
             <Note>
+              <eid>176093659156</eid>
               <pitch>55</pitch>
               <tpc>15</tpc>
               </Note>
             </Chord>
           <Chord>
+            <eid>184683593843</eid>
             <durationType>quarter</durationType>
+            <Lyrics>
+              <ticks>480</ticks>
+              <ticks_f>1/4</ticks_f>
+              <eid>1825361100840</eid>
+              <text>a</text>
+              </Lyrics>
             <Note>
+              <eid>197568495636</eid>
               <pitch>57</pitch>
               <tpc>17</tpc>
               </Note>
             </Chord>
           <Chord>
+            <eid>206158430323</eid>
             <durationType>quarter</durationType>
             <Note>
+              <eid>219043332116</eid>
               <pitch>59</pitch>
               <tpc>19</tpc>
               </Note>
             </Chord>
           <Chord>
+            <eid>227633266803</eid>
             <durationType>quarter</durationType>
+            <Lyrics>
+              <eid>1898375544872</eid>
+              <text>a!</text>
+              </Lyrics>
             <Note>
+              <eid>240518168596</eid>
               <pitch>60</pitch>
               <tpc>14</tpc>
               </Note>

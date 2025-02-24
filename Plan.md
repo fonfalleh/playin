@@ -860,3 +860,9 @@ TODO:
   - extract metadata from formats
   - derived metadata, highest-lowest note etc.
   - way to "run passes" (such as for deriving metadata or analyzing something) on different parts 
+
+# 2025-02-24
+
+Added lyrics in musescore example to see how they looked in musicxml. 
+
+Thinking of how to search for lyrics and show which measure. Perhaps both keep plaintext lyrics and do some best effort to search in s-plit wo-rds, etc.
