@@ -25,9 +25,24 @@ public class TestXml {
         measures.forEach(measure ->
                 measure.get("note").forEach(note ->
                         pitches.add(jsonNodeNoteToPitch(note))));
+
+        ArrayList<String> lyricEntries = new ArrayList<>();
+        measures.forEach(m ->
+                m.get("note").forEach(n -> {
+            if (n.has("lyric")) {
+                lyricEntries.add(n.get("lyric").get("text").asText());
+            }
+        }));
+
         assertEquals(
                 List.of(48, 50, 52, 53, 55, 57, 59, 60),
                 pitches
+        );
+
+        // TODO more intepretation of lyric node! More viable to actually puzzle lyrics together!
+        assertEquals(
+                List.of("do", "re", "mi", "a", "a", "a", "a!"),
+                lyricEntries
         );
     }
 
@@ -41,34 +56,18 @@ public class TestXml {
     }
 
     public static int mxmlPitchToMidiPitch(String step, byte alter, byte octave) {
-        int pitch;
-        switch (step) {
-            case "C" :
-                pitch = 0;
-                break;
-            case "D" :
-                pitch = 2;
-                break;
-            case "E" :
-                pitch = 4;
-                break;
-            case "F" :
-                pitch = 5;
-                break;
-            case "G" :
-                pitch = 7;
-                break;
-            case "A" :
-                pitch = 9;
-                break;
-            case "B" :
-                pitch = 11;
-                break;
-            default:
+        int pitch = switch (step) {
+            case "C" -> 0;
+            case "D" -> 2;
+            case "E" -> 4;
+            case "F" -> 5;
+            case "G" -> 7;
+            case "A" -> 9;
+            case "B" -> 11;
+            default ->
                 // TODO error handling?
-                pitch = 0;
-                break;
-        }
+                    0;
+        };
         // accidentals
         pitch += alter;
         // c3 -> 48 = 3 * 12 + 12
