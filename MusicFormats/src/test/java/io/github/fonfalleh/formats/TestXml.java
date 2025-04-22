@@ -44,6 +44,7 @@ public class TestXml {
                 List.of("do", "re", "mi", "a", "a", "a", "a!"),
                 lyricEntries
         );
+         // actual do re mi a-a a_ a!
     }
 
     public static int jsonNodeNoteToPitch(JsonNode note) {
