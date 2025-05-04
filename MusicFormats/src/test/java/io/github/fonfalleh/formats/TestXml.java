@@ -1,11 +1,16 @@
 package io.github.fonfalleh.formats;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +50,57 @@ public class TestXml {
                 lyricEntries
         );
          // actual do re mi a-a a_ a!
+    }
+
+    @Test
+    public void testXmlMapper() throws IOException {
+        XmlMapper xmlMapper = new XmlMapper();
+        MXML mxml = xmlMapper.readValue(this.getClass().getResourceAsStream("/musescore_musicxml/blinka_lilla.musicxml"), MXML.class);
+
+        //InputStream resourceAsStream = this.getClass().getResourceAsStream("/musescore_musicxml/blinka_lilla.musicxml");
+    }
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class MXML {
+        // TODO see other @JacksonXml annotations
+        String version;
+        String encoding;
+
+        @JsonProperty("part")
+        Part part;
+
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class Part {
+        @JsonProperty("id")
+        String id;
+
+        @JsonProperty("measure")
+        List<Measure> measures;
+
+    }
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class Measure {
+        @JsonProperty("number")
+        String number;
+        //@JacksonXmlProperty("note")
+        @JsonProperty("note")
+        @JacksonXmlElementWrapper(useWrapping = false)
+        List<Note> notes = new ArrayList<>();
+
+    }
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class Note {
+        @JsonProperty("pitch")
+        Pitch pitch;
+
+
+    }
+    static class Pitch {
+        @JsonProperty("step")
+        String step;
+        @JsonProperty("octave")
+        String octave;
     }
 
     public static int jsonNodeNoteToPitch(JsonNode note) {
