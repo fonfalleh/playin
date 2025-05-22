@@ -16,6 +16,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TestXml {
@@ -32,7 +35,7 @@ public class TestXml {
         // measures.forEach(m -> m.get("note").forEach(n -> sts.add(n.get("pitch").get("step").asText())));
         measures.forEach(measure ->
                 measure.get("note").forEach(note ->
-                        pitches.add(jsonNodeNoteToPitch(note))));
+                        pitches.add(Integer.valueOf(jsonNodeNoteToPitch(note)))));
 
         ArrayList<String> lyricEntries = new ArrayList<>();
         measures.forEach(m ->
@@ -60,6 +63,26 @@ public class TestXml {
         XmlMapper xmlMapper = new XmlMapper();
         MXML mxml = xmlMapper.readValue(this.getClass().getResourceAsStream("/musescore_musicxml/blinka_lilla.musicxml"), MXML.class);
 
+        List<Lyric> lyricElements = mxml.parts.get(0).measures.stream()
+                .flatMap(Measure::notes)
+                .map(Note::lyric)
+                .filter(Predicate.not(Objects::isNull))
+                .toList();
+
+        StringBuilder sb = new StringBuilder();
+        for (Lyric l: lyricElements) {
+            switch (l.syllabic) {
+                case begin, middle -> sb.append(l.text);
+                case single, end -> {
+                    sb.append(l.text);
+                    sb.append(' ');
+                }
+            }
+        }
+        sb.deleteCharAt(sb.length()-1);
+        String lyrics = sb.toString();
+
+
         //InputStream resourceAsStream = this.getClass().getResourceAsStream("/musescore_musicxml/blinka_lilla.musicxml");
     }
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -69,8 +92,9 @@ public class TestXml {
         @JacksonXmlProperty(localName = "version")
         String version;
 
-        @JsonProperty("part")
-        Part part;
+        @JacksonXmlProperty(localName = "part")
+        @JacksonXmlElementWrapper(useWrapping = false)
+        List<Part> parts;
 
     }
 
@@ -87,12 +111,16 @@ public class TestXml {
     @JsonIgnoreProperties(ignoreUnknown = true)
     static class Measure {
         @JsonProperty("number")
-        String number;
+        int number;
 
         @JacksonXmlProperty(localName = "note")
         @JacksonXmlElementWrapper(useWrapping = false)
         @JsonMerge // This fixed mystery of missing notes, if all listed elements are not together
         public List<Note> notes = new ArrayList<>();
+
+        public Stream<Note> notes() {
+            return notes.stream();
+        }
     }
     @JsonIgnoreProperties(ignoreUnknown = true)
     static class Note {
@@ -116,6 +144,10 @@ public class TestXml {
 
         @JacksonXmlProperty(localName = "lyric")
         Lyric lyric;
+
+        public Lyric lyric() {
+            return lyric;
+        }
     }
 
     static class Pitch {
@@ -128,9 +160,16 @@ public class TestXml {
     @JsonIgnoreProperties(ignoreUnknown = true)
     static class Lyric {
         @JacksonXmlProperty(localName = "syllabic")
-        String syllabic;
+        Syllabic syllabic;
         @JsonProperty("text")
         String text;
+    }
+    // https://w3c.github.io/musicxml/musicxml-reference/data-types/syllabic/
+    enum Syllabic {
+        begin,
+        end,
+        middle,
+        single
     }
 
     public static int jsonNodeNoteToPitch(JsonNode note) {

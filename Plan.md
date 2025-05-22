@@ -866,3 +866,6 @@ TODO:
 Added lyrics in musescore example to see how they looked in musicxml. 
 
 Thinking of how to search for lyrics and show which measure. Perhaps both keep plaintext lyrics and do some best effort to search in s-plit wo-rds, etc.
+
+# 2025-05-22
+A PoC of piecing together lyrics from musicxml is in place! Woop woop!
