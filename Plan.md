@@ -825,9 +825,12 @@ To build and run solr in docker with cors fix from scratch:
 ```
 mvn clean package
 cd docker
-docker compose build
+docker compose build solr
+docker compose build solr_cors
 docker compose up solr_cors
 ```
+
+(Also, run the main method of MusicFormats/src/main/java/io/github/fonfalleh/playin/indexer/Indexer.java to index the example songs into solr)
 
 New Dockerfiles added to be more in line with how to actually use docker + compose
 Cool beans!
