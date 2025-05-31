@@ -1,11 +1,14 @@
 package io.github.fonfalleh.formats;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonMerge;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -62,8 +65,9 @@ public class TestXml {
     @JsonIgnoreProperties(ignoreUnknown = true)
     static class MXML {
         // TODO see other @JacksonXml annotations
+
+        @JacksonXmlProperty(localName = "version")
         String version;
-        String encoding;
 
         @JsonProperty("part")
         Part part;
@@ -72,10 +76,11 @@ public class TestXml {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     static class Part {
-        @JsonProperty("id")
+        @JacksonXmlProperty(localName = "id")
         String id;
 
-        @JsonProperty("measure")
+        @JacksonXmlProperty(localName = "measure")
+        @JacksonXmlElementWrapper(useWrapping = false)
         List<Measure> measures;
 
     }
@@ -83,24 +88,49 @@ public class TestXml {
     static class Measure {
         @JsonProperty("number")
         String number;
-        //@JacksonXmlProperty("note")
-        @JsonProperty("note")
-        @JacksonXmlElementWrapper(useWrapping = false)
-        List<Note> notes = new ArrayList<>();
 
+        @JacksonXmlProperty(localName = "note")
+        @JacksonXmlElementWrapper(useWrapping = false)
+        @JsonMerge // This fixed mystery of missing notes, if all listed elements are not together
+        public List<Note> notes = new ArrayList<>();
     }
     @JsonIgnoreProperties(ignoreUnknown = true)
     static class Note {
+        @JacksonXmlProperty(localName = "default-x", isAttribute = true)
+        String defaultX;
+
         @JsonProperty("pitch")
         Pitch pitch;
 
+        @JacksonXmlProperty(localName = "duration")
+        int duration;
 
+        @JacksonXmlProperty(localName = "voice")
+        int voice;
+
+        @JacksonXmlProperty(localName = "type")
+        String type; // TODO enum
+
+        @JacksonXmlProperty(localName = "staff")
+        int staff;
+
+        @JacksonXmlProperty(localName = "lyric")
+        Lyric lyric;
     }
+
     static class Pitch {
-        @JsonProperty("step")
+        // Both these work somehow
+        @JacksonXmlProperty(localName = "step")
         String step;
         @JsonProperty("octave")
         String octave;
+    }
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class Lyric {
+        @JacksonXmlProperty(localName = "syllabic")
+        String syllabic;
+        @JsonProperty("text")
+        String text;
     }
 
     public static int jsonNodeNoteToPitch(JsonNode note) {
