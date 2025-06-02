@@ -21,6 +21,10 @@
                     }
                 },
                 "volumeDb": 0
+            },
+            "soloMuteState": {
+                "mute": false,
+                "solo": false
             }
         },
         {
@@ -29,6 +33,10 @@
                 "fxChain": {
                 },
                 "volumeDb": 0
+            },
+            "soloMuteState": {
+                "mute": false,
+                "solo": false
             }
         }
     ],
@@ -39,30 +47,6 @@
         "volumeDb": 0
     },
     "tracks": [
-        {
-            "in": {
-                "resourceMeta": {
-                    "attributes": {
-                        "playbackSetupData": "last.last.last",
-                        "soundFontName": "MS Basic"
-                    },
-                    "hasNativeEditorSupport": false,
-                    "id": "MS Basic",
-                    "type": "fluid_soundfont",
-                    "vendor": "Fluid"
-                },
-                "unitConfiguration": {
-                }
-            },
-            "instrumentId": "metronome",
-            "out": {
-                "balance": 0,
-                "fxChain": {
-                },
-                "volumeDb": 0
-            },
-            "partId": "999"
-        },
         {
             "in": {
                 "resourceMeta": {
@@ -95,7 +79,39 @@
                 },
                 "volumeDb": 0
             },
-            "partId": "1"
+            "partId": "1",
+            "soloMuteState": {
+                "mute": false,
+                "solo": false
+            }
+        },
+        {
+            "in": {
+                "resourceMeta": {
+                    "attributes": {
+                        "playbackSetupData": "last.last.last",
+                        "soundFontName": "MS Basic"
+                    },
+                    "hasNativeEditorSupport": false,
+                    "id": "MS Basic",
+                    "type": "fluid_soundfont",
+                    "vendor": "Fluid"
+                },
+                "unitConfiguration": {
+                }
+            },
+            "instrumentId": "metronome",
+            "out": {
+                "balance": 0,
+                "fxChain": {
+                },
+                "volumeDb": 0
+            },
+            "partId": "999",
+            "soloMuteState": {
+                "mute": false,
+                "solo": false
+            }
         }
     ]
 }

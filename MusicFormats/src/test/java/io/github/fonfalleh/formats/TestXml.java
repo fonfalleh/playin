@@ -16,11 +16,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+
 public class TestXml {
 
     @Test
@@ -65,12 +70,13 @@ public class TestXml {
 
         List<Lyric> lyricElements = mxml.parts.get(0).measures.stream()
                 .flatMap(Measure::notes)
-                .map(Note::lyric)
+                .flatMap(Note::lyrics)
                 .filter(Predicate.not(Objects::isNull))
                 .toList();
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb;
         for (Lyric l: lyricElements) {
+            sb = getStringBuilder(l.number);
             switch (l.syllabic) {
                 case begin, middle -> sb.append(l.text);
                 case single, end -> {
@@ -79,11 +85,31 @@ public class TestXml {
                 }
             }
         }
-        sb.deleteCharAt(sb.length()-1);
-        String lyrics = sb.toString();
+        List<String> actualLyrics = stringBuilders.values().stream()
+                .map(b -> b.deleteCharAt(b.length() - 1))
+                .map(StringBuilder::toString)
+                .toList();
 
+        List<String> expectedLyrics = List.of(
+                "Blinka, lilla stjärna där, hur jag undrar vad du är. " +
+                        "Fjärran lockar du min syn, lik en diamant i skyn. " +
+                        "Blinka, lilla stjärna där, hur jag undrar vad du är.",
+                "Twinkle, twinkle little star, how I wonder what you are! " +
+                        "Up above the world so high, Like a diamond in the sky. " +
+                        "Twinkle, twinkle little star, how I wonder what you are!"
+        );
+        assertIterableEquals(expectedLyrics, actualLyrics);
+    }
 
-        //InputStream resourceAsStream = this.getClass().getResourceAsStream("/musescore_musicxml/blinka_lilla.musicxml");
+    static Map<Integer, StringBuilder> stringBuilders = new TreeMap<>();
+    static StringBuilder getStringBuilder(int i) {
+        if (!stringBuilders.containsKey(i)) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilders.put(i, stringBuilder);
+            return stringBuilder;
+        } else {
+            return stringBuilders.get(i);
+        }
     }
     @JsonIgnoreProperties(ignoreUnknown = true)
     static class MXML {
@@ -143,10 +169,12 @@ public class TestXml {
         int staff;
 
         @JacksonXmlProperty(localName = "lyric")
-        Lyric lyric;
+        @JacksonXmlElementWrapper(useWrapping = false)
+        @JsonMerge // Perhaps not needed here?
+        List<Lyric> lyric;
 
-        public Lyric lyric() {
-            return lyric;
+        public Stream<Lyric> lyrics() {
+            return lyric == null ? null :lyric.stream();
         }
     }
 
@@ -161,6 +189,8 @@ public class TestXml {
     static class Lyric {
         @JacksonXmlProperty(localName = "syllabic")
         Syllabic syllabic;
+        @JacksonXmlProperty(localName = "number", isAttribute = true)
+        int number;
         @JsonProperty("text")
         String text;
     }

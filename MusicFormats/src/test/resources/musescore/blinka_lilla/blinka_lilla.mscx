@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <museScore version="4.50">
-  <programVersion>4.5.1</programVersion>
-  <programRevision>603eca8</programRevision>
+  <programVersion>4.5.2</programVersion>
+  <programRevision>ac9d3bc</programRevision>
   <Score>
     <eid>Loczuwp97qE_B01bz8nkgvE</eid>
     <Division>480</Division>
@@ -11,6 +11,7 @@
     <showMargins>0</showMargins>
     <open>1</open>
     <metaTag name="arranger"></metaTag>
+    <metaTag name="audioComUrl"></metaTag>
     <metaTag name="composer">Composer / arranger</metaTag>
     <metaTag name="copyright"></metaTag>
     <metaTag name="creationDate">2025-04-22</metaTag>
@@ -19,6 +20,7 @@
     <metaTag name="movementTitle"></metaTag>
     <metaTag name="platform">Linux</metaTag>
     <metaTag name="source"></metaTag>
+    <metaTag name="sourceRevisionId"></metaTag>
     <metaTag name="subtitle">Subtitle</metaTag>
     <metaTag name="translator"></metaTag>
     <metaTag name="workNumber"></metaTag>
@@ -111,16 +113,6 @@
           <style>title</style>
           <text>Blinka lilla stjärna</text>
           </Text>
-        <Text>
-          <eid>p1CeJw17EgL_btZ9m/yrmGC</eid>
-          <style>composer</style>
-          <text/>
-          </Text>
-        <Text>
-          <eid>ZlX+fipL6tG_dc4OFgIcCEO</eid>
-          <style>subtitle</style>
-          <text/>
-          </Text>
         </VBox>
       <Measure>
         <eid>aAo9wOQJENB_QLcUw89AcpH</eid>
@@ -142,6 +134,12 @@
               <eid>Vh8TSZ70UBL_yB4+MUikrmE</eid>
               <text>Blin</text>
               </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <syllabic>begin</syllabic>
+              <eid>u9dbGVeTdUK_8Q/MuLKKUgC</eid>
+              <text>Twin</text>
+              </Lyrics>
             <Note>
               <eid>lLNcJsOMjSF_owBHSCzvAyN</eid>
               <pitch>60</pitch>
@@ -155,6 +153,12 @@
               <syllabic>end</syllabic>
               <eid>ldaBTWAPgKF_Rze4FCshxLH</eid>
               <text>ka,</text>
+              </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <syllabic>end</syllabic>
+              <eid>NoPeIK584ON_PjGUt433YaK</eid>
+              <text>kle,</text>
               </Lyrics>
             <Note>
               <eid>U1SCTbBLHFO_mw0BkEhPWNB</eid>
@@ -170,6 +174,12 @@
               <eid>8l1z46dANZP_rOPqXI7+7YJ</eid>
               <text>lil</text>
               </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <syllabic>begin</syllabic>
+              <eid>xu4zIFKzNQB_TQvj1d73pi</eid>
+              <text>twin</text>
+              </Lyrics>
             <Note>
               <eid>imezjaDx8gM_jJKY1Ule3yF</eid>
               <pitch>67</pitch>
@@ -183,6 +193,12 @@
               <syllabic>end</syllabic>
               <eid>Myci69stMfG_CjU+ruItOXD</eid>
               <text>la</text>
+              </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <syllabic>end</syllabic>
+              <eid>/u8l1aJ1S8H_spgnM1Nb8zN</eid>
+              <text>kle</text>
               </Lyrics>
             <Note>
               <eid>3A/Xd1JcdEG_YkG6SVF0ScK</eid>
@@ -203,6 +219,12 @@
               <eid>rrNrSRzBsfJ_WiLXUOlLabL</eid>
               <text>stjär</text>
               </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <syllabic>begin</syllabic>
+              <eid>Id57T9dICnB_PasJzSIsQ5H</eid>
+              <text>lit</text>
+              </Lyrics>
             <Note>
               <eid>o4OEBzDa6yF_arcYQ4xB7uF</eid>
               <pitch>69</pitch>
@@ -217,6 +239,12 @@
               <eid>FmRM+4H0SrL_/E/vmug5ONH</eid>
               <text>na</text>
               </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <syllabic>end</syllabic>
+              <eid>gaupqOZIXeE_1sqwWLhekXF</eid>
+              <text>tle</text>
+              </Lyrics>
             <Note>
               <eid>3lS4LMz7jgD_7JXr+4/DGJB</eid>
               <pitch>69</pitch>
@@ -229,6 +257,11 @@
             <Lyrics>
               <eid>PgtIb6uS6GM_GVlZnejQngB</eid>
               <text>där,</text>
+              </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <eid>28R9jeP28yB_m2zq16hJLWM</eid>
+              <text>star,</text>
               </Lyrics>
             <Note>
               <eid>1t13MWmhWFI_lwx47tvFX8M</eid>
@@ -248,6 +281,11 @@
               <eid>NT+cJJZx7eE_VNiYPiWFKvP</eid>
               <text>hur</text>
               </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <eid>kVxYtHE196O_obxDuVOOvbL</eid>
+              <text>how</text>
+              </Lyrics>
             <Note>
               <eid>bRVv/ky2e6D_KxjzxUK9UUL</eid>
               <pitch>65</pitch>
@@ -260,6 +298,11 @@
             <Lyrics>
               <eid>9NT/pRk7uOI_UfZyVnIy5qD</eid>
               <text>jag</text>
+              </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <eid>681gBgsw3AP_c4gHOmskyWK</eid>
+              <text>I</text>
               </Lyrics>
             <Note>
               <eid>C1GQewHBTFK_FovwxMBkpDG</eid>
@@ -275,6 +318,12 @@
               <eid>pPBFhYdLp9E_tbDeIksQRgO</eid>
               <text>un</text>
               </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <syllabic>begin</syllabic>
+              <eid>KBptzns+XJB_d/bLFPnlMfJ</eid>
+              <text>won</text>
+              </Lyrics>
             <Note>
               <eid>LSQtjJ2f+WM_Ufkbf57l3iP</eid>
               <pitch>64</pitch>
@@ -288,6 +337,12 @@
               <syllabic>end</syllabic>
               <eid>o3HlUayLhzL_8/XJhkH+YvJ</eid>
               <text>drar</text>
+              </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <syllabic>end</syllabic>
+              <eid>lzGas0prw4_OZXAQdKa+QK</eid>
+              <text>der</text>
               </Lyrics>
             <Note>
               <eid>zhaJasNLlvD_Ak6F8309oRB</eid>
@@ -311,6 +366,11 @@
               <eid>RAlkmHAFcqN_jZoVdHsTZ7</eid>
               <text>vad</text>
               </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <eid>nq2Zr0HT+9O_8JyArZ/N5KD</eid>
+              <text>what</text>
+              </Lyrics>
             <Note>
               <eid>qWjKTOHerT_+fbqokCXZyP</eid>
               <pitch>62</pitch>
@@ -324,6 +384,11 @@
               <eid>wUfIiEUn5ZM_LXUjHUeLv8K</eid>
               <text>du</text>
               </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <eid>FRzlNss6oyP_NUrcDXvbY1F</eid>
+              <text>you</text>
+              </Lyrics>
             <Note>
               <eid>0rNdjXbB4rH_Himib6Y6O2G</eid>
               <pitch>62</pitch>
@@ -336,6 +401,11 @@
             <Lyrics>
               <eid>0Hg5I4ixlGD_s9VzL6aJEbB</eid>
               <text>är.</text>
+              </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <eid>/rqXfVvFEHC_6w0IlvG4l5N</eid>
+              <text>are!</text>
               </Lyrics>
             <Note>
               <eid>p/JYIHPhQkI_cabplK8r1zC</eid>
@@ -356,6 +426,11 @@
               <eid>Z01HlaSPEyI_hv30nNF/q3L</eid>
               <text>Fjär</text>
               </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <eid>AJizgfMU46M_MX0lt8jOtmD</eid>
+              <text>Up</text>
+              </Lyrics>
             <Note>
               <eid>ALk1ERxxzd_pZIIGNZQxJN</eid>
               <pitch>67</pitch>
@@ -369,6 +444,12 @@
               <syllabic>end</syllabic>
               <eid>UT3pFpBMGOO_d3N6VYHJsQO</eid>
               <text>ran</text>
+              </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <syllabic>begin</syllabic>
+              <eid>eUfX2EYXjGI_pu/knoGgG9D</eid>
+              <text>a</text>
               </Lyrics>
             <Note>
               <eid>NIhZAd3wr1D_4Wimb3yR0aJ</eid>
@@ -384,6 +465,12 @@
               <eid>u0CrKzkVWIM_HuOZE4lafQP</eid>
               <text>lock</text>
               </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <syllabic>end</syllabic>
+              <eid>N7O33X5ZFgG_KUf0bNrlGAB</eid>
+              <text>bove</text>
+              </Lyrics>
             <Note>
               <eid>aq5fM2w/MaH_fEiBWdPYQFG</eid>
               <pitch>65</pitch>
@@ -397,6 +484,11 @@
               <syllabic>end</syllabic>
               <eid>qqYrd3BgH1H_JYVQvqo7kCL</eid>
               <text>ar</text>
+              </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <eid>TrDDkfkyGgI_gVDTDQtA0NE</eid>
+              <text>the</text>
               </Lyrics>
             <Note>
               <eid>0IwaY1bwZsL_FL0uYR917RO</eid>
@@ -416,6 +508,11 @@
               <eid>p199D1A2rc_KmMaU4bIE2B</eid>
               <text>du</text>
               </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <eid>qKIvnY8gppN_XDDXlyS6RHE</eid>
+              <text>world</text>
+              </Lyrics>
             <Note>
               <eid>5GT1KYIRiTG_RGCKpXAiSZI</eid>
               <pitch>64</pitch>
@@ -429,6 +526,11 @@
               <eid>SABojAujMaG_ydDPV9xiGBJ</eid>
               <text>min</text>
               </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <eid>iwa4RnnutFB_yodQ3cNaj5H</eid>
+              <text>so</text>
+              </Lyrics>
             <Note>
               <eid>G61XkKBk+VG_NHIJOBRGaCH</eid>
               <pitch>64</pitch>
@@ -441,6 +543,11 @@
             <Lyrics>
               <eid>3/CTGNE3FJC_kaLOgfaW4EM</eid>
               <text>syn,</text>
+              </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <eid>0+MgBwJW5MG_t3WZ/OoLRgO</eid>
+              <text>high,</text>
               </Lyrics>
             <Note>
               <eid>hyW/wD3WkS_p/hKQlmloZG</eid>
@@ -460,6 +567,11 @@
               <eid>5al/o2de+QH_bkDQ5j8lVrB</eid>
               <text>lik</text>
               </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <eid>CJGVwtkv1BG_jYZzxbgnWLG</eid>
+              <text>Like</text>
+              </Lyrics>
             <Note>
               <eid>iLZDHYF9/R_Hkx6E9SaliL</eid>
               <pitch>67</pitch>
@@ -472,6 +584,11 @@
             <Lyrics>
               <eid>Pj2TG2zEN6M_DFRwLWgjaeK</eid>
               <text>en</text>
+              </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <eid>3lCOpQI8J5F_4jD3RpWePwK</eid>
+              <text>a</text>
               </Lyrics>
             <Note>
               <eid>urW55MxdadD_AE3uvg/eclI</eid>
@@ -487,6 +604,12 @@
               <eid>8vVEi+9xuEC_wg7kXEg/40G</eid>
               <text>di</text>
               </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <syllabic>begin</syllabic>
+              <eid>CEux83iqaUI_3+hW15Sca0</eid>
+              <text>dia</text>
+              </Lyrics>
             <Note>
               <eid>RWiOZTWD+jB_6uu78Ermv/J</eid>
               <pitch>65</pitch>
@@ -500,6 +623,12 @@
               <syllabic>middle</syllabic>
               <eid>6wLQMXg59gK_fvPuy7RnCNP</eid>
               <text>a</text>
+              </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <syllabic>end</syllabic>
+              <eid>I0GmQYEAbaL_Ehr253nx8TK</eid>
+              <text>mond</text>
               </Lyrics>
             <Note>
               <eid>C0++GJs4adJ_ekmWbkNtqsP</eid>
@@ -524,6 +653,11 @@
               <eid>NQNcrPQfF9D_sSaL16NUgtN</eid>
               <text>mant</text>
               </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <eid>apGxCUkinbC_CA/Nnb7ldWJ</eid>
+              <text>in</text>
+              </Lyrics>
             <Note>
               <eid>YR27T05qdpG_ITBvUQRIxN</eid>
               <pitch>64</pitch>
@@ -537,6 +671,11 @@
               <eid>3lUqjF9yA7G_AsBvnh0EOEK</eid>
               <text>i</text>
               </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <eid>cqvt2UaOvLJ_B+3AxESjNb</eid>
+              <text>the</text>
+              </Lyrics>
             <Note>
               <eid>/0eHvxJpCeE_S+us9ouLtuF</eid>
               <pitch>64</pitch>
@@ -549,6 +688,11 @@
             <Lyrics>
               <eid>EVGSlnvWNWP_sNFQJ3LmxCF</eid>
               <text>skyn.</text>
+              </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <eid>yjTXVm+7irI_at4/Lj9g/k</eid>
+              <text>sky.</text>
               </Lyrics>
             <Note>
               <eid>bgKb3iYTe+O_N6HpYFPKqyG</eid>
@@ -569,6 +713,12 @@
               <eid>vNJNzygMXWJ_5MeAMSDgekJ</eid>
               <text>Blin</text>
               </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <syllabic>begin</syllabic>
+              <eid>draXqWnj8WE_j4hR0jR+Y0</eid>
+              <text>Twin</text>
+              </Lyrics>
             <Note>
               <eid>6yL+eIhrnR_n15xlP4ETZH</eid>
               <pitch>60</pitch>
@@ -582,6 +732,12 @@
               <syllabic>end</syllabic>
               <eid>nUQuawMdPiE_YtsmuUe4eWK</eid>
               <text>ka,</text>
+              </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <syllabic>end</syllabic>
+              <eid>lc+OtT7zbzI_XDe46Cn+vHE</eid>
+              <text>kle,</text>
               </Lyrics>
             <Note>
               <eid>/Et5rXOhHAP_GI21OOa+8/C</eid>
@@ -597,6 +753,12 @@
               <eid>bxRCpGAxlIF_sEIiqiPmEmH</eid>
               <text>lil</text>
               </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <syllabic>begin</syllabic>
+              <eid>6IoSK047CjD_wBQK8cyY44O</eid>
+              <text>twin</text>
+              </Lyrics>
             <Note>
               <eid>7Yp4m2dfY9J_I0iH9JlcwjO</eid>
               <pitch>67</pitch>
@@ -610,6 +772,12 @@
               <syllabic>end</syllabic>
               <eid>GmFMpCCHX7F_pfndHrqAp5K</eid>
               <text>la</text>
+              </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <syllabic>end</syllabic>
+              <eid>8lmIZUJ6A2C_27oH3htsOTF</eid>
+              <text>kle</text>
               </Lyrics>
             <Note>
               <eid>Vpo4KIhgZ3K_l4ZvwnH6ADD</eid>
@@ -630,6 +798,12 @@
               <eid>c20EfG3NWbK_zKkaK1HynpL</eid>
               <text>stjär</text>
               </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <syllabic>begin</syllabic>
+              <eid>JDtqnioAfOJ_smjDB1byjnB</eid>
+              <text>lit</text>
+              </Lyrics>
             <Note>
               <eid>DXOa6rqqzHC_+LKVWCbBCAP</eid>
               <pitch>69</pitch>
@@ -644,6 +818,12 @@
               <eid>q+mTPOQRiQD_cvQ7XZDMYyK</eid>
               <text>na</text>
               </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <syllabic>end</syllabic>
+              <eid>BwbsDxDRsoF_1EJyzHt6wzE</eid>
+              <text>tle</text>
+              </Lyrics>
             <Note>
               <eid>nDT+l0Kll+B_iCNkE5SMwmI</eid>
               <pitch>69</pitch>
@@ -656,6 +836,11 @@
             <Lyrics>
               <eid>vh6yj4P9gYL_RU6XdPN26iE</eid>
               <text>där,</text>
+              </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <eid>/j6/xBr7CtL_rDbY9LGoz9P</eid>
+              <text>star,</text>
               </Lyrics>
             <Note>
               <eid>/Po+nXd5jK_lysstVMIC1P</eid>
@@ -675,6 +860,11 @@
               <eid>LAW7p/2JxfC_WYa82L7s/MC</eid>
               <text>hur</text>
               </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <eid>emlk+1zBchF_ZW1+HR4ZaEB</eid>
+              <text>how</text>
+              </Lyrics>
             <Note>
               <eid>S4Jm3ke1mZJ_pk/6NrrbwzJ</eid>
               <pitch>65</pitch>
@@ -687,6 +877,11 @@
             <Lyrics>
               <eid>QFUvEQHAQsG_tk5xD34xiHF</eid>
               <text>jag</text>
+              </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <eid>rV37+9V7knL_zhzNiIC7nhC</eid>
+              <text>I</text>
               </Lyrics>
             <Note>
               <eid>0Rrm6yDdQKL_yDr9toTQi5G</eid>
@@ -702,6 +897,12 @@
               <eid>ZKlvsEtQWlC_QG35W2hqsqJ</eid>
               <text>un</text>
               </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <syllabic>begin</syllabic>
+              <eid>42a7wpdAIjK_z4rS/bhBVmL</eid>
+              <text>won</text>
+              </Lyrics>
             <Note>
               <eid>S2aWSgMjPON_mW8eTmB1mUH</eid>
               <pitch>64</pitch>
@@ -715,6 +916,12 @@
               <syllabic>end</syllabic>
               <eid>VXVG2O4nwYI_w/FZKd91B8N</eid>
               <text>drar</text>
+              </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <syllabic>end</syllabic>
+              <eid>N2BMFzIYzwF_5y01cbDCjbI</eid>
+              <text>der</text>
               </Lyrics>
             <Note>
               <eid>YdzcJhMDlRG_+zhyl8IwOcG</eid>
@@ -734,6 +941,11 @@
               <eid>XZR52AEsDfD_FYkrgvAuUdC</eid>
               <text>vad</text>
               </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <eid>hfZwCY0+mbL_Z2AYQKVznt</eid>
+              <text>what</text>
+              </Lyrics>
             <Note>
               <eid>Hss2iARw/bH_iJlDE70l1eG</eid>
               <pitch>62</pitch>
@@ -747,6 +959,11 @@
               <eid>hfJkh7CiUtN_xA1oHrjIq2M</eid>
               <text>du</text>
               </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <eid>jFl9qBeyZ5L_EmqCKQ49jQJ</eid>
+              <text>you</text>
+              </Lyrics>
             <Note>
               <eid>Rm08o/SLXDF_WjTKh0HvoeG</eid>
               <pitch>62</pitch>
@@ -759,6 +976,11 @@
             <Lyrics>
               <eid>ff2n68Y/jRP_bvB8cl0SbiE</eid>
               <text>är.</text>
+              </Lyrics>
+            <Lyrics>
+              <no>1</no>
+              <eid>42XcHGOHrjL_ROIHV69kOJ</eid>
+              <text>are!</text>
               </Lyrics>
             <Note>
               <eid>ZlOD1bMWKRE_dh8lwdGyl9G</eid>
