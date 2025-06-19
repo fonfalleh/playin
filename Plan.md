@@ -872,3 +872,6 @@ Thinking of how to search for lyrics and show which measure. Perhaps both keep p
 
 # 2025-05-22
 A PoC of piecing together lyrics from musicxml is in place! Woop woop!
+
+...
+set up suite for testing regressions? Not sure if it makes sense so early, also neither apt, snap or docker has musescore 4.x?

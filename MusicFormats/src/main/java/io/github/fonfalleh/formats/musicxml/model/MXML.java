@@ -54,13 +54,13 @@ public class MXML {
         String defaultX;
 
         @JsonProperty("pitch")
-        Pitch pitch;
+        public Pitch pitch;
 
         @JacksonXmlProperty(localName = "duration")
         int duration;
 
         @JacksonXmlProperty(localName = "voice")
-        int voice;
+        public int voice;
 
         @JacksonXmlProperty(localName = "type")
         String type; // TODO enum
@@ -79,11 +79,14 @@ public class MXML {
     }
 
     public static class Pitch {
-        // Both these work somehow
+
         @JacksonXmlProperty(localName = "step")
-        String step;
-        @JsonProperty("octave")
-        String octave;
+        public String step;
+        // Chromatic alterations in semitones. +1 = sharp, -1 flat. Microtonality possible... ignore for now?
+        @JacksonXmlProperty(localName = "alter")
+        public float alter = 0f;
+        @JacksonXmlProperty(localName = "octave")
+        public int octave;
     }
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Lyric {
