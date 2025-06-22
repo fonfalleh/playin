@@ -873,5 +873,52 @@ Thinking of how to search for lyrics and show which measure. Perhaps both keep p
 # 2025-05-22
 A PoC of piecing together lyrics from musicxml is in place! Woop woop!
 
+# 2025-06-19+
+Thought: set up suite for testing conversions between formats + regressions? Not sure if it makes sense at this stage, also neither apt, snap or docker has musescore 4.x?
+
+Docker?
+
+https://github.com/musescore/MuseScore/releases Eh.
+
 ...
-set up suite for testing regressions? Not sure if it makes sense so early, also neither apt, snap or docker has musescore 4.x?
+
+Anyhoo, PoC now also covers extracting midi pitches from musicxml!
+
+What more fun can be had?
+
+- Extract more interesting metadata!
+  - Composer
+  - Lyricist
+  - Key?
+  - Instruments / Voices
+  - Range of voices
+- Treat musicxml as basis for "IR" for analyzing + transforming music as imagined earlier? (See older notes and some comments in this file (Oh hey, some ideas from at least 2020 (actually earlier)))
+- More accurate extraction with multiple voices
+    - handle repeats
+    - Handle change of instruments/voices? (Is it even decidable?)
+      - Perhaps through chunking? 
+      - Perhaps depends on source format?
+- Make it so Indexer takes all metadata from musicxml (or musescore + export to xml) file?
+    - This is very nice, because it "simplifies" data entry and management. Single source => less hassle. There are probably articles written about this. If not, perhaps I should write something?
+- ... export metadata + notes from musescore? (But they say they give no guarantees on stability of structure)
+- Now that we have note value + lyric - cross reference, notes give highlight on lyrics and vice versa
+    - Fun and interesting challenge!
+- Write more about concepts and as a introduction to what this is in general?
+- Make use of existing music... cpdl.org?
+  - Write crawler? Not very nice...
+
+In any case, need a more complex file for 
+
+The way of reading or extracting notes and lyrics from sheet music probably needs another approach in order to work for more than the most basic songs.
+Perhaps treat it more like a graph, build structure, and extract from there? (i.e. no more simple `measures.stream()`)
+
+Note: Things might not play out in the same way in different notation programmes.
+For various reasons, I'm mostly working with musescore as basis for sheet music, and I don't intend to start using other things more in the near future, but still good to think about how output from different programs might look. Can patterns be found when exporting musicxml from other programs?
+For example, Sibelius is huge. Finale used to be huge? Dorico? Don't want to overfit this solution, but if anything, musescore seems like the sanest system to relate to.
+
+Some examples are in cpdl, perhaps? Again, perhaps have suite for comparing integrity between conversions... lossy conversions are probably not possible to avoid, but perhaps can be anticipated?
+
+I've hinted at it earlier, but many "challenges" are not decidable with just the source file. It's up for interpretation.
+Also, such a simple thing as which voice is singing the melody might mess up the structure of lyrics. Perhaps some annotation or special case handling of things in source file can help.
+
+TODO write about this? Gather examples.

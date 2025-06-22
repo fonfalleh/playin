@@ -82,7 +82,6 @@ public class TestXml {
         MXML mxml = xmlMapper.readValue(this.getClass().getResourceAsStream("/musescore_musicxml/blinka_lilla.musicxml"), MXML.class);
 
         // TODO voices / systems
-        // List<Integer> actualMidiPitches = mxml.parts.get(0).measures.stream()
 
         // TODO parts
         Map<Integer, List<MXML.Note>> notesByVoice = mxml.parts.get(0).measures.stream()
@@ -147,6 +146,12 @@ public class TestXml {
 
     }
     public static int mxmlPitchToMidiPitch(String step, byte alter, byte octave) {
-        return 0;//return mxmlPitchToMidiPitch(new MXML.Pitch(step, alter, octave));
+        //return mxmlPitchToMidiPitch(new MXML.Pitch(step, alter, octave));
+        MXML.Pitch pitch = new MXML.Pitch();
+        pitch.step = step;
+        pitch.alter = alter;
+        pitch.octave = octave;
+
+        return mxmlPitchToMidiPitch(pitch);
     }
 }
