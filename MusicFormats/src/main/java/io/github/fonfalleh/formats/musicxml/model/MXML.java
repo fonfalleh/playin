@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonMerge;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,12 @@ public class MXML {
 
     @JacksonXmlProperty(localName = "version")
     String version;
+
+    @JacksonXmlProperty(localName = "work")
+    public Work work;
+
+    @JacksonXmlProperty(localName = "identification")
+    public Identification identification;
 
     @JacksonXmlProperty(localName = "part")
     @JacksonXmlElementWrapper(useWrapping = false)
@@ -103,5 +110,29 @@ public class MXML {
         end,
         middle,
         single
+    }
+
+    public static class Work {
+        @JacksonXmlProperty(localName = "work-title")
+        public String workTitle;
+    }
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Identification {
+        @JacksonXmlProperty(localName = "creator")
+        @JacksonXmlElementWrapper(useWrapping = false)
+        @JsonMerge // This fixed mystery of missing notes, if all listed elements are not together
+        public List<Creator> creators = new ArrayList<>();
+
+    }
+
+    public static class Creator {
+        @JacksonXmlProperty(localName = "type", isAttribute = true)
+        public String type;
+        @JacksonXmlText
+        public String text;
+
+        public String getType() {
+            return type;
+        }
     }
 }

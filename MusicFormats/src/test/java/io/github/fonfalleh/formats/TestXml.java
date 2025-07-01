@@ -3,6 +3,7 @@ package io.github.fonfalleh.formats;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import io.github.fonfalleh.formats.musicxml.LyricExtractor;
+import io.github.fonfalleh.formats.musicxml.XmlMetadata;
 import io.github.fonfalleh.formats.musicxml.model.MXML;
 import org.junit.jupiter.api.Test;
 
@@ -13,10 +14,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.TreeMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
@@ -74,6 +73,18 @@ public class TestXml {
                         "Twinkle, twinkle little star, how I wonder what you are!"
         );
         assertIterableEquals(expectedLyrics, actualLyrics);
+    }
+
+    @Test
+    public void testXmlMetadata() throws IOException {
+        XmlMapper xmlMapper = new XmlMapper();
+        MXML mxml = xmlMapper.readValue(this.getClass().getResourceAsStream("/musescore_musicxml/juljul_nordqvist.musicxml"), MXML.class);
+
+        XmlMetadata metadata = XmlMetadata.extract(mxml);
+
+        assertEquals("Jul, jul, strålande jul", metadata.getTitle());
+        assertEquals("Gustaf Nordqvist", metadata.getComposers().get(0));
+        assertEquals("Edvard Evers", metadata.getLyricists().get(0));
     }
 
     @Test
