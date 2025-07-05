@@ -1,5 +1,6 @@
 package io.github.fonfalleh.formats;
 
+import io.github.fonfalleh.formats.midi.MidiNoteExtractor;
 import org.junit.jupiter.api.Test;
 
 import javax.sound.midi.*;

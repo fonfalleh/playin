@@ -922,3 +922,23 @@ I've hinted at it earlier, but many "challenges" are not decidable with just the
 Also, such a simple thing as which voice is singing the melody might mess up the structure of lyrics. Perhaps some annotation or special case handling of things in source file can help.
 
 TODO write about this? Gather examples.
+
+
+----
+# 2025-07-05
+
+Worked on xml indexing, refactored, jotted down lyrics for testing.
+
+TODO :
+fix solr schema, add fields
+tidy
+make prettier
+make sure lyrics are correct
+make sure hl works in lyrics
+make sure changes work in solr
+
+also, 
+update solr + deps:
+solr: 9.8.1
+lucene.version: 9.11.1
+jetty: 10.0.22

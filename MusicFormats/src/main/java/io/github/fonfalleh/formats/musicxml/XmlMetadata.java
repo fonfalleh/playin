@@ -5,6 +5,7 @@ import io.github.fonfalleh.formats.musicxml.model.MXML;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO inconsistent naming...?
 public class XmlMetadata {
 
     String title;
@@ -32,10 +33,8 @@ public class XmlMetadata {
         switch (c.getType()) {
             case "composer" -> composers.add(c.text);
             case "lyricist" -> lyricists.add(c.text);
-            default -> {
-            }
+            default -> {}
         }
-        ;
     }
 
     public String getTitle() {

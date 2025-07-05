@@ -1,6 +1,11 @@
 package io.github.fonfalleh.playin.indexer;
 
-import io.github.fonfalleh.formats.MidiNoteExtractor;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import io.github.fonfalleh.formats.midi.MidiNoteExtractor;
+import io.github.fonfalleh.formats.musicxml.LyricExtractor;
+import io.github.fonfalleh.formats.musicxml.PitchExtractor;
+import io.github.fonfalleh.formats.musicxml.XmlMetadata;
+import io.github.fonfalleh.formats.musicxml.model.MXML;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.Http2SolrClient;
@@ -11,6 +16,7 @@ import java.io.*;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * PoC class for indexing songs as metadata + midi pitches into solr.
@@ -66,44 +72,90 @@ public class Indexer {
         }
         SolrInputDocument doc = maybeDoc.get();
 
-        // Handle midifiles
-        File[] midifiles = file.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.toLowerCase().endsWith(".midi")
-                        || name.toLowerCase().endsWith(".mid");
-            }
-        });
+        // Handle midiFiles
+        File[] midiFiles = file.listFiles((dir, name) -> name.toLowerCase().endsWith(".midi")
+                || name.toLowerCase().endsWith(".mid"));
+        File[] mxmlFiles = file.listFiles((dir, name) -> name.toLowerCase().endsWith(".musicxml"));
 
+        List<MXML> mxmls = parseXml(mxmlFiles);
+
+        for (MXML mxml : mxmls) {
+            addMetadata(doc, mxml);
+            addLyrics(doc, mxml);
+            addPitches(doc, mxml);
+        }
         //TODO idea:
         // Have interface for "extracting" music, create map of (file endings -> extractors)
 
-        // Extract midifiles
-        List<String> pitches = new ArrayList<>();
-        for (File midifile: midifiles) {
-            List<List<Integer>> filePitches;
-            try {
-                filePitches = MidiNoteExtractor.extractPitchTracksFromFile(midifile);
-            } catch (InvalidMidiDataException | IOException e) {
-                System.out.println("Error when trying to extract tracks from midi file: " + midifile.getPath());
-                continue;
-            }
-            if (!filePitches.isEmpty()) {
-                pitches.addAll(
-                filePitches.stream()
-                        .filter(Predicate.not(Collection::isEmpty))
-                        .map(track -> track.stream()
-                                .map(String::valueOf)
-                                .collect(Collectors.joining(" ")))
-                        .collect(Collectors.toList()));
+        // Extract pitches
+        List<String> pitches = Arrays.stream(midiFiles)
+                .flatMap(Indexer::extractPitchesFromMidi)
+                .toList();
 
-            }
-        }
+        // TODO constants, where are fields defined?
         doc.addField("pitches", pitches);
 
         return Optional.of(doc);
     }
-private static final String metadataMultiValueSeparator = ";";
+
+    private static void addPitches(SolrInputDocument doc, MXML mxml) {
+        // TODO verify adding lists...
+        // Also constants
+        doc.addField("pitches", pitchesToString(PitchExtractor.extract(mxml)).toList());
+    }
+
+    private static void addLyrics(SolrInputDocument doc, MXML mxml) {
+        List<String> lyrics = new LyricExtractor().extract(mxml);
+        //TODO verify
+        // TODO constants
+        if (!lyrics.isEmpty()) doc.addField("lyrics", lyrics);
+    }
+
+    private static void addMetadata(SolrInputDocument doc, MXML mxml) {
+        XmlMetadata metadata = XmlMetadata.extract(mxml);
+        if (metadata.getTitle() != null) doc.addField("title", metadata.getTitle());
+        if (metadata.getComposers() != null) doc.addField("composer", metadata.getComposers());
+        if (metadata.getLyricists() != null) doc.addField("lyricist", metadata.getLyricists());
+    }
+
+    private static List<MXML> parseXml(File[] files) {
+        XmlMapper xmlMapper = new XmlMapper();
+        return Arrays.stream(files).map(file -> {
+                    try {
+                        return xmlMapper.readValue(file, MXML.class);
+                    } catch (IOException e) {
+                        System.out.println("Failed parsing file: " + file.getName());
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    static Stream<String> extractPitchesFromMidi(File midiFile) {
+        List<List<Integer>> filePitches;
+        try {
+            filePitches = MidiNoteExtractor.extractPitchTracksFromFile(midiFile);
+        } catch (InvalidMidiDataException | IOException e) {
+            System.out.println("Error when trying to extract tracks from midi file: " + midiFile.getPath());
+            return Stream.empty();
+        }
+        return pitchesToString(filePitches);
+    }
+
+    static Stream<String> pitchesToString(List<List<Integer>> filePitches) {
+        if (filePitches.isEmpty()) {
+            return Stream.empty();
+        }
+
+        return filePitches.stream()
+                .filter(Predicate.not(Collection::isEmpty))
+                .map(track -> track.stream()
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(" ")));
+    }
+
+    private static final String metadataMultiValueSeparator = ";";
     public static Optional<SolrInputDocument> createDocFromMetadata(File file) {
         File metaFile = new File(file, "metadata");
         if (!metaFile.canRead()) {

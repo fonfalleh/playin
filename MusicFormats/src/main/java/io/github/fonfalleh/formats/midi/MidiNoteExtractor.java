@@ -1,4 +1,4 @@
-package io.github.fonfalleh.formats;
+package io.github.fonfalleh.formats.midi;
 
 import javax.sound.midi.*;
 import java.io.File;
