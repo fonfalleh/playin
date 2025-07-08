@@ -930,15 +930,32 @@ TODO write about this? Gather examples.
 Worked on xml indexing, refactored, jotted down lyrics for testing.
 
 TODO :
-fix solr schema, add fields
+DONE fix solr schema, add fields
+DONE update queryFields in script
 tidy
 make prettier
-make sure lyrics are correct
-make sure hl works in lyrics
+make sure lyrics are correct in juljul
+DONE make sure hl works in lyrics
 make sure changes work in solr
+DONE update solr + deps: (from solr/versions.lock)
+DONE write tests for relative pitch filter
 
-also, 
-update solr + deps:
+
+solr + deps: (from solr/versions.lock)
 solr: 9.8.1
 lucene.version: 9.11.1
 jetty: 10.0.22
+
+----
+# 2025-07-08
+Did some fixes above...
+
+Think about splitting up concerns in order to get a better overview, make it easier to think about things
+- Solr plugin
+- Indexer
+- Webapp
+
+What are the use cases?
+- Find song by melody
+- Cool search app with exploratory search
+- ... hmm
