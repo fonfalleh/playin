@@ -13,9 +13,9 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jackson.version>2.15.1</jackson.version>
-        <solr.version>9.6.1</solr.version>
-        <lucene.version>9.10.0</lucene.version>
-        <jetty.version>10.0.20</jetty.version>
+        <solr.version>9.8.1</solr.version>
+        <lucene.version>9.11.1</lucene.version>
+        <jetty.version>10.0.22</jetty.version>
     </properties>
 
     <dependencies>

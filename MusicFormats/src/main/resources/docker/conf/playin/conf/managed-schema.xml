@@ -231,6 +231,9 @@
   <field name="composer_facet" type="string" uninvertible="true" docValues="true" multiValued="true" indexed="true" stored="false"/>
   <field name="editor" type="text_general" uninvertible="true" indexed="true" stored="true"/>
   <field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
+  <field name="lyricist" type="text_general" uninvertible="true" indexed="true" stored="true"/>
+  <field name="lyricist_facet" type="string" uninvertible="true" docValues="true" multiValued="true" indexed="true" stored="false"/>
+  <field name="lyrics" type="text_general" uninvertible="true" indexed="true" stored="true"/>
   <field name="pitches" type="midiWithLilyQuery" uninvertible="true" multiValued="true" indexed="true" stored="true"/>
   <field name="pitches_relative" type="relativeMidiWithLilyQuery" uninvertible="true" multiValued="true" indexed="true" stored="true"/>
   <field name="source" type="string" uninvertible="true" indexed="true" stored="true"/>
@@ -273,5 +276,6 @@
   <dynamicField name="*_p" type="location" indexed="true" stored="true"/>
   <dynamicField name="*" type="string" termPositions="false" docValues="true" termVectors="false" indexed="true" stored="true"/>
   <copyField source="composer" dest="composer_facet"/>
+  <copyField source="lyricist" dest="lyricist_facet"/>
   <copyField source="pitches" dest="pitches_relative"/>
 </schema>

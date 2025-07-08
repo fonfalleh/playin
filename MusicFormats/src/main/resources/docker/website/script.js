@@ -10,7 +10,9 @@ const queryBody =
             "query": "${QUERY:*}",
             "qf": [
               "title",
-              "composer"
+              "composer",
+              "lyrics",
+              "lyricist"
             ]
           }
         },
