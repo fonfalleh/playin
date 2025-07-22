@@ -959,3 +959,35 @@ What are the use cases?
 - Find song by melody
 - Cool search app with exploratory search
 - ... hmm
+
+----
+# 2025-07-22
+
+Did some research on the possibility of using something like PreAnalyzedField for Elastic or OpenSearch.
+Not really supported natively, but might be possible through plugins. (Creating your own, that is.)
+
+Some discussion on elastic (Shay commenting) https://discuss.elastic.co/t/tokenstream-implementation-in-elasticsearch/7055
+
+Interesting thing that seems supported both in ES and OS : https://www.elastic.co/docs/reference/elasticsearch/plugins/mapper-annotated-text
+Not sure how it will look when querying (can't find examples), but might be interesting to look into sometime.
+----
+
+Also, did some thinking on how to make it possible to do "highlighting" on sheets, e.g. when mathing the notes of a song, display the measure(s) with matching notes.
+
+Some initial thoughts were to do cool preprocessing and clever stuff with indexing a LOT of metadata (like the whole musicxml with annotations), but a more practical (boring) solution would probably be to just keep the measure count somehow, and do extra lookups after matching, if highlighting is present.
+I would have preferred if this was easy to do as part of clever transforms 
+
+One interesting challenge is that sheet music is context dependent - a notable (heh, notable) example, key signature. Even if a "matched" measure were to be displayed, without the context of what key the measure is in, (which might not be present in the specific measure), we're missing important context.
+
+Another interesting feature would be searching for lyrics and getting measures printed as results. But basically, should not be harder than keeping track of which measure to use than regular notes, as they both live inside measure nodes in mxml. 
+
+Anyway, how would one do this?
+Need to
+- know WHERE the match is - keep offset somehow (discard token?)
+- make sure to get interesting offset when querying (highlight? more complicated stuff?)
+- display sheet from snippet. (Generate from lilypond?) (I know I have notes or a link for engraving just one measure as png or something like that)
+
+So it is MUCH easier if these things are done outside of the search engine... which is a little boring, but such is life sometimes.
+That could kinda sidestep the whole problem of trying to outsmart analysis just to get pretty output and interesting tokens (á la PreAnalyzedField), but then complexity grows... Maybe have some service that queries solr and does pretty display? Sounds very fullstacky (not to mention growing complexity).
+
+// Other idea: use lilypond note names instead of midi pitches for stored content in indexed songs? Easy to convert, and much easier to read, and conversion is not as lossy (except when using midi pitches as source)
