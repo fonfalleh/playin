@@ -2,6 +2,8 @@ package io.github.fonfalleh.formats;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +27,26 @@ public class TestLily {
         return notes.stream()
                 .map(LilyToMidi::lilyPitchToMidiPitch)
                 .collect(Collectors.toList());
+    }
+
+    // TODO
+    @Test
+    public void testThing() throws Exception {
+        //ProcessBuilder builder = new ProcessBuilder("echo \"#(ly:set-option 'crop #t) { c d e } \" | lilypond --svg -o lols -");
+        ProcessBuilder builder = new ProcessBuilder("/bin/sh", "-c", "echo \"#(ly:set-option 'crop #t) { c d e } \" | lilypond --pdf -o lols -");
+        //ProcessBuilder builder = new ProcessBuilder("pwd");
+        //ProcessBuilder builder = new ProcessBuilder("echo", "\"#(ly:set-option 'crop #t) { c d e }\"", "|", "lilypond", "--svg", "-" );
+        Process process = builder.start();
+
+        StringBuilder out = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                out.append(line);
+                out.append("\n");
+            }
+            System.out.println(out);
+        }
     }
 
 }

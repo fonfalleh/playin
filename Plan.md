@@ -991,3 +991,21 @@ So it is MUCH easier if these things are done outside of the search engine... wh
 That could kinda sidestep the whole problem of trying to outsmart analysis just to get pretty output and interesting tokens (á la PreAnalyzedField), but then complexity grows... Maybe have some service that queries solr and does pretty display? Sounds very fullstacky (not to mention growing complexity).
 
 // Other idea: use lilypond note names instead of midi pitches for stored content in indexed songs? Easy to convert, and much easier to read, and conversion is not as lossy (except when using midi pitches as source)
+
+----
+# 2025-07-29
+
+Looked up how to generate small image of some notes in lilypond.
+
+https://lists.nongnu.org/archive/html/lilypond-user/2010-11/msg00396.html  
+https://www.reddit.com/r/lilypond/comments/121w3gz/generate_notwholepage_png/
+
+Perhaps see more on: https://music.stackexchange.com/questions/15544/lilypond-how-to-control-the-paper-size-to-create-images or https://superuser.com/questions/96970/lilypond-is-there-a-way-to-auto-crop-the-paper
+
+Checked possibility of doing this in java (by calling lilypond.) Perhaps silly, but is doable (see TestLily.java) . Might be possible to make small util that takes a small piece of lilypond and produces
+https://stackoverflow.com/questions/13991007/execute-external-program  
+// TODO revise  
+
+So... now we need to be able to export lilypond snippets from our representation of music... TODO :)
+
+Also, new solr version 9.9.0 released, updated just for funsies and because it's so easy.
