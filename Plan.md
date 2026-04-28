@@ -1009,3 +1009,23 @@ https://stackoverflow.com/questions/13991007/execute-external-program
 So... now we need to be able to export lilypond snippets from our representation of music... TODO :)
 
 Also, new solr version 9.9.0 released, updated just for funsies and because it's so easy.
+
+# ~2026-04-28
+
+Added very ugly example spring boot app with restcontroller for taking in lilypond notes and rendering image and returning. Ugly, but exciting!
+
+TODO make not as ugly :D
+TODO solrj for things? Or ... other things
+Solr 10? But it removed PreAnalyzedField :(
+
+Also for demo purposes on regular playin:
+- More metadata from xml to query
+- [X] Blinka lilla as xml in resources
+- Something that doesn't just read from resources
+- Something more automated
+- More cool examples for queries
+ - c c g g a a g
+   -  other keys
+ - c c'
+ - över stridernas -> jul jul
+ - Examples for solr analysis view?
