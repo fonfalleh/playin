@@ -8,7 +8,7 @@ import io.github.fonfalleh.formats.musicxml.XmlMetadata;
 import io.github.fonfalleh.formats.musicxml.model.MXML;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.Http2SolrClient;
+import org.apache.solr.client.solrj.jetty.HttpJettySolrClient;
 import org.apache.solr.common.SolrInputDocument;
 
 import javax.sound.midi.InvalidMidiDataException;
@@ -24,7 +24,7 @@ import java.util.stream.Stream;
  */
 public class Indexer {
 
-    SolrClient client = new Http2SolrClient
+    SolrClient client = new HttpJettySolrClient
             .Builder("http://localhost:8983/solr")
                     .withDefaultCollection("playin")
                     .build();

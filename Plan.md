@@ -1029,3 +1029,13 @@ Also for demo purposes on regular playin:
  - c c'
  - över stridernas -> jul jul
  - Examples for solr analysis view?
+
+# 2026-05-11
+Wip Solr 10.
+
+PreAnalyzedField removed :(
+
+Not jetty-servlet for fixing cors anymore, need to dig more into that :(  
+Perhaps just fix some middleware/webapp instead. Probably the easiest approach.
+
+Docker image for 10 built on temurin 25! Woo! :)
