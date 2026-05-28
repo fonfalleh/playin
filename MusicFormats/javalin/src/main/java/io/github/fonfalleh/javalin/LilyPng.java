@@ -1,4 +1,4 @@
-package io.github.fonfalleh.webtest;
+package io.github.fonfalleh.javalin;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,7 +10,7 @@ import java.util.List;
 
 public class LilyPng {
 
-    static byte[] foo(String lily) throws IOException {
+    static byte[] lilyToPng(String lily) throws IOException {
 
         List<String> commands = List.of("/bin/bash", "./small_lilypond.sh", lily);
         ProcessBuilder processBuilder = new ProcessBuilder(commands);

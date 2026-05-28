@@ -1,20 +1,14 @@
 package io.github.fonfalleh.javalin;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
-
+import io.javalin.http.ContentType;
 import io.javalin.http.Context;
 import io.javalin.plugin.bundled.CorsPluginConfig;
-import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.SolrRequest;
-import org.apache.solr.client.solrj.impl.HttpJdkSolrClient;
-import org.apache.solr.client.solrj.impl.LBSolrClient;
 import org.apache.solr.client.solrj.jetty.HttpJettySolrClient;
 import org.apache.solr.client.solrj.request.QueryRequest;
 import org.apache.solr.client.solrj.request.json.DirectJsonQueryRequest;
 import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
 import org.apache.solr.common.params.MapSolrParams;
-import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.common.util.NamedList;
 
 import java.util.List;
@@ -22,12 +16,7 @@ import java.util.Map;
 
 public class Main {
 
-
-    static SolrClient client2 = new HttpJdkSolrClient.Builder()
-            .withBaseSolrUrl("http://localhost:8983/solr")
-            .withDefaultCollection("playin")
-            .build();
-
+    // Note: Uses javalin's jetty version for solrj
     static final HttpJettySolrClient client = new HttpJettySolrClient.Builder()
             .withBaseSolrUrl("http://localhost:8983/solr")
             .withDefaultCollection("playin")
@@ -60,6 +49,16 @@ public class Main {
                         ctx.json(response.jsonStr());
                     }
             );
+            config.routes.get("/lily", ctx -> {
+                String notes = ctx.queryParam("notes");
+                if (notes != null) {
+                    byte[] bytes = LilyPng.lilyToPng(notes);
+                    ctx.contentType(ContentType.IMAGE_PNG);
+                    ctx.result(bytes);
+                } else {
+                    ctx.result("Nope");
+                }
+            });
         }).start(7070);
     }
 

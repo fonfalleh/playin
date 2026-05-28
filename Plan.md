@@ -1039,3 +1039,10 @@ Not jetty-servlet for fixing cors anymore, need to dig more into that :(
 Perhaps just fix some middleware/webapp instead. Probably the easiest approach.
 
 Docker image for 10 built on temurin 25! Woo! :)
+
+# 2026-06-28~
+
+Progress on solr 10 and querying using solrj instead.
+Using javalin as middleware to avoid having to config cors inside of solr, will simplify some things
+Also put lilypond image generation in javalin.
+TODO it's actually super slow, but all time is spent in lilypond? 1,4 sec. Perhaps try something more clever?

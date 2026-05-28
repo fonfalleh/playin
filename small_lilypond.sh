@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 # Another copy here for testing
 lilypond --pdf -o out - <<<"#(ly:set-option 'crop #t) { $1 }"
 rm out.pdf out.cropped.pdf
