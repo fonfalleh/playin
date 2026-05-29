@@ -1,47 +1,5 @@
 
-const solrBaseUrl = 'http://localhost:8983/solr/playin/select'
-const queryBody =
-{
-  "query": {
-    "bool" : {
-      "should": [
-        {
-          "edismax": {
-            "query": "${QUERY:*}",
-            "qf": [
-              "title",
-              "composer",
-              "lyrics",
-              "lyricist"
-            ]
-          }
-        },
-        {
-          "edismax": {
-            "query": "\"${QUERY:\"\"}\"",
-            "qf": [
-              "pitches",
-              "pitches_relative"
-            ]
-          }
-        }
-      ]
-    }
-  },
-   "facet": {
-     "composer": {
-       "type": "terms",
-       "field": "composer_facet",
-       "domain": { "query" : "*:*"}
-     }
-   },
-   "filter": {
-     "#tag": "composer:${COMPOSER:*}"
-   },
-   "params": {
-     "hl": "true"
-   }
- }
+const baseUrl = 'http://localhost:7070/solrj'
 
 // Build solr query url
 const queryString = window.location.search;
@@ -50,24 +8,23 @@ const urlParams = new URLSearchParams(queryString);
 const queryParamName = 'query';
 const composerParamName = 'composer';
 
-var solrUrl = new URL(solrBaseUrl);
+const fetchUrl = new URL(baseUrl);
 
 if (urlParams.has(queryParamName)) {
-  solrUrl.searchParams.set("QUERY", urlParams.get(queryParamName))
+  fetchUrl.searchParams.set(queryParamName, urlParams.get(queryParamName))
 }
 if (urlParams.has(composerParamName)) {
-  solrUrl.searchParams.set("COMPOSER", urlParams.get(composerParamName))
+  fetchUrl.searchParams.set(composerParamName, urlParams.get(composerParamName))
 }
 
-fetch(solrUrl , {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(queryBody)
-  })
-  .then( response => {
+fetch(fetchUrl , {
+  method: 'GET',
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
+})
+    .then( response => {
       if (!response.ok) {
         throw new Error(`HTTP error: ${response.status}`);
       }
@@ -103,7 +60,7 @@ function initialize(response) {
   if (urlParams.has(queryParamName)) {
     searchBox.value = urlParams.get(queryParamName);
   }
-  
+
 
   const matchingSongs = response.response.docs;
   const composerFacets = response.facets.composer.buckets;
@@ -116,7 +73,7 @@ function initialize(response) {
     // Use preventDefault() to stop the form submitting — that would ruin
     // the experience
     e.preventDefault();
-    
+
     if (!(searchBox.value.trim() === '')) {
       urlParams.set(queryParamName, searchBox.value);
     } else {
@@ -128,7 +85,7 @@ function initialize(response) {
     } else {
       urlParams.set(composerParamName, composerSelector.value)
     }
-    
+
     window.location.search = urlParams.toString();
   }
 
@@ -136,16 +93,16 @@ function initialize(response) {
   function updateDisplay() {
 
     for (const composer of composerFacets) {
-        const option = document.createElement('option');
-        option.value = composer.val;
-        option.innerHTML = composer.val + " (" + composer.count +")";
-        composerSelector.appendChild(option);
+      const option = document.createElement('option');
+      option.value = composer.val;
+      option.innerHTML = composer.val + " (" + composer.count +")";
+      composerSelector.appendChild(option);
     }
 
     // Update selected facet in the dropdown.
     if (urlParams.has(composerParamName)) {
       composerSelector.value = urlParams.get(composerParamName);
-      
+
       // Workaround for if composer param is supplied but doesn't match a facet returned
       if(!composerSelector.value) {
         const option = document.createElement('option');
@@ -210,7 +167,7 @@ function initialize(response) {
 
     // TODO make pretty
     para.textContent = song.composer.join(',\n');
-    
+
 
     // Set the src of the <img> element to the ObjectURL, and the alt to the product "name" property
     //image.src = objectURL;

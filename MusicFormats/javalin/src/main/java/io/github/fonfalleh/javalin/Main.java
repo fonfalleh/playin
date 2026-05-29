@@ -63,8 +63,8 @@ public class Main {
     }
 
     static JsonQueryRequest buildJsonQuery(Context context) {
-        String query = context.queryParam("QUERY");
-        String composer = context.queryParam("COMPOSER");
+        String query = context.queryParam("query");
+        String composer = context.queryParam("composer");
 
         JsonQueryRequest request = new JsonQueryRequest()
                 .withParam("hl", true)

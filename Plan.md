@@ -1046,3 +1046,18 @@ Progress on solr 10 and querying using solrj instead.
 Using javalin as middleware to avoid having to config cors inside of solr, will simplify some things
 Also put lilypond image generation in javalin.
 TODO it's actually super slow, but all time is spent in lilypond? 1,4 sec. Perhaps try something more clever?
+
+# 2026-06-29
+Fixed script to use javalin/solrj
+
+Ideas:
+- endpoint for uploading musicxml / musescore for indexing? Some page with forms?
+- rewrite indexing class, break out metadata handling
+- review metadata, blinka lilla has composer as "Composer / arranger" in xml (from mxml)
+- thumbnails/images for the search results
+- clickable metadata, make links from composers to facet filtering
+- more facets?
+
+`musescore -o <file.xml/musicxml> input.mscx` to convert to musicxml 
+
+https://javalin.io/documentation#uploads for handling files
