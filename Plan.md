@@ -1047,7 +1047,7 @@ Using javalin as middleware to avoid having to config cors inside of solr, will 
 Also put lilypond image generation in javalin.
 TODO it's actually super slow, but all time is spent in lilypond? 1,4 sec. Perhaps try something more clever?
 
-# 2026-06-29
+# 2026-05-29
 Fixed script to use javalin/solrj
 
 Ideas:
@@ -1061,3 +1061,8 @@ Ideas:
 `musescore -o <file.xml/musicxml> input.mscx` to convert to musicxml 
 
 https://javalin.io/documentation#uploads for handling files
+
+# 2026-06-02
+Testing fileupload with muse conversions. Got confused because of `user.dir`.
+Sorta works, needs polish.
+`curl -XPOST http://localhost:7070/muse -v -F blinka.mscx=@blinka_lilla.mscx` for testing.

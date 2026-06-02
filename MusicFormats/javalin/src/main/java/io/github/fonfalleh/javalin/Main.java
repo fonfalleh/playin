@@ -3,14 +3,15 @@ package io.github.fonfalleh.javalin;
 import io.javalin.Javalin;
 import io.javalin.http.ContentType;
 import io.javalin.http.Context;
+import io.javalin.http.UploadedFile;
 import io.javalin.plugin.bundled.CorsPluginConfig;
+import io.javalin.util.FileUtil;
 import org.apache.solr.client.solrj.jetty.HttpJettySolrClient;
-import org.apache.solr.client.solrj.request.QueryRequest;
-import org.apache.solr.client.solrj.request.json.DirectJsonQueryRequest;
 import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
-import org.apache.solr.common.params.MapSolrParams;
 import org.apache.solr.common.util.NamedList;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -27,21 +28,6 @@ public class Main {
             config.bundledPlugins.enableCors(cors -> {
                 cors.addRule(CorsPluginConfig.CorsRule::anyHost); // Eh.
             });
-            config.routes.post("/", ctx ->
-                    {
-                        Map<String, String> params = Map.of("q", "*:*");
-                        QueryRequest qr = new QueryRequest(new MapSolrParams(params));
-                        String body = ctx.body();
-
-                        //TODO build correct params, either in constructor or in setQueryParams. OR rework query logic :) Also more native solrj
-                        QueryRequest jsonQuery = new DirectJsonQueryRequest(body)
-                                //.setQueryParams()
-                                ;
-                        NamedList<Object> request = client.request(jsonQuery);
-
-                        ctx.result(request.jsonStr());
-                    }
-            );
             config.routes.get("/solrj", ctx ->
                     {
                         JsonQueryRequest request = buildJsonQuery(ctx);
@@ -58,6 +44,21 @@ public class Main {
                 } else {
                     ctx.result("Nope");
                 }
+            });
+            config.routes.post("/muse", ctx -> {
+                UploadedFile foo = ctx.uploadedFile("foo");
+                Path temps = Files.createTempDirectory("temps");
+                String filepath;
+                ctx.uploadedFileMap().forEach((name, list) -> {
+                            Path path = temps.resolve(name);
+                            FileUtil.streamToFile(list.getFirst().content(), path.toString());
+                            MuseReader.runMuse(path);
+                        });
+
+
+
+                //FileUtil.streamToFile(foo.content(), filepath);
+                //MuseReader.runMuse(filepath);
             });
         }).start(7070);
     }

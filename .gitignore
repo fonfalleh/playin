@@ -6,4 +6,6 @@ target/
 *.hi
 *.bak
 *.midi
+*.png
+*.svg
 MusicFormats/docker
