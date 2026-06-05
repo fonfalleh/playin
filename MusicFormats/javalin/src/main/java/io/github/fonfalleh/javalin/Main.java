@@ -46,15 +46,18 @@ public class Main {
                 }
             });
             config.routes.post("/muse", ctx -> {
+                ctx.formParamMap();
+
+
                 UploadedFile foo = ctx.uploadedFile("foo");
                 Path temps = Files.createTempDirectory("temps");
                 String filepath;
                 ctx.uploadedFileMap().forEach((name, list) -> {
-                            Path path = temps.resolve(name);
-                            FileUtil.streamToFile(list.getFirst().content(), path.toString());
-                            MuseReader.runMuse(path);
-                        });
-
+                    System.out.println(name);
+                    Path path = temps.resolve(name);
+                    FileUtil.streamToFile(list.getFirst().content(), path.toString());
+                    MuseReader.runMuse(path);
+                });
 
 
                 //FileUtil.streamToFile(foo.content(), filepath);

@@ -15,8 +15,7 @@ public class MidiNoteExtractor {
         List<Integer> pitches = new ArrayList<>();
         for (int i = 0; i < track.size(); i++) {
             MidiMessage message = track.get(i).getMessage();
-            if (message instanceof ShortMessage) {
-                ShortMessage sm = (ShortMessage) message;
+            if (message instanceof ShortMessage sm) {
                 //System.out.printf("Index: %s, Command: %s, Data1: %s, Data2: %s%n", i, sm.getCommand(), sm.getData1(), sm.getData2());
                 // Some notes have velocity (Data2) = 0 instead of NOTE_OFF...
                 if (sm.getCommand() == ShortMessage.NOTE_ON
