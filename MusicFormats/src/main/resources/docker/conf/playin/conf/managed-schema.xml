@@ -64,12 +64,12 @@
       <filter class="io.github.fonfalleh.formats.solr.NaiveLilyToMidiTokenFilterFactory"/>
     </analyzer>
   </fieldType>
-  <fieldType name="naiveMidiPreanalyzed" class="solr.PreAnalyzedField" parserImpl="org.apache.solr.schema.SimplePreAnalyzedParser">
+  <!--fieldType name="naiveMidiPreanalyzed" class="solr.PreAnalyzedField" parserImpl="org.apache.solr.schema.SimplePreAnalyzedParser">
     <analyzer type="query">
       <tokenizer class="solr.WhitespaceTokenizerFactory"/>
       <filter class="io.github.fonfalleh.formats.solr.NaiveLilyToMidiTokenFilterFactory"/>
     </analyzer>
-  </fieldType>
+  </fieldType-->
   <fieldType name="pdate" class="solr.DatePointField" docValues="true"/>
   <fieldType name="pdates" class="solr.DatePointField" docValues="true" multiValued="true"/>
   <fieldType name="pdouble" class="solr.DoublePointField" docValues="true"/>

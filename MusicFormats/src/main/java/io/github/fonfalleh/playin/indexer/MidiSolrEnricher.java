@@ -11,8 +11,8 @@ import java.util.List;
 public class MidiSolrEnricher {
 
 
-    public static void enrichSolrDoc(File[] midiFiles, SolrInputDocument doc) {
-        if (midiFiles == null || midiFiles.length == 0)
+    public static void enrichSolrDoc(List<File> midiFiles, SolrInputDocument doc) {
+        if (midiFiles == null || midiFiles.isEmpty())
             return;
         for (File midiFile : midiFiles) {
             List<String> pitches = extractPitchesFromMidi(midiFile);

@@ -9,14 +9,16 @@ import org.apache.solr.common.SolrInputDocument;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public class MxmlSolrEnricher {
 
-    public static void enrichSolrDoc(MXML[] mxmls, SolrInputDocument doc) {
-        if (mxmls == null || mxmls.length == 0)
+    public static void enrichSolrDoc(List<File> files, SolrInputDocument doc) {
+        if (files == null || files.isEmpty())
+            return;
+        List<MXML> mxmls = parseXmlFiles(files);
+        if (mxmls.isEmpty())
             return;
         for (MXML mxml : mxmls) {
             addMetadata(doc, mxml);
@@ -45,9 +47,9 @@ public class MxmlSolrEnricher {
         doc.addField(Indexer.PITCHES, Indexer.pitchesToString(PitchExtractor.extract(mxml)));
     }
 
-    static MXML[] parseXmlFiles(File[] files) {
+    static List<MXML> parseXmlFiles(List<File> files) {
         XmlMapper xmlMapper = new XmlMapper();
-        return (MXML[]) Arrays.stream(files).map(file -> {
+        return files.stream().map(file -> {
                     try {
                         return xmlMapper.readValue(file, MXML.class);
                     } catch (IOException e) {
@@ -56,6 +58,6 @@ public class MxmlSolrEnricher {
                     }
                 })
                 .filter(Objects::nonNull)
-                .toArray();
+                .toList();
     }
 }
