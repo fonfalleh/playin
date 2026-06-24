@@ -22,6 +22,11 @@
             <artifactId>javalin</artifactId>
             <version>7.2.2</version>
         </dependency>
+        <dependency>
+            <groupId>io.javalin</groupId>
+            <artifactId>javalin-rendering-jte</artifactId>
+            <version>7.2.2</version>
+        </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>

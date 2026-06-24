@@ -5,6 +5,7 @@ import io.javalin.http.ContentType;
 import io.javalin.http.Context;
 import io.javalin.http.UploadedFile;
 import io.javalin.plugin.bundled.CorsPluginConfig;
+import io.javalin.rendering.template.JavalinJte;
 import io.javalin.util.FileUtil;
 import org.apache.solr.client.solrj.jetty.HttpJettySolrClient;
 import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
@@ -62,6 +63,12 @@ public class Main {
 
                 //FileUtil.streamToFile(foo.content(), filepath);
                 //MuseReader.runMuse(filepath);
+            });
+
+            config.fileRenderer(new JavalinJte());
+            config.routes.get("/jte", ctx -> {
+                String foo = ctx.queryParam("foo");
+                ctx.render("test.jte", Map.of("foo", foo != null ? foo : "foo"));
             });
         }).start(7070);
     }

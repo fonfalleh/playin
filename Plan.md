@@ -1066,3 +1066,19 @@ https://javalin.io/documentation#uploads for handling files
 Testing fileupload with muse conversions. Got confused because of `user.dir`.
 Sorta works, needs polish.
 `curl -XPOST http://localhost:7070/muse -v -F blinka.mscx=@blinka_lilla.mscx` for testing.
+
+# 2026-06-24
+Ideas:
+- move sites to javalin, seems nice and self contained
+- break out things into more logical parts
+  - webapp
+  - indexer
+  - dependencies/libs
+  - solr plugins
+- check solrconfig.xml changes, perhaps using old defaults
+- Actually take a look att frontend/javascript parts so they are less terrible
+- OR... do it in java instead :D https://javalin.io/tutorials/jte
+  - Sounds fun and educational to translate the existing files to jte and make sure to understand all bits.
+
+Did small sample with jte rendering input param (docs outdated/scattered around, but now it works)
+TODO what is jte-classes in parent root? Do they get generated each build?
