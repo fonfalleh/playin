@@ -1,5 +1,7 @@
 package io.github.fonfalleh.javalin;
 
+import gg.jte.Content;
+import gg.jte.TemplateOutput;
 import io.javalin.Javalin;
 import io.javalin.http.ContentType;
 import io.javalin.http.Context;
@@ -7,14 +9,20 @@ import io.javalin.http.UploadedFile;
 import io.javalin.plugin.bundled.CorsPluginConfig;
 import io.javalin.rendering.template.JavalinJte;
 import io.javalin.util.FileUtil;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.jetty.HttpJettySolrClient;
 import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
+import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.util.NamedList;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class Main {
 
@@ -31,8 +39,7 @@ public class Main {
             });
             config.routes.get("/solrj", ctx ->
                     {
-                        JsonQueryRequest request = buildJsonQuery(ctx);
-                        NamedList<Object> response = client.request(request);
+                        NamedList<Object> response = querySolr(ctx);
                         ctx.json(response.jsonStr());
                     }
             );
@@ -67,10 +74,51 @@ public class Main {
 
             config.fileRenderer(new JavalinJte());
             config.routes.get("/jte", ctx -> {
-                String foo = ctx.queryParam("foo");
-                ctx.render("test.jte", Map.of("foo", foo != null ? foo : "foo"));
+                NamedList<Object> response = querySolr(ctx);
+                SolrDocumentList docs = getSolrDocuments(response);
+
+
+
+
+                /* TODO build response:
+                docs
+                facets - with selection -> options
+                 */
+                Map<String, Object> facets = (Map<String, Object>) response.get("facets");
+                Map<String, Object> composer =  (Map<String, Object>) facets.get("composer");
+                List<Map<String, Object>> buckets =  (List<Map<String, Object>>) composer.get("buckets");
+                HashMap<String, Object> params = new HashMap<>();
+                Optional.ofNullable(ctx.queryParam("q")).ifPresent(q -> params.put("q", q));
+                FacetList facetList = FacetList.of(ctx.queryParam("composer"), buckets);
+                params.put("facetList", facetList);
+                ctx.render("test.jte", params);
             });
+
+            config.staticFiles.add("static");
         }).start(7070);
+    }
+
+    public record FacetList(List<FacetOption> options) {
+        public static FacetList of(String param, List<Map<String, Object>> buckets) {
+            ArrayList<FacetOption> list = new ArrayList<>();
+            for (Map<String, Object> bucket : buckets) {
+                String value = (String) bucket.get("val");
+                long count = (Long) bucket.get("count");
+                boolean selected = value.equals(param);
+                list.add(new FacetOption(value, count, selected));
+            }
+            return new FacetList(list);
+        }
+    }
+    public record FacetOption(String name, long count, boolean selected){}
+
+    public static SolrDocumentList getSolrDocuments(NamedList<Object> response) {
+        return (SolrDocumentList) response.get("response");
+    }
+
+    private static NamedList<Object> querySolr(Context ctx) throws SolrServerException, IOException {
+        JsonQueryRequest request = buildJsonQuery(ctx);
+        return client.request(request);
     }
 
     static JsonQueryRequest buildJsonQuery(Context context) {
@@ -86,19 +134,21 @@ public class Main {
                 ));
 
         setQuery(query, request);
-        setFilter(composer, request);
+        setComposerFilter(composer, request);
         return request;
     }
 
-    private static void setFilter(String composer, JsonQueryRequest request) {
-        if (composer != null)
-            request.withFilter(Map.of(
-                    "#tag", "composer:" + composer
-            ));
+    private static void setComposerFilter(String composer, JsonQueryRequest request) {
+        if (composer == null || composer.isBlank() || "All".equals(composer)) { // TODO All... kinda hard coupling
+            return;
+        }
+        request.withFilter(Map.of(
+                "#tag", "composer:" + composer
+        ));
     }
 
     private static void setQuery(String queryParam, JsonQueryRequest request) {
-        if (queryParam == null) {
+        if (queryParam == null || queryParam.isBlank()) {
             request.setQuery("*:*");
         } else {
             Map<String, Object> queryMap = Map.of("bool", Map.of(
