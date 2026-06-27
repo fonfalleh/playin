@@ -13,8 +13,11 @@ public class MuseReader {
 
         // Wow!
         //TODO make it make sense sometime
+        // TODO docker image with musescore and javalin... have maven resources download appimage? Or have 
         List<String> commands = List.of("/home/jacob/.local/bin/musescore", "-o", "outASDASD.xml", path.toString());
-        //List<String> commands = List.of("musescore", lily);
+
+        commands.forEach(System.out::println);
+
         ProcessBuilder processBuilder = new ProcessBuilder(commands).directory(new File(path.getParent().toString()));
 
         Process process = null;
