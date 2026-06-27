@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<head>
+    <title>File upload</title>
+    <link href="https://fonts.googleapis.com/css?family=Cherry+Swash|Raleway" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+<p>Upload musescore files to be indexed, with the possibility to supply additional metadata.</p>
+<form method="post" action="/muse" enctype="multipart/form-data">
+
+    <label for="file">File input (.mscx, .mscz)</label><br>
+    <input type="file" id="file" name="file"><br>
+
+    <label for="id">id</label><br>
+    <input type="text" name="id" id="id"><br>
+    <label for="title">title</label><br>
+    <input type="text" name="title" id="title"><br>
+    <label for="composer">composer</label><br>
+    <input type="text" name="composer" id="composer"><br>
+    <label for="editor">editor</label><br>
+    <input type="text" name="editor" id="editor"><br>
+    <label for="source">source</label><br>
+    <input type="text" name="source" id="source"><br>
+
+    <button>Submit</button>
+</form>
+</body>

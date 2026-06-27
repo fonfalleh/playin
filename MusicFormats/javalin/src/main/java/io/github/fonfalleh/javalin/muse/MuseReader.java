@@ -1,4 +1,4 @@
-package io.github.fonfalleh.javalin;
+package io.github.fonfalleh.javalin.muse;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,6 +12,7 @@ public class MuseReader {
     static void runMuse(Path path) {
 
         // Wow!
+        //TODO make it make sense sometime
         List<String> commands = List.of("/home/jacob/.local/bin/musescore", "-o", "outASDASD.xml", path.toString());
         //List<String> commands = List.of("musescore", lily);
         ProcessBuilder processBuilder = new ProcessBuilder(commands).directory(new File(path.getParent().toString()));
