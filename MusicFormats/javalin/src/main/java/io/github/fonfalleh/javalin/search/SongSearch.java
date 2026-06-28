@@ -22,9 +22,12 @@ public class SongSearch {
     private static final String QUERY_PARAM = "query";
     private static final String COMPOSER_PARAM = "composer";
 
+    private static final String SOLR_HOST = System.getProperty("solr.host", "localhost");
+    private static final String SOLR_BASE_URL = "http://" + SOLR_HOST + ":8983/solr";
+
     // Note: Uses javalin's jetty version for solrj
     private static final HttpJettySolrClient client = new HttpJettySolrClient.Builder()
-            .withBaseSolrUrl("http://localhost:8983/solr")
+            .withBaseSolrUrl(SOLR_BASE_URL)
             .withDefaultCollection("playin")
             .build();
 
@@ -47,12 +50,12 @@ public class SongSearch {
             model.put("composerFacet", composerFacet);
             model.put("documentList", new Main.SongSearchResult(getSolrDocuments(response)));
 
-            ctx.render("templates/search.jte", model);
+            ctx.render("search.jte", model);
         }
     };
 
     @SuppressWarnings("unchecked")
-    public static List<Map<String, Object>> getFacetByName(NamedList<Object> response, String name) {
+    private static List<Map<String, Object>> getFacetByName(NamedList<Object> response, String name) {
         Map<String, Object> facets = (Map<String, Object>) response.get("facets");
         Map<String, Object> composer = (Map<String, Object>) facets.get(name);
         return (List<Map<String, Object>>) composer.get("buckets");
@@ -67,7 +70,7 @@ public class SongSearch {
         return client.request(request);
     }
 
-    static JsonQueryRequest buildJsonQuery(Context context) {
+    private static JsonQueryRequest buildJsonQuery(Context context) {
         String query = context.queryParam("query");
         String composer = context.queryParam("composer");
 

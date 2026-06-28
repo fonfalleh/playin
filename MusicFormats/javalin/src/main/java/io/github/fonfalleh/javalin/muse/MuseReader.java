@@ -13,7 +13,9 @@ public class MuseReader {
 
         // Wow!
         //TODO make it make sense sometime
-        // TODO docker image with musescore and javalin... have maven resources download appimage? Or have 
+        // WIP: resolve binary.
+        // mscore is on PATH in docker, but wont launch properly
+        // --platform offscreen seems to help. But no output... hm
         List<String> commands = List.of("/home/jacob/.local/bin/musescore", "-o", "outASDASD.xml", path.toString());
 
         commands.forEach(System.out::println);

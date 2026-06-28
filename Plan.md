@@ -1082,3 +1082,8 @@ Ideas:
 
 Did small sample with jte rendering input param (docs outdated/scattered around, but now it works)
 TODO what is jte-classes in parent root? Do they get generated each build?
+
+# 2026-06-28~
+
+Progress! No more need for javascript needed. Working on docker setup. Having a little problem getting musescore to run in alpine. Perhaps try different approach?
+Seems like mostly distributed through appimage for deb and yum. Maybe an arch-based container?

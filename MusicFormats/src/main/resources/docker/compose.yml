@@ -2,8 +2,11 @@ name: playin
 services:
   solr:
     image: playin_solr:@solr.version@
+    hostname: "playin-solr"
     build:
       dockerfile: playin_solr.Dockerfile
+    networks:
+      - playin-net
     ports:
       - "8983:8983"
       - "8000:8000"
@@ -14,5 +17,18 @@ services:
       SOLR_OPTS: -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
       # For verbose output of solr scripts
       # VERBOSE: yes
+  javalin:
+    image: javalin:latest
+    hostname: "playin-javalin"
+    environment:
+      - solr.
+    networks:
+      - playin-net
+    ports:
+      - "7070:7070"
+
+networks:
+  playin-net:
+
 volumes:
   solr_home:
