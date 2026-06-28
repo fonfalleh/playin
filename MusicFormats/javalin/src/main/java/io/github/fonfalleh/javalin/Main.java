@@ -1,7 +1,9 @@
 package io.github.fonfalleh.javalin;
 
 import gg.jte.Content;
+import gg.jte.TemplateEngine;
 import gg.jte.TemplateOutput;
+import gg.jte.resolve.DirectoryCodeResolver;
 import io.github.fonfalleh.javalin.muse.MuseHandler;
 import io.github.fonfalleh.javalin.search.SongSearch;
 import io.javalin.Javalin;
@@ -11,11 +13,12 @@ import io.javalin.rendering.template.JavalinJte;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.util.NamedList;
 
+import java.nio.file.Path;
 import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) {
+    static void main() {
         Javalin.create(config -> {
             config.bundledPlugins.enableCors(cors -> {
                 cors.addRule(CorsPluginConfig.CorsRule::anyHost); // Eh.
@@ -39,7 +42,7 @@ public class Main {
 
             config.routes.post("/muse", new MuseHandler());
 
-            config.fileRenderer(new JavalinJte());
+            config.fileRenderer(new JavalinJte(createTemplateEngine()));
             config.routes.get("/", SongSearch.searchHandler);
 
             config.staticFiles.add("static");
@@ -68,6 +71,16 @@ public class Main {
                     output.writeContent("</section>");
                 }
             });
+        }
+    }
+
+    private static TemplateEngine createTemplateEngine() {
+        boolean usePrecompiledTemplates = Boolean.parseBoolean(System.getProperty("precompiled.templates", "false"));
+        if (usePrecompiledTemplates) {
+            return TemplateEngine.createPrecompiled(Path.of("jte-classes"), gg.jte.ContentType.Html);
+        } else {
+            DirectoryCodeResolver codeResolver = new DirectoryCodeResolver(Path.of("src", "main", "resources", "templates"));
+            return TemplateEngine.create(codeResolver, gg.jte.ContentType.Html);
         }
     }
 

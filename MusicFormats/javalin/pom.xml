@@ -85,6 +85,24 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>gg.jte</groupId>
+                <artifactId>jte-maven-plugin</artifactId>
+                <version>3.2.3</version>
+                <configuration>
+                    <sourceDirectory>${project.basedir}/src/main/resources/templates</sourceDirectory>
+                    <targetDirectory>${build.directory}/jte-classes</targetDirectory>
+                    <contentType>Html</contentType>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>precompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.6.1</version>
@@ -95,6 +113,16 @@
                             <mainClass>io.github.fonfalleh.javalin.Main</mainClass>
                         </transformer>
                     </transformers>
+                    <filters> <!-- From javalin's tutorial. Not sure if needed. -->
+                        <filter> <!-- This filter is needed to avoid a bug in the shade plugin -->
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
                     <finalName>app</finalName>
                 </configuration>
                 <executions>
@@ -110,6 +138,31 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>3.5.0</version>
+            </plugin>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.48.1</version>
+                <configuration>
+                    <images>
+                        <image>
+                            <name>playin-javalin</name>
+                            <build>
+                                <contextDir>${project.basedir}</contextDir>
+                                <dockerFile>src/main/docker/javalin.Dockerfile</dockerFile>
+                            </build>
+                        </image>
+                    </images>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>docker-build</id>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                        <phase>install</phase>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
