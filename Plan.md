@@ -1087,3 +1087,75 @@ TODO what is jte-classes in parent root? Do they get generated each build?
 
 Progress! No more need for javascript needed. Working on docker setup. Having a little problem getting musescore to run in alpine. Perhaps try different approach?
 Seems like mostly distributed through appimage for deb and yum. Maybe an arch-based container?
+
+# 2026-07-12~
+Surprisingly troublesome to get recent musescore (just cli for converting uploaded files) running in a container. No error output, but doesn't work properly. Maybe investigate more sometime.
+
+An older link (based on ubuntu 22), haven't verified, but tried using parts of that for getting things to run: https://markandruth.co.uk/2024/09/08/running-musescore-from-within-a-docker-container
+
+Could be version mismatch problems?
+`-platform offscreen` for not running x11 or wayland in docker.
+
+`xvfb-run` also mentioned as solution, but I haven't gotten that to work.
+
+Perhaps skip this for now and take a look at docker laters
+
+----
+`--debug` flag not present in cli but present in logs
+logs in `~/.local/share/MuseScore/MuseScore4/logs`
+
+WAIT
+`musescore --debug -o offscreendebugdash.xml sang.mscz -- -platform offscreen` -- before platform works locally. try in docker
+(Thanks ChatGPT i guess for knowing about QT flags vs muse flags, that could have been annoying to debug)
+
+Also maybe try with json conf to not have to supply funky args
+
+qt command parsing broke stuff. Looks better!
+diff... on very many x-coords (more decimals) and width, like:
+```
+➜  Scores diff normal.xml javalin.xml
+10c10
+<       <software>MuseScore 4.5.2</software>
+---
+>       <software>MuseScore Studio 4.6.3</software>
+17a18,22
+>     <miscellaneous>
+>       <miscellaneous-field name="creationDate">2025-10-19</miscellaneous-field>
+>       <miscellaneous-field name="platform">Linux</miscellaneous-field>
+>       <miscellaneous-field name="subtitle">Subtitle</miscellaneous-field>
+>       </miscellaneous>
+147c152
+<     <measure number="1" width="227.1">
+---
+>     <measure number="1" width="227.17">
+151c156
+<             <left-margin>95.21</left-margin>
+---
+>             <left-margin>94.81</left-margin>
+185c190
+<     <measure number="2" width="139.37">
+---
+>     <measure number="2" width="139.44">
+200c205
+<       <note default-x="43.77" default-y="-5">
+---
+>       <note default-x="43.78" default-y="-5">
+```
+
+Also slurs are different
+```
+
+260c265
+<           <slur type="stop" number="1"/>
+---
+>           <slur type="stop" number="1" bezier-x="-10.933421" bezier-y="12.452401"/>
+263c268
+
+```
+
+Could be versions defaults that's different. Apparently my local muse is older than the (also somewhat old) version on alpine
+
+On a quick glance only affects display, which we don't mind at this time.
+
+TODO make it work!
+TODO file command arg parse bug to muse?

@@ -16,6 +16,8 @@ public class MuseReader {
         // WIP: resolve binary.
         // mscore is on PATH in docker, but wont launch properly
         // --platform offscreen seems to help. But no output... hm
+
+        //TODO this works using exec? mscore --debug -o test.xml sang.mscz -- -platform offscreen
         List<String> commands = List.of("/home/jacob/.local/bin/musescore", "-o", "outASDASD.xml", path.toString());
 
         commands.forEach(System.out::println);
