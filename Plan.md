@@ -1159,3 +1159,28 @@ On a quick glance only affects display, which we don't mind at this time.
 
 TODO make it work!
 TODO file command arg parse bug to muse?
+
+----
+# 2026-09-27
+Got musescore to actually convert uploaded .mscz-files to .xml in alpine-based containers. Very close to have something "deployable", i.e. something that can be easily demoed and/or actually used.
+messed around with character encodings and filenames, but ignored them in the end. Easier to not have to think about things like spaces and character encodings (silent failures when trying to convert to xml) at all and just call files boring things.
+
+Lot's of things that can be improved on!
+
+- write some tests that shortens the loop for developing (lots of docker logs and execing into containers to validate)
+- write other tests
+  - regression
+  - integration
+- actually do something with muse files
+  - solr upload
+  - storage/edit mode for maintaining a set of files and not upload everything all the time
+    - db for keeping things?
+    - file system + saved metadata?
+    - editing metadata/files for existing things?
+- architecture
+  - index things that are uploaded to javelin
+  - split up projects into actually usable things
+- get a domain? Not use github package names?
+- visualize structure
+- write user scenarios
+  - which can also be used for testing

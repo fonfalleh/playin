@@ -10,19 +10,29 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class MuseHandler implements Handler {
+
     @Override
     public void handle(@NotNull Context ctx) throws Exception {
-
-        // TODO actually do something. Also naming
         Path temps = Files.createTempDirectory("musetmp");
         ctx.uploadedFileMap().forEach((name, list) -> {
             UploadedFile file = list.getFirst();
             String filename = file.filename();
             System.out.println(filename);
-            Path path = temps.resolve(filename);
+            Path path = tmpFilePath(filename,temps);
             FileUtil.streamToFile(file.content(), path.toString());
+
             MuseReader.runMuse(path);
+            // On success, creates out.xml
+            // TODO need to work out dependencies so this can send things to solr
+            temps.resolve("out.xml");
+
         });
 
+    }
+    Path tmpFilePath(String filename, Path basePath) {
+        String extension = filename.substring(filename.lastIndexOf("."));
+        if (".mscz".equals(extension) || ".mscx".equals(extension))
+            return basePath.resolve("input" + extension);
+        else throw new IllegalArgumentException("Uploaded file isn't .mscz or .mscx:" + filename);
     }
 }

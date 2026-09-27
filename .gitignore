@@ -9,3 +9,4 @@ target/
 *.png
 *.svg
 MusicFormats/docker
+**/jte-classes/

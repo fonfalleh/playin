@@ -18,8 +18,10 @@ services:
       # For verbose output of solr scripts
       # VERBOSE: yes
   javalin:
-    image: javalin:latest
+    image: playin-javalin:latest
     hostname: "playin-javalin"
+    #TODO not root
+    #user: root
     environment:
       - solr.
     networks:

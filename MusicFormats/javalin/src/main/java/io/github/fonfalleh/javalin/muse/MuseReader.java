@@ -9,20 +9,21 @@ import java.util.List;
 
 public class MuseReader {
 
-    static void runMuse(Path path) {
+    static final String museBinary;
 
-        // Wow!
-        //TODO make it make sense sometime
-        // WIP: resolve binary.
-        // mscore is on PATH in docker, but wont launch properly
-        // --platform offscreen seems to help. But no output... hm
+    static {
+        museBinary = System.getProperty("museBinary", "mscore");
+    }
 
-        //TODO this works using exec? mscore --debug -o test.xml sang.mscz -- -platform offscreen
-        List<String> commands = List.of("/home/jacob/.local/bin/musescore", "-o", "outASDASD.xml", path.toString());
+    static void runMuse(Path museFile) {
+        String escapedMuseFile = museFile.toString().replace(" ", "\\ ");
+        // "-platform offscreen" needed for minimal musescore without graphics
+        // -- needed because of cli parse bug in musescore https://github.com/musescore/MuseScore/issues/17247
+        List<String> commands = List.of(museBinary, "-o", "out.xml", escapedMuseFile, "--", "-platform", "offscreen");
 
         commands.forEach(System.out::println);
 
-        ProcessBuilder processBuilder = new ProcessBuilder(commands).directory(new File(path.getParent().toString()));
+        ProcessBuilder processBuilder = new ProcessBuilder(commands).directory(new File(museFile.getParent().toString()));
 
         Process process = null;
         try {
