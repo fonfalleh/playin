@@ -1184,3 +1184,8 @@ Lot's of things that can be improved on!
 - visualize structure
 - write user scenarios
   - which can also be used for testing
+
+# 2026-09-28
+
+Realized project needed refactoring in order to actually do something, so started with that.
+Taking this opportunity to review pom files and what parts make sense to group and what parts make sense to reuse.
