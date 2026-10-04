@@ -162,40 +162,6 @@
                     </filesets>
                 </configuration>
             </plugin>
-            <!-- For copying jetty libs for cors fix in solr_cors docker image -->
-            <!--plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.6.1</version>
-                <executions>
-                    <execution>
-                        <id>copy</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.eclipse.jetty</groupId>
-                                    <artifactId>jetty-servlets</artifactId>
-                                    <version>${jetty.version}</version>
-                                    <type>jar</type>
-                                    <outputDirectory>${project.basedir}/docker</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.eclipse.jetty</groupId>
-                                    <artifactId>jetty-util</artifactId>
-                                    <version>${jetty.version}</version>
-                                    <type>jar</type>
-                                    <outputDirectory>${project.basedir}/docker</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
-                            <!- - other configurations here - ->
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin -->
         </plugins>
         <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
             <plugins>

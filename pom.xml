@@ -19,7 +19,7 @@
 
     <modules>
         <module>MusicFormats</module>
-        <module>solr-plugins</module>
+        <module>solr</module>
         <module>javalin</module>
         <module>indexer</module>
     </modules>
