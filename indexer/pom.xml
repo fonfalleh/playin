@@ -20,10 +20,6 @@
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-solrj-jetty</artifactId>
         </dependency>
-        <!-- TODO verify needed? dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </-dependency-->
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-xml</artifactId>

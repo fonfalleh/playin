@@ -13,7 +13,6 @@
     <artifactId>solr</artifactId>
 
     <dependencies>
-        <!-- TODO break out things -->
         <dependency>
             <groupId>io.github.fonfalleh</groupId>
             <artifactId>MusicFormats</artifactId>
@@ -36,13 +35,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>5.10.1</version> <!-- TODO dependency management -->
-            <scope>test</scope>
-        </dependency>
-        <!-- TODO verify if still needed for solr test suite -->
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.13.2</version>
@@ -53,6 +45,7 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
                     <execution>
@@ -86,7 +79,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.8.1</version>
                 <executions>
                     <execution>
                         <id>copy</id>
@@ -109,7 +101,6 @@
             <plugin>
                 <groupId>io.fabric8</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>0.48.1</version><!-- TODO version -->
                 <configuration>
                     <images>
                         <image>
