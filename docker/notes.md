@@ -1,3 +1,5 @@
+TODO review this. Not quite true, but was a bit tricky to get right
+
 - Docker compose using Solr 9.5.0
 - add user to docker group to avoid sudo
 
