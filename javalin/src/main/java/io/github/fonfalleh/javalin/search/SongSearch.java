@@ -1,6 +1,5 @@
 package io.github.fonfalleh.javalin.search;
 
-import io.github.fonfalleh.javalin.Main;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -48,7 +47,7 @@ public class SongSearch {
             Optional.ofNullable(ctx.queryParam(QUERY_PARAM)).ifPresent(q -> model.put(QUERY_PARAM, q));
 
             model.put("composerFacet", composerFacet);
-            model.put("documentList", new Main.SongSearchResult(getSolrDocuments(response)));
+            model.put("documentList", new SongSearchResult(getSolrDocuments(response)));
 
             ctx.render("search.jte", model);
         }
