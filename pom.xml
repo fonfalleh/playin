@@ -18,10 +18,9 @@
     </properties>
 
     <modules>
-        <module>MusicFormats</module>
+        <module>musicformats</module>
         <module>solr</module>
         <module>javalin</module>
-        <module>indexer</module>
     </modules>
 
     <dependencyManagement>

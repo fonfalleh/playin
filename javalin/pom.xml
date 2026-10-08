@@ -28,7 +28,6 @@
             <artifactId>javalin-rendering-jte</artifactId>
             <version>${javalin.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
@@ -47,6 +46,11 @@
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.fonfalleh</groupId>
+            <artifactId>musicformats</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
@@ -70,6 +74,28 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-songs</id>
+                        <goals>
+                            <goal>resources</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${project.parent.basedir}/musicformats/src/main/resources/songs</directory>
+
+                                </resource>
+                            </resources>
+                            <outputDirectory>target/songs</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

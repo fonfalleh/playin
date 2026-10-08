@@ -1,8 +1,8 @@
 package io.github.fonfalleh.playin.indexer;
 
+import io.github.fonfalleh.config.SolrClientFactory;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.jetty.HttpJettySolrClient;
 import org.apache.solr.common.SolrInputDocument;
 
 import java.io.File;
@@ -44,11 +44,7 @@ public class Indexer {
         };
     };
 
-    // TODO fix
-    private static SolrClient client = new HttpJettySolrClient
-            .Builder("http://localhost:8983/solr")
-            .withDefaultCollection("playin")
-            .build();
+    private static final SolrClient client = SolrClientFactory.getClient();
 
     public static void main(String[] args) throws SolrServerException, IOException {
         if (args.length < 1) {
@@ -56,6 +52,7 @@ public class Indexer {
         } else {
             indexDirsFromPath(args[0]);
         }
+        //TODO client.close for running in isolation
     }
 
     public static void indexDirsFromPath(String path) throws SolrServerException, IOException {
@@ -68,7 +65,6 @@ public class Indexer {
                 .collect(Collectors.toList());
 
         client.add(docs);
-        client.close();
     }
 
     /**

@@ -1,9 +1,10 @@
 package io.github.fonfalleh.javalin.search;
 
+import io.github.fonfalleh.config.SolrClientFactory;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.jetty.HttpJettySolrClient;
 import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.util.NamedList;
@@ -21,14 +22,7 @@ public class SongSearch {
     private static final String QUERY_PARAM = "query";
     private static final String COMPOSER_PARAM = "composer";
 
-    private static final String SOLR_HOST = System.getProperty("solr.host", "localhost");
-    private static final String SOLR_BASE_URL = "http://" + SOLR_HOST + ":8983/solr";
-
-    // Note: Uses javalin's jetty version for solrj
-    private static final HttpJettySolrClient client = new HttpJettySolrClient.Builder()
-            .withBaseSolrUrl(SOLR_BASE_URL)
-            .withDefaultCollection("playin")
-            .build();
+    private static final SolrClient client = SolrClientFactory.getClient();
 
     public static Handler searchHandler = ctx -> {
         {

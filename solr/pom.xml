@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>io.github.fonfalleh</groupId>
-            <artifactId>MusicFormats</artifactId>
+            <artifactId>musicformats</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -92,7 +92,7 @@
                     <artifactItems>
                         <artifactItem>
                             <groupId>io.github.fonfalleh</groupId>
-                            <artifactId>MusicFormats</artifactId>
+                            <artifactId>musicformats</artifactId>
                             <type>jar</type>
                         </artifactItem>
                     </artifactItems>

@@ -8,5 +8,4 @@ target/
 *.midi
 *.png
 *.svg
-MusicFormats/docker
 **/jte-classes/
