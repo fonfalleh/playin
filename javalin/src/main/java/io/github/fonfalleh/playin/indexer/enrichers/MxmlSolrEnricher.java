@@ -1,30 +1,35 @@
-package io.github.fonfalleh.playin.indexer;
+package io.github.fonfalleh.playin.indexer.enrichers;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import io.github.fonfalleh.formats.musicxml.LyricExtractor;
 import io.github.fonfalleh.formats.musicxml.PitchExtractor;
 import io.github.fonfalleh.formats.musicxml.XmlMetadata;
 import io.github.fonfalleh.formats.musicxml.model.MXML;
+import io.github.fonfalleh.playin.indexer.Indexer;
+import io.github.fonfalleh.playin.indexer.Util;
 import org.apache.solr.common.SolrInputDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 
-public class MxmlSolrEnricher {
+public class MxmlSolrEnricher implements SolrDocEnricher {
 
-    public static void enrichSolrDoc(List<File> files, SolrInputDocument doc) {
-        if (files == null || files.isEmpty())
-            return;
-        List<MXML> mxmls = parseXmlFiles(files);
-        if (mxmls.isEmpty())
-            return;
-        for (MXML mxml : mxmls) {
-            addMetadata(doc, mxml);
-            addLyrics(doc, mxml);
-            addPitches(doc, mxml);
-        }
+    private static final Logger log = LoggerFactory.getLogger(MxmlSolrEnricher.class);
+
+    @Override
+    public List<String> supportedExtensions() {
+        return List.of("xml", "musicxml");
+    }
+
+    @Override
+    public void enrichSolrDoc(File file, SolrInputDocument doc) {
+        MXML mxml = parseXmlFile(file);
+        addMetadata(doc, mxml);
+        addLyrics(doc, mxml);
+        addPitches(doc, mxml);
     }
 
     private static void addMetadata(SolrInputDocument doc, MXML mxml) {
@@ -44,20 +49,16 @@ public class MxmlSolrEnricher {
     private static void addPitches(SolrInputDocument doc, MXML mxml) {
         // TODO verify adding lists...
         // Also constants
-        doc.addField(Indexer.PITCHES, Indexer.pitchesToString(PitchExtractor.extract(mxml)));
+        doc.addField(Indexer.PITCHES, Util.pitchesToString(PitchExtractor.extract(mxml)));
     }
 
-    static List<MXML> parseXmlFiles(List<File> files) {
+    static MXML parseXmlFile(File file) {
         XmlMapper xmlMapper = new XmlMapper();
-        return files.stream().map(file -> {
-                    try {
-                        return xmlMapper.readValue(file, MXML.class);
-                    } catch (IOException e) {
-                        System.out.println("Failed parsing file: " + file.getName());
-                        return null;
-                    }
-                })
-                .filter(Objects::nonNull)
-                .toList();
+        try {
+            return xmlMapper.readValue(file, MXML.class);
+        } catch (IOException e) {
+            log.warn("Failed parsing file: {}, skipping enrichment", file.getName());
+            return null;
+        }
     }
 }

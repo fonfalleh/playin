@@ -1,4 +1,4 @@
-package io.github.fonfalleh.playin.indexer;
+package io.github.fonfalleh.playin.indexer.enrichers;
 
 import org.apache.solr.common.SolrInputDocument;
 
@@ -9,20 +9,22 @@ import java.io.FileReader;
 import java.util.Arrays;
 import java.util.List;
 
-public class MetadataFileSolrEnricher {
+public class MetadataFileSolrEnricher implements SolrDocEnricher {
 
     private static final String metadataMultiValueSeparator = ";";
 
-    public static void enrichSolrDoc(List<File> files, SolrInputDocument doc) {
-        if (files == null || files.size() != 1) {
-            return;
-        }
-        File metaFile = files.get(0);
-        if (!metaFile.canRead()) {
+    @Override
+    public List<String> supportedExtensions() {
+        return List.of("metadata");
+    }
+
+    @Override
+    public void enrichSolrDoc(File file, SolrInputDocument doc) {
+        if (!file.canRead()) {
             return;
         }
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(metaFile));
+            BufferedReader reader = new BufferedReader(new FileReader(file));
             //TODO do cleaning here? Or moderate metadata. Or have util/app/page for creating metadata.
             reader.lines().forEach(s -> {
                 String[] split = s.split(":", 2);
@@ -32,7 +34,7 @@ public class MetadataFileSolrEnricher {
         } catch (FileNotFoundException e) {
             System.out.println("No metadata file found");
         } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("Malformed metadata file: " + metaFile.getPath());
+            System.out.println("Malformed metadata file: " + file.getPath());
         }
     }
 
