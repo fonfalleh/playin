@@ -1,5 +1,6 @@
 package io.github.fonfalleh.formats;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
@@ -31,8 +32,9 @@ public class TestLily {
                 .collect(Collectors.toList());
     }
 
-    // TODO
+    // TODO make something useful
     @Test
+    @Tag("slow")
     public void testThing() throws Exception {
         //ProcessBuilder builder = new ProcessBuilder("echo \"#(ly:set-option 'crop #t) { c d e } \" | lilypond --svg -o lols -");
         //ProcessBuilder builder = new ProcessBuilder("/bin/sh", "-c", "echo \"#(ly:set-option 'crop #t) { c d e } \" | lilypond --pdf -o lols -");

@@ -76,15 +76,18 @@ public class Indexer {
         if (files == null) {
             return null;
         }
-
         for (File file : files) {
-            SolrDocEnricher solrDocEnricher = enricherMap.get(getExtension(file));
-            if (solrDocEnricher == null) {
-                log.warn("Unexpected extension, skipping file {}", file.getAbsolutePath());
-                continue;
-            }
-            solrDocEnricher.enrichSolrDoc(file, doc);
+            enrichDocWithFile(file, doc);
         }
         return doc;
+    }
+
+    public static void enrichDocWithFile(File file, SolrInputDocument doc) {
+        SolrDocEnricher solrDocEnricher = enricherMap.get(getExtension(file));
+        if (solrDocEnricher == null) {
+            log.warn("Unexpected extension, skipping file {}", file.getAbsolutePath());
+            return;
+        }
+        solrDocEnricher.enrichSolrDoc(file, doc);
     }
 }
