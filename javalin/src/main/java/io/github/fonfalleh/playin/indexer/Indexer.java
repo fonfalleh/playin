@@ -90,4 +90,8 @@ public class Indexer {
         }
         solrDocEnricher.enrichSolrDoc(file, doc);
     }
+
+    public static void indexDocument(SolrInputDocument doc) throws SolrServerException, IOException {
+        client.add(doc);
+    }
 }
