@@ -24,6 +24,11 @@ import java.util.stream.Collectors;
  */
 public class Indexer {
 
+    public Indexer(Map<String, SolrDocEnricher> enricherMap, SolrClient solrClient) {
+        this.enricherMap = enricherMap;
+        this.solrClient = solrClient;
+    }
+
     // Fields
     // TODO shared constants
     public static final String COMPOSER = "composer";
@@ -31,7 +36,8 @@ public class Indexer {
     public static final String PITCHES = "pitches";
     public static final String TITLE = "title";
 
-    private static final Map<String, SolrDocEnricher> enricherMap = Enrichers.getEnricherMap();
+    private final Map<String, SolrDocEnricher> enricherMap;
+    private final SolrClient solrClient;
 
     private static final Logger log = LoggerFactory.getLogger(Indexer.class);
 
@@ -40,28 +46,30 @@ public class Indexer {
         return baseName.substring(baseName.lastIndexOf('.') + 1);
     }
 
-    private static final SolrClient client = SolrClientFactory.getClient();
-
+    // TODO break out of actual indexing
     static void main(String[] args) throws SolrServerException, IOException {
+        SolrClient solrClient = SolrClientFactory.getClient();
+        Indexer indexer = new Indexer(Enrichers.getEnricherMap(), solrClient);
+
         if (args.length < 1) {
-            indexDirsFromPath(Indexer.class.getResource("/songs").getPath());
+            indexer.indexDirsFromPath(Indexer.class.getResource("/songs").getPath());
         } else {
-            indexDirsFromPath(args[0]);
+            indexer.indexDirsFromPath(args[0]);
         }
         //TODO  for running in isolation. Don't close the shared client.
-        client.close();
+        solrClient.close();
     }
 
-    public static void indexDirsFromPath(String path) throws SolrServerException, IOException {
+    public void indexDirsFromPath(String path) throws SolrServerException, IOException {
         File f = new File(path);
 
         List<SolrInputDocument> docs = Arrays.stream(f.listFiles())
                 .filter(File::isDirectory)
-                .map(Indexer::solrDocFromDirectory)
+                .map(this::solrDocFromDirectory)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        client.add(docs);
+        solrClient.add(docs);
     }
 
     /**
@@ -70,7 +78,7 @@ public class Indexer {
      * @param directory Input directory. Needs at least a <code>metadata</code>-file.
      * @return doc A document if successful, otherwise null.
      */
-    static SolrInputDocument solrDocFromDirectory(File directory) {
+    private SolrInputDocument solrDocFromDirectory(File directory) {
         SolrInputDocument doc = new SolrInputDocument();
         File[] files = directory.listFiles();
         if (files == null) {
@@ -82,7 +90,7 @@ public class Indexer {
         return doc;
     }
 
-    public static void enrichDocWithFile(File file, SolrInputDocument doc) {
+    public void enrichDocWithFile(File file, SolrInputDocument doc) {
         SolrDocEnricher solrDocEnricher = enricherMap.get(getExtension(file));
         if (solrDocEnricher == null) {
             log.warn("Unexpected extension, skipping file {}", file.getAbsolutePath());
@@ -91,7 +99,7 @@ public class Indexer {
         solrDocEnricher.enrichSolrDoc(file, doc);
     }
 
-    public static void indexDocument(SolrInputDocument doc) throws SolrServerException, IOException {
-        client.add(doc);
+    public void indexDocument(SolrInputDocument doc) throws SolrServerException, IOException {
+        solrClient.add(doc);
     }
 }

@@ -88,6 +88,7 @@
     <profiles>
         <profile>
             <!-- For skipping tests that run external applications, like lilypond -->
+            <!-- TODO maybe think through more. Takes longer on the other modules? -->
             <id>skipSlowTests</id>
             <build>
                 <plugins>

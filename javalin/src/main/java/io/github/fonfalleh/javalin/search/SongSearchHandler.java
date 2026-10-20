@@ -1,6 +1,5 @@
 package io.github.fonfalleh.javalin.search;
 
-import io.github.fonfalleh.config.SolrClientFactory;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import org.apache.solr.client.solrj.SolrClient;
@@ -8,6 +7,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.util.NamedList;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -15,37 +15,40 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class SongSearch {
+public class SongSearchHandler implements Handler {
 
     public static final String NO_FILTERING_FACET_VALUE = "All";
 
     private static final String QUERY_PARAM = "query";
     private static final String COMPOSER_PARAM = "composer";
 
-    private static final SolrClient client = SolrClientFactory.getClient();
+    private final SolrClient client;
 
-    public static Handler searchHandler = ctx -> {
-        {
-            NamedList<Object> response;
-            try {
-                response = querySolrForSongs(ctx);
-            } catch (SolrServerException | IOException e) {
-                throw new RuntimeException(e);
-            }
+    public SongSearchHandler(SolrClient client) {
+        this.client = client;
+    }
 
-            List<Map<String, Object>> buckets = getFacetByName(response, COMPOSER_PARAM);
-
-            HashMap<String, Object> model = new HashMap<>();
-            FieldFacet composerFacet = FieldFacet.of(ctx.queryParam(COMPOSER_PARAM), buckets);
-
-            Optional.ofNullable(ctx.queryParam(QUERY_PARAM)).ifPresent(q -> model.put(QUERY_PARAM, q));
-
-            model.put("composerFacet", composerFacet);
-            model.put("documentList", new SongSearchResult(getSolrDocuments(response)));
-
-            ctx.render("search.jte", model);
+    @Override
+    public void handle(@NotNull Context ctx) {
+        NamedList<Object> response;
+        try {
+            response = querySolrForSongs(ctx);
+        } catch (SolrServerException | IOException e) {
+            throw new RuntimeException(e);
         }
-    };
+
+        List<Map<String, Object>> buckets = getFacetByName(response, COMPOSER_PARAM);
+
+        HashMap<String, Object> model = new HashMap<>();
+        FieldFacet composerFacet = FieldFacet.of(ctx.queryParam(COMPOSER_PARAM), buckets);
+
+        Optional.ofNullable(ctx.queryParam(QUERY_PARAM)).ifPresent(q -> model.put(QUERY_PARAM, q));
+
+        model.put("composerFacet", composerFacet);
+        model.put("documentList", new SongSearchResult(getSolrDocuments(response)));
+
+        ctx.render("search.jte", model);
+    }
 
     @SuppressWarnings("unchecked")
     private static List<Map<String, Object>> getFacetByName(NamedList<Object> response, String name) {
@@ -58,7 +61,7 @@ public class SongSearch {
         return (SolrDocumentList) response.get("response");
     }
 
-    public static NamedList<Object> querySolrForSongs(Context ctx) throws SolrServerException, IOException {
+    public NamedList<Object> querySolrForSongs(Context ctx) throws SolrServerException, IOException {
         JsonQueryRequest request = buildJsonQuery(ctx);
         return client.request(request);
     }
@@ -120,5 +123,4 @@ public class SongSearch {
             request.setQuery(queryMap);
         }
     }
-
 }

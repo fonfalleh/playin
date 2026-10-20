@@ -16,6 +16,12 @@ import java.nio.file.Path;
 // TODO more like FileHandler? Or uploadHandler? If not for explicitly calling musehandler this could handle all files?
 public class MuseHandler implements Handler {
 
+    private final Indexer indexer;
+
+    public MuseHandler(Indexer indexer) {
+        this.indexer = indexer;
+    }
+
     @Override
     public void handle(@NotNull Context ctx) throws Exception {
         Path temps = Files.createTempDirectory("musetmp");
@@ -33,14 +39,11 @@ public class MuseHandler implements Handler {
             // TODO Shouldn't have to know about solr
             SolrInputDocument doc = new SolrInputDocument();
             // TODO create MuseEnricher? But... not really the same. Wrap logic? Chain?
-            Indexer.enrichDocWithFile(outPath.toFile(), doc);
+            indexer.enrichDocWithFile(outPath.toFile(), doc);
             // TODO other metadata using formParams. Class/record/enum? Don't want to specify things everywhere.
 
-            //TODO not static access to stuff. Actual DI with explicit init.
-            // Or maybe upload to other endpoints? But then must handle http clients everywhere. Hmm.
-
             try {
-                Indexer.indexDocument(doc);
+                indexer.indexDocument(doc);
             } catch (SolrServerException | IOException e) {
                 // TODO
                 throw new RuntimeException(e);

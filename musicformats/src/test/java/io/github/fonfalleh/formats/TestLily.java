@@ -1,5 +1,6 @@
 package io.github.fonfalleh.formats;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -35,6 +36,7 @@ public class TestLily {
     // TODO make something useful
     @Test
     @Tag("slow")
+    @Disabled
     public void testThing() throws Exception {
         //ProcessBuilder builder = new ProcessBuilder("echo \"#(ly:set-option 'crop #t) { c d e } \" | lilypond --svg -o lols -");
         //ProcessBuilder builder = new ProcessBuilder("/bin/sh", "-c", "echo \"#(ly:set-option 'crop #t) { c d e } \" | lilypond --pdf -o lols -");

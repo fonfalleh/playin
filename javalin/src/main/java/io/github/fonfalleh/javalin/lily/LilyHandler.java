@@ -1,4 +1,9 @@
-package io.github.fonfalleh.javalin;
+package io.github.fonfalleh.javalin.lily;
+
+import io.javalin.http.ContentType;
+import io.javalin.http.Context;
+import io.javalin.http.Handler;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -8,7 +13,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-public class LilyPng {
+public class LilyHandler implements Handler {
+
+    @Override
+    public void handle(@NotNull Context ctx) throws Exception {
+        String notes = ctx.queryParam("notes");
+        if (notes != null) {
+            byte[] bytes = lilyToPng(notes);
+            ctx.contentType(ContentType.IMAGE_PNG);
+            ctx.result(bytes);
+        } else {
+            //TODO default image? error handling?
+            ctx.result("Nope");
+        }
+    }
 
     static byte[] lilyToPng(String lily) throws IOException {
 
@@ -40,5 +58,4 @@ public class LilyPng {
 
         return bytes;
     }
-
 }

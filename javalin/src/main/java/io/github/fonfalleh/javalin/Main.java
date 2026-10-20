@@ -2,44 +2,41 @@ package io.github.fonfalleh.javalin;
 
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.DirectoryCodeResolver;
+import io.github.fonfalleh.config.Enrichers;
+import io.github.fonfalleh.config.SolrClientFactory;
+import io.github.fonfalleh.javalin.lily.LilyHandler;
 import io.github.fonfalleh.javalin.muse.MuseHandler;
-import io.github.fonfalleh.javalin.search.SongSearch;
+import io.github.fonfalleh.javalin.search.SolrJSearchHandler;
+import io.github.fonfalleh.javalin.search.SongSearchHandler;
+import io.github.fonfalleh.playin.indexer.Indexer;
+import io.github.fonfalleh.playin.indexer.enrichers.SolrDocEnricher;
 import io.javalin.Javalin;
-import io.javalin.http.ContentType;
 import io.javalin.plugin.bundled.CorsPluginConfig;
 import io.javalin.rendering.template.JavalinJte;
-import org.apache.solr.common.util.NamedList;
+import org.apache.solr.client.solrj.SolrClient;
 
 import java.nio.file.Path;
+import java.util.Map;
 
 public class Main {
 
     static void main() {
+        Map<String, SolrDocEnricher> enricherMap = Enrichers.getEnricherMap();
+        SolrClient solrClient = SolrClientFactory.getClient();
+        Indexer indexer = new Indexer(enricherMap, solrClient);
+        SongSearchHandler songSearchHandler = new SongSearchHandler(solrClient);
+
         Javalin.create(config -> {
             config.bundledPlugins.enableCors(cors -> {
                 cors.addRule(CorsPluginConfig.CorsRule::anyHost); // TODO Eh. Fix sometime?
             });
-            config.routes.get("/solrj", ctx ->
-                    {
-                        NamedList<Object> response = SongSearch.querySolrForSongs(ctx);
-                        ctx.json(response.jsonStr());
-                    }
-            );
-            config.routes.get("/lily", ctx -> {
-                String notes = ctx.queryParam("notes");
-                if (notes != null) {
-                    byte[] bytes = LilyPng.lilyToPng(notes);
-                    ctx.contentType(ContentType.IMAGE_PNG);
-                    ctx.result(bytes);
-                } else {
-                    ctx.result("Nope");
-                }
-            });
 
-            config.routes.post("/muse", new MuseHandler());
+            config.routes.get("/solrj", new SolrJSearchHandler(songSearchHandler));
+            config.routes.get("/lily", new LilyHandler());
+            config.routes.post("/muse", new MuseHandler(indexer));
+            config.routes.get("/", songSearchHandler);
 
             config.fileRenderer(new JavalinJte(createTemplateEngine()));
-            config.routes.get("/", SongSearch.searchHandler);
 
             config.staticFiles.add("static");
         }).start(7070);
