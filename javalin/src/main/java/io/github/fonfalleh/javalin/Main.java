@@ -5,7 +5,7 @@ import gg.jte.resolve.DirectoryCodeResolver;
 import io.github.fonfalleh.config.Enrichers;
 import io.github.fonfalleh.config.SolrClientFactory;
 import io.github.fonfalleh.javalin.lily.LilyHandler;
-import io.github.fonfalleh.javalin.muse.MuseHandler;
+import io.github.fonfalleh.javalin.fileupload.FileUploadHandler;
 import io.github.fonfalleh.javalin.search.SolrJSearchHandler;
 import io.github.fonfalleh.javalin.search.SongSearchHandler;
 import io.github.fonfalleh.playin.indexer.Indexer;
@@ -31,10 +31,11 @@ public class Main {
                 cors.addRule(CorsPluginConfig.CorsRule::anyHost); // TODO Eh. Fix sometime?
             });
 
-            config.routes.get("/solrj", new SolrJSearchHandler(songSearchHandler));
-            config.routes.get("/lily", new LilyHandler());
-            config.routes.post("/muse", new MuseHandler(indexer));
             config.routes.get("/", songSearchHandler);
+            config.routes.get("/lily", new LilyHandler());
+            config.routes.get("/solrj", new SolrJSearchHandler(songSearchHandler));
+            config.routes.get("/fileupload", ctx -> ctx.render("fileupload.jte")); // TODO intellij run uses parent as workdir by default, missing this. Find out more/why
+            config.routes.post("/fileupload", new FileUploadHandler(indexer));
 
             config.fileRenderer(new JavalinJte(createTemplateEngine()));
 
@@ -48,6 +49,7 @@ public class Main {
             return TemplateEngine.createPrecompiled(Path.of("jte-classes"), gg.jte.ContentType.Html);
         } else {
             DirectoryCodeResolver codeResolver = new DirectoryCodeResolver(Path.of("src", "main", "resources", "templates"));
+            // TODO override jte-classes in create method below.
             return TemplateEngine.create(codeResolver, gg.jte.ContentType.Html);
         }
     }

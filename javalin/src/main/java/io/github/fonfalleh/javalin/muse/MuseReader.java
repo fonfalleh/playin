@@ -14,8 +14,8 @@ public class MuseReader {
     static {
         museBinary = System.getProperty("museBinary", "mscore");
     }
-
-    static void runMuse(Path museFile) {
+//TODO not public?
+    public static void runMuse(Path museFile) {
         String escapedMuseFile = museFile.toString().replace(" ", "\\ ");
         // "-platform offscreen" needed for minimal musescore without graphics
         // -- needed because of cli parse bug in musescore https://github.com/musescore/MuseScore/issues/17247
