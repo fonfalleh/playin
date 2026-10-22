@@ -7,7 +7,7 @@ public class SolrClientFactory {
     private static final String SOLR_HOST = System.getProperty("solr.host", "localhost");
     private static final String SOLR_BASE_URL = "http://" + SOLR_HOST + ":8983/solr";
 
-    private static final SolrClient client = createClient();
+    private static SolrClient client;
 
     // Note: Uses javalin's jetty version for solrj
     private static HttpJettySolrClient createClient() {
@@ -18,6 +18,9 @@ public class SolrClientFactory {
     }
 
     public static SolrClient getClient() {
+        if (client == null) {
+            client = createClient();
+        }
         return client;
     }
 }

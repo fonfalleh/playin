@@ -14,13 +14,19 @@ import io.javalin.Javalin;
 import io.javalin.plugin.bundled.CorsPluginConfig;
 import io.javalin.rendering.template.JavalinJte;
 import org.apache.solr.client.solrj.SolrClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.util.Map;
 
 public class Main {
 
+    private static final Logger log = LoggerFactory.getLogger(Main.class);
+
     static void main() {
+        TemplateEngine templateEngine = createTemplateEngine();
+
         Map<String, SolrDocEnricher> enricherMap = Enrichers.getEnricherMap();
         SolrClient solrClient = SolrClientFactory.getClient();
         Indexer indexer = new Indexer(enricherMap, solrClient);
@@ -34,10 +40,10 @@ public class Main {
             config.routes.get("/", songSearchHandler);
             config.routes.get("/lily", new LilyHandler());
             config.routes.get("/solrj", new SolrJSearchHandler(songSearchHandler));
-            config.routes.get("/fileupload", ctx -> ctx.render("fileupload.jte")); // TODO intellij run uses parent as workdir by default, missing this. Find out more/why
+            config.routes.get("/fileupload", ctx -> ctx.render("fileupload.jte"));
             config.routes.post("/fileupload", new FileUploadHandler(indexer));
 
-            config.fileRenderer(new JavalinJte(createTemplateEngine()));
+            config.fileRenderer(new JavalinJte(templateEngine));
 
             config.staticFiles.add("static");
         }).start(7070);
@@ -45,12 +51,28 @@ public class Main {
 
     private static TemplateEngine createTemplateEngine() {
         boolean usePrecompiledTemplates = Boolean.parseBoolean(System.getProperty("precompiled.templates", "false"));
+        Path templateClassDirectory = Path.of("jte-classes").toAbsolutePath();
         if (usePrecompiledTemplates) {
-            return TemplateEngine.createPrecompiled(Path.of("jte-classes"), gg.jte.ContentType.Html);
+            log.info("Using precompiled jte templates, expecting classes to be located in {}", templateClassDirectory);
+            return TemplateEngine.createPrecompiled(templateClassDirectory, gg.jte.ContentType.Html);
         } else {
-            DirectoryCodeResolver codeResolver = new DirectoryCodeResolver(Path.of("src", "main", "resources", "templates"));
-            // TODO override jte-classes in create method below.
-            return TemplateEngine.create(codeResolver, gg.jte.ContentType.Html);
+            log.info("Not using precompiled jte templates, compiled templates to be put in {}", templateClassDirectory);
+            Path moduleRelativeTemplatePath = Path.of("src", "main", "resources", "templates");
+            Path relativeTemplatePath;
+            String moduleDir = "javalin";
+            if (System.getProperty("user.dir").endsWith(moduleDir)) {
+                relativeTemplatePath = moduleRelativeTemplatePath;
+            } else {
+                String projectDir = "playin";
+                if (System.getProperty("user.dir").endsWith(projectDir)) {
+                    relativeTemplatePath = Path.of(moduleDir).resolve(moduleRelativeTemplatePath);
+                } else {
+                    throw new RuntimeException("Must be run in " + moduleDir + " or " + projectDir + " directory in order to use dynamically compiled templates.");
+                }
+            }
+
+            DirectoryCodeResolver codeResolver = new DirectoryCodeResolver(relativeTemplatePath);
+            return TemplateEngine.create(codeResolver, templateClassDirectory, gg.jte.ContentType.Html);
         }
     }
 
