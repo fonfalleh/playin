@@ -20,7 +20,7 @@
 @endfor
 
     <label for="freetext">freetext</label>
-    <textarea id="freetext" name="freetext" rows="5" cols="80"></textarea>
+    <textarea id="freetext" name="freetext" rows="5" cols="80"></textarea> <!-- TODO? This is ignored now. Perhaps prepopulate with fields? -->
 
     <button>Submit</button>
 </form>

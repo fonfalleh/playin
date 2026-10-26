@@ -5,7 +5,8 @@ import org.apache.solr.client.solrj.jetty.HttpJettySolrClient;
 
 public class SolrClientFactory {
     private static final String SOLR_HOST = System.getProperty("solr.host", "localhost");
-    private static final String SOLR_BASE_URL = "http://" + SOLR_HOST + ":8983/solr";
+    private static final String SOLR_PORT = System.getProperty("solr.port", "8983");
+    private static final String SOLR_BASE_URL = "http://" + SOLR_HOST + ":" + SOLR_PORT +"/solr";
 
     private static SolrClient client;
 

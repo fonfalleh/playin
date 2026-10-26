@@ -1172,14 +1172,14 @@ Lot's of things that can be improved on!
   - regression
   - integration
 - actually do something with muse files
-  - solr upload
+  - X solr upload
   - storage/edit mode for maintaining a set of files and not upload everything all the time
     - db for keeping things?
     - file system + saved metadata?
     - editing metadata/files for existing things?
 - architecture
-  - index things that are uploaded to javelin
-  - split up projects into actually usable things
+  - X index things that are uploaded to javelin
+  - O split up projects into actually usable things
 - get a domain? Not use github package names?
 - visualize structure
 - write user scenarios

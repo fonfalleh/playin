@@ -24,16 +24,9 @@ public class FileUploadHandler implements Handler {
 
     @Override
     public void handle(@NotNull Context ctx) throws Exception {
-        Path temps = Files.createTempDirectory("fileupload");
-        UploadedFile file = ctx.uploadedFile("file");
+        SolrInputDocument doc = new SolrInputDocument();
 
-        String filename = file.filename();
-        String extension = filename.substring(filename.lastIndexOf(".") + 1);
-
-        Path path = temps.resolve("input." + extension);
-        FileUtil.streamToFile(file.content(), path.toString());
-
-        SolrInputDocument doc = solrDocFromFile(extension, path, temps);
+        enrichWithFileIfPresent(doc, ctx);
 
         for (String field : Fields.fieldnames()) {
             String formValue = ctx.formParam(field);
@@ -52,16 +45,30 @@ public class FileUploadHandler implements Handler {
         }
     }
 
-    private SolrInputDocument solrDocFromFile(String extension, Path path, Path temps) {
+    public void enrichWithFileIfPresent(SolrInputDocument doc, Context ctx) throws IOException {
+        UploadedFile file = ctx.uploadedFile("file");
+        if (file == null) {
+            return;
+        }
+        Path temps = Files.createTempDirectory("fileupload");
+
+        String filename = file.filename();
+        String extension = filename.substring(filename.lastIndexOf(".") + 1);
+
+        Path path = temps.resolve("input." + extension);
+        FileUtil.streamToFile(file.content(), path.toString());
+
+        enrichWithFile(doc, extension, path, temps);
+    }
+
+    private void enrichWithFile(SolrInputDocument doc, String extension, Path path, Path temps) {
         if ("mscz".equals(extension) || "mscx".equals(extension)) {
             MuseReader.runMuse(path);
             // On success, creates out.xml
             path = temps.resolve("out.xml");
         }
         // TODO Shouldn't have to know about solr, wrong abstraction layer
-        SolrInputDocument doc = new SolrInputDocument();
         indexer.enrichDocWithFile(path.toFile(), doc);
-        return doc;
     }
 
 }

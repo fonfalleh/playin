@@ -25,6 +25,7 @@ public class Main {
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
     static void main() {
+        
         TemplateEngine templateEngine = createTemplateEngine();
 
         Map<String, SolrDocEnricher> enricherMap = Enrichers.getEnricherMap();
@@ -32,7 +33,11 @@ public class Main {
         Indexer indexer = new Indexer(enricherMap, solrClient);
         SongSearchHandler songSearchHandler = new SongSearchHandler(solrClient);
 
-        Javalin.create(config -> {
+        javalinApp(songSearchHandler, indexer, templateEngine).start(7070);
+    }
+
+    public static Javalin javalinApp(SongSearchHandler songSearchHandler, Indexer indexer, TemplateEngine templateEngine) {
+        return Javalin.create(config -> {
             config.bundledPlugins.enableCors(cors -> {
                 cors.addRule(CorsPluginConfig.CorsRule::anyHost); // TODO Eh. Fix sometime?
             });
@@ -41,15 +46,15 @@ public class Main {
             config.routes.get("/lily", new LilyHandler());
             config.routes.get("/solrj", new SolrJSearchHandler(songSearchHandler));
             config.routes.get("/fileupload", ctx -> ctx.render("fileupload.jte"));
-            config.routes.post("/fileupload", new FileUploadHandler(indexer));
+            config.routes.post("/fileupload", new FileUploadHandler(indexer)); // TODO add redirect?
 
             config.fileRenderer(new JavalinJte(templateEngine));
 
             config.staticFiles.add("static");
-        }).start(7070);
+        });
     }
 
-    private static TemplateEngine createTemplateEngine() {
+    public static TemplateEngine createTemplateEngine() {
         boolean usePrecompiledTemplates = Boolean.parseBoolean(System.getProperty("precompiled.templates", "false"));
         Path templateClassDirectory = Path.of("jte-classes").toAbsolutePath();
         if (usePrecompiledTemplates) {
