@@ -175,17 +175,6 @@
             <plugin>
                 <groupId>io.fabric8</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <configuration>
-                    <images>
-                        <image>
-                            <name>playin-javalin</name>
-                            <build>
-                                <contextDir>${project.basedir}</contextDir>
-                                <dockerFile>src/main/docker/javalin.Dockerfile</dockerFile>
-                            </build>
-                        </image>
-                    </images>
-                </configuration>
                 <executions>
                     <execution>
                         <id>docker-build</id>
@@ -193,55 +182,17 @@
                             <goal>build</goal>
                         </goals>
                         <phase>install</phase>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <configuration>
-                    <images>
-                        <image>
-                            <name>playin-solr</name>
-                            <run>
-                                <autoRemove>false</autoRemove>
-                                <ports>
-                                    <port>9983:8983</port>
-                                </ports>
-                                <wait>
-                                    <healthy>true</healthy>
-                                </wait>
-                            </run>
-                        </image>
-                    </images>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>docker-start</id>
-                        <goals>
-                            <goal>start</goal>
-                        </goals>
-                        <phase>pre-integration-test</phase>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <configuration>
-                    <images>
-                        <image>
-                            <name>playin-solr</name>
-                        </image>
-                    </images>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>docker-stop</id>
-                        <goals>
-                            <goal>stop</goal>
-                        </goals>
-                        <phase>post-integration-test</phase>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>playin-javalin</name>
+                                    <build>
+                                        <contextDir>${project.basedir}</contextDir>
+                                        <dockerFile>src/main/docker/javalin.Dockerfile</dockerFile>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -267,6 +218,51 @@
                                     <goal>integration-test</goal>
                                     <goal>verify</goal>
                                 </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>docker-start</id>
+                                <goals>
+                                    <goal>start</goal>
+                                </goals>
+                                <phase>pre-integration-test</phase>
+                                <configuration>
+                                    <images>
+                                        <image>
+                                            <name>playin-solr</name>
+                                            <run>
+                                                <autoRemove>false</autoRemove>
+                                                <ports>
+                                                    <port>9983:8983</port>
+                                                </ports>
+                                                <wait>
+                                                    <healthy>true</healthy>
+                                                </wait>
+                                            </run>
+                                        </image>
+                                    </images>
+                                    <containerNamePattern>%n-it</containerNamePattern>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>docker-stop</id>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                                <phase>post-integration-test</phase>
+                                <configuration>
+                                    <images>
+                                        <image>
+                                            <name>playin-solr</name>
+                                        </image>
+                                    </images>
+                                    <containerNamePattern>%n-it</containerNamePattern>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

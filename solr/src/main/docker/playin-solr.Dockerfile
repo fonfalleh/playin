@@ -7,4 +7,4 @@ COPY target/conf /conf
 
 CMD ["solr-precreate", "playin", "/conf/playin"]
 
-HEALTHCHECK --start-period=5s --timeout=100ms --start-interval=100ms CMD curl -f http://localhost:8983/solr/playin/select || exit 1
+HEALTHCHECK --start-period=10s --timeout=100ms --start-interval=100ms CMD curl -f http://localhost:8983/solr/playin/select || exit 1
