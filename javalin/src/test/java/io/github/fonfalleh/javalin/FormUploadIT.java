@@ -2,18 +2,12 @@ package io.github.fonfalleh.javalin;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.fonfalleh.config.Enrichers;
-import io.github.fonfalleh.config.SolrClientFactory;
-import io.github.fonfalleh.javalin.search.SongSearchHandler;
-import io.github.fonfalleh.playin.indexer.Indexer;
 import io.javalin.Javalin;
 import io.javalin.testtools.HttpClient;
 import io.javalin.testtools.JavalinTest;
 import io.javalin.testtools.Request;
 import io.javalin.testtools.Response;
-import org.apache.solr.client.solrj.SolrClient;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,24 +15,12 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.net.http.HttpRequest;
 
-class MainIT {
+class FormUploadIT extends ITBase {
 
-    private static final String MULTIFORM_BOUNDARY = "---Javalin integration tests";
-    private static final Logger log = LoggerFactory.getLogger(MainIT.class);
     ObjectMapper mapper = new ObjectMapper();
 
-    static Javalin app;
-
-    @BeforeEach
-    void setup() {
-        // TODO minimal setup? Or full E2E?
-        SolrClient solrClient = SolrClientFactory.getClient();
-
-        SongSearchHandler songSearchHandler = new SongSearchHandler(solrClient);
-        Indexer indexer = new Indexer(Enrichers.getEnricherMap(), solrClient);
-
-        app = Main.javalinApp(songSearchHandler, indexer, Main.createTemplateEngine());
-    }
+    private static final String MULTIFORM_BOUNDARY = "---Javalin integration tests";
+    private static final Logger log = LoggerFactory.getLogger(FormUploadIT.class);
 
     @Test
     void testClient() {
@@ -85,7 +67,7 @@ class MainIT {
     public static Response postMultiPartForm(Javalin server, HttpClient client, HttpRequest.BodyPublisher bodyPublisher) {
         return client.request(
                 new Request.Builder()
-                        .url("http://localhost:" + server.port() + "/fileupload")
+                        .url("http://localhost:" + server.port() + "/formupload")
                         .header("Content-Type", "multipart/form-data; boundary=" + MULTIFORM_BOUNDARY)
                         .post(bodyPublisher)
                         .build());

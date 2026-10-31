@@ -1189,3 +1189,10 @@ Lot's of things that can be improved on!
 
 Realized project needed refactoring in order to actually do something, so started with that.
 Taking this opportunity to review pom files and what parts make sense to group and what parts make sense to reuse.
+
+# 2026-11-02~
+... seems like I accidentally removed some text here, but oh well. Git logs show progress.
+
+Added CrudHandler that can index songs by json, which might be more convenient than form uploads.
+
+Perhaps some e2e-tests next? Or think more about features or niceties.

@@ -1,4 +1,4 @@
-package io.github.fonfalleh.javalin.fileupload;
+package io.github.fonfalleh.javalin.formupload;
 
 import io.github.fonfalleh.javalin.muse.MuseReader;
 import io.github.fonfalleh.playin.indexer.Fields;
@@ -17,12 +17,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class FileUploadHandler implements Handler {
+public class FormUploadHandler implements Handler {
 
-    private static final Logger log = LoggerFactory.getLogger(FileUploadHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(FormUploadHandler.class);
     private final Indexer indexer;
 
-    public FileUploadHandler(Indexer indexer) {
+    public FormUploadHandler(Indexer indexer) {
         this.indexer = indexer;
     }
 
@@ -38,13 +38,14 @@ public class FileUploadHandler implements Handler {
                 doc.addField(field, formValue);
             }
         }
-
         try {
             indexer.indexDocument(doc);
         } catch (SolrServerException | IOException e) {
             log.error("Exception thrown while indexing song.", e);
             throw new RuntimeException(e);
         }
+        //TODO : Maybe add redirect to form + "song with id <id> was indexed successfully" as header?
+        ctx.result("Song indexed successfully.");
     }
 
     public void enrichWithFileIfPresent(SolrInputDocument doc, Context ctx) throws IOException {
@@ -52,7 +53,7 @@ public class FileUploadHandler implements Handler {
         if (file == null) {
             return;
         }
-        Path temps = Files.createTempDirectory("fileupload");
+        Path temps = Files.createTempDirectory("formupload");
 
         String filename = file.filename();
         String extension = filename.substring(filename.lastIndexOf(".") + 1);

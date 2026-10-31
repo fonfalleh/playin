@@ -8,7 +8,7 @@
 </head>
 <body>
 <p>Upload musescore files to be indexed, with the possibility to supply additional metadata.</p>
-<form method="post" action="/fileupload" enctype="multipart/form-data">
+<form method="post" action="/formupload" enctype="multipart/form-data">
 
     <label for="file">File to upload</label><br>
     <input type="file" id="file" name="file"><br>

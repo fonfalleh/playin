@@ -5,12 +5,13 @@ import gg.jte.resolve.DirectoryCodeResolver;
 import io.github.fonfalleh.config.Enrichers;
 import io.github.fonfalleh.config.SolrClientFactory;
 import io.github.fonfalleh.javalin.lily.LilyHandler;
-import io.github.fonfalleh.javalin.fileupload.FileUploadHandler;
+import io.github.fonfalleh.javalin.formupload.FormUploadHandler;
 import io.github.fonfalleh.javalin.search.SolrJSearchHandler;
 import io.github.fonfalleh.javalin.search.SongSearchHandler;
 import io.github.fonfalleh.playin.indexer.Indexer;
 import io.github.fonfalleh.playin.indexer.enrichers.SolrDocEnricher;
 import io.javalin.Javalin;
+import io.javalin.apibuilder.ApiBuilder;
 import io.javalin.plugin.bundled.CorsPluginConfig;
 import io.javalin.rendering.template.JavalinJte;
 import org.apache.solr.client.solrj.SolrClient;
@@ -23,6 +24,7 @@ import java.util.Map;
 public class Main {
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
+    private static final String FORMUPLOAD = "/formupload";
 
     static void main() {
         
@@ -33,10 +35,10 @@ public class Main {
         Indexer indexer = new Indexer(enricherMap, solrClient);
         SongSearchHandler songSearchHandler = new SongSearchHandler(solrClient);
 
-        javalinApp(songSearchHandler, indexer, templateEngine).start(7070);
+        javalinApp(songSearchHandler, indexer, templateEngine, solrClient).start(7070);
     }
 
-    public static Javalin javalinApp(SongSearchHandler songSearchHandler, Indexer indexer, TemplateEngine templateEngine) {
+    public static Javalin javalinApp(SongSearchHandler songSearchHandler, Indexer indexer, TemplateEngine templateEngine, SolrClient solrClient) {
         return Javalin.create(config -> {
             config.bundledPlugins.enableCors(cors -> {
                 cors.addRule(CorsPluginConfig.CorsRule::anyHost); // TODO Eh. Fix sometime?
@@ -45,8 +47,10 @@ public class Main {
             config.routes.get("/", songSearchHandler);
             config.routes.get("/lily", new LilyHandler());
             config.routes.get("/solrj", new SolrJSearchHandler(songSearchHandler));
-            config.routes.get("/fileupload", ctx -> ctx.render("fileupload.jte"));
-            config.routes.post("/fileupload", new FileUploadHandler(indexer)); // TODO add redirect?
+            config.routes.get(FORMUPLOAD, ctx -> ctx.render("formupload.jte"));
+            config.routes.post(FORMUPLOAD, new FormUploadHandler(indexer)); // TODO add redirect?
+
+            config.routes.apiBuilder(() -> ApiBuilder.crud("/song/{id}", new SongCrudHandler(solrClient)));
 
             config.fileRenderer(new JavalinJte(templateEngine));
 
