@@ -1,7 +1,7 @@
 package io.github.fonfalleh.playin.indexer.enrichers;
 
 import io.github.fonfalleh.formats.midi.MidiNoteExtractor;
-import io.github.fonfalleh.playin.indexer.Indexer;
+import io.github.fonfalleh.playin.indexer.Fields;
 import io.github.fonfalleh.playin.indexer.Util;
 import org.apache.solr.common.SolrInputDocument;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public class MidiSolrEnricher implements SolrDocEnricher {
     @Override
     public void enrichSolrDoc(File file, SolrInputDocument doc) {
         List<String> pitches = extractPitchesFromMidi(file);
-        doc.addField(Indexer.PITCHES, pitches);
+        doc.addField(Fields.PITCHES.getName(), pitches);
     }
 
     static List<String> extractPitchesFromMidi(File midiFile) {

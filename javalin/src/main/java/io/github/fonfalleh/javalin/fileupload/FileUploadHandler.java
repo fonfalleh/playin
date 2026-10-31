@@ -1,6 +1,7 @@
 package io.github.fonfalleh.javalin.fileupload;
 
 import io.github.fonfalleh.javalin.muse.MuseReader;
+import io.github.fonfalleh.playin.indexer.Fields;
 import io.github.fonfalleh.playin.indexer.Indexer;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -9,6 +10,8 @@ import io.javalin.util.FileUtil;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrInputDocument;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,6 +19,7 @@ import java.nio.file.Path;
 
 public class FileUploadHandler implements Handler {
 
+    private static final Logger log = LoggerFactory.getLogger(FileUploadHandler.class);
     private final Indexer indexer;
 
     public FileUploadHandler(Indexer indexer) {
@@ -35,12 +39,10 @@ public class FileUploadHandler implements Handler {
             }
         }
 
-        // TODO freeform parameters... or do we actually want that?
-
         try {
             indexer.indexDocument(doc);
         } catch (SolrServerException | IOException e) {
-            // TODO
+            log.error("Exception thrown while indexing song.", e);
             throw new RuntimeException(e);
         }
     }

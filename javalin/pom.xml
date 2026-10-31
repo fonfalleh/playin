@@ -13,8 +13,8 @@
 
     <properties>
         <!-- Keep in sync with javalin, used to override solr jetty version -->
-        <jetty.version>12.1.8</jetty.version>
-        <javalin.version>7.2.2</javalin.version>
+        <jetty.version>12.1.14</jetty.version>
+        <javalin.version>7.2.4</javalin.version>
     </properties>
 
     <dependencies>

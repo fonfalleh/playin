@@ -19,14 +19,14 @@ public record SongSearchResult(SolrDocumentList docs) implements Content {
             output.writeContent("<section class=\"song\">");
             List<String> titles = (List<String>) d.get("title");
             output.writeContent("<h2>" +
-                    String.join("<br>", titles) + "</h2>");
+                    String.join("<br>", titles) + "</h2>"); // TODO required?
 
             List<String> composers = (List<String>) d.get("composer");
             if (composers != null) {
                 output.writeContent("<p>" +
-                        String.join(", ", composers) + "</p>");
-                output.writeContent("</section>");
+                        String.join(", ", composers) + "</p>"); // TODO make links from composers
             }
+            output.writeContent("</section>");
         });
     }
 }

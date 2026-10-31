@@ -29,13 +29,6 @@ public class Indexer {
         this.solrClient = solrClient;
     }
 
-    // Fields
-    // TODO shared constants
-    public static final String COMPOSER = "composer";
-    public static final String LYRICIST = "lyricist";
-    public static final String PITCHES = "pitches";
-    public static final String TITLE = "title";
-
     private final Map<String, SolrDocEnricher> enricherMap;
     private final SolrClient solrClient;
 

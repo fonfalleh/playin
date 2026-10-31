@@ -72,7 +72,8 @@ class MainIT {
     void testNoFileUpload() {
         HttpRequest.BodyPublisher bodyPublisher = constructBodyPublisher(
                 null,
-                "id", "nofile"
+                "id", "nofile",
+                "title", "No file"
         );
 
         JavalinTest.test(app, (server, client) -> {
@@ -94,7 +95,8 @@ class MainIT {
     void testMidiUpload() {
         HttpRequest.BodyPublisher bodyPublisher = constructBodyPublisher(
                 "songs/pacius_vårsång/vårsång.mid",
-                "id", "vårsång_midi"
+                "id", "vårsång_midi",
+                "title", "Vårsång"
         );
         JavalinTest.test(app, (server, client) -> {
             Response response = postMultiPartForm(server, client, bodyPublisher);
