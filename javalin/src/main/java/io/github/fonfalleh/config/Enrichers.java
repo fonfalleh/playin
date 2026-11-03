@@ -2,6 +2,7 @@ package io.github.fonfalleh.config;
 
 import io.github.fonfalleh.playin.indexer.enrichers.MetadataFileSolrEnricher;
 import io.github.fonfalleh.playin.indexer.enrichers.MidiSolrEnricher;
+import io.github.fonfalleh.playin.indexer.enrichers.MusescoreSolrEnricher;
 import io.github.fonfalleh.playin.indexer.enrichers.MxmlSolrEnricher;
 import io.github.fonfalleh.playin.indexer.enrichers.SolrDocEnricher;
 
@@ -15,10 +16,12 @@ public class Enrichers {
 
     private static Map<String, SolrDocEnricher> initialize() {
         Map<String, SolrDocEnricher> map = new HashMap<>();
+        MxmlSolrEnricher mxmlSolrEnricher = new MxmlSolrEnricher();
         Stream.of(
                 new MetadataFileSolrEnricher(),
                 new MidiSolrEnricher(),
-                new MxmlSolrEnricher()
+                mxmlSolrEnricher,
+                new MusescoreSolrEnricher(mxmlSolrEnricher)
         ).forEach(e -> e.registerEnricher(map));
         return map;
     }

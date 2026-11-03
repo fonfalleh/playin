@@ -1,20 +1,24 @@
-package io.github.fonfalleh.javalin.muse;
+package io.github.fonfalleh.playin.indexer.muse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.util.List;
 
-public class MuseReader {
+public class MusescoreToMxmlRunner {
 
     static final String museBinary;
+    private static final Logger log = LoggerFactory.getLogger(MusescoreToMxmlRunner.class);
 
     static {
         museBinary = System.getProperty("museBinary", "mscore");
     }
-//TODO not public?
+
+    //TODO not public?
     public static void runMuse(Path museFile) {
         String escapedMuseFile = museFile.toString().replace(" ", "\\ ");
         // "-platform offscreen" needed for minimal musescore without graphics
@@ -23,13 +27,14 @@ public class MuseReader {
 
         commands.forEach(System.out::println);
 
-        ProcessBuilder processBuilder = new ProcessBuilder(commands).directory(new File(museFile.getParent().toString()));
+        ProcessBuilder processBuilder = new ProcessBuilder(commands).directory(museFile.getParent().toFile());
 
         Process process = null;
         try {
             process = processBuilder.start();
             process.waitFor();
         } catch (IOException | InterruptedException e) {
+            log.error("Exec failed:", e);
             throw new RuntimeException(e);
         }
 

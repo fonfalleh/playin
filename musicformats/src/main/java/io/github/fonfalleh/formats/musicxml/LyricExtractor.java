@@ -11,7 +11,11 @@ import java.util.function.Predicate;
 public class LyricExtractor {
     Map<Integer, StringBuilder> stringBuilders = new TreeMap<>();
 
-    // TODO loop over parts
+    public static List<String> extractFrom(MXML mxml) {
+        return new LyricExtractor().extract(mxml);
+
+    }
+
     public List<String> extract(MXML mxml) {
 
         List<MXML.Lyric> lyricElements = mxml.parts.get(0).measures.stream()

@@ -16,25 +16,27 @@ public class PitchExtractor {
         // TODO voices / systems
 
         // TODO parts
-        Map<Integer, List<MXML.Note>> notesByVoice = mxml.parts.get(0).measures.stream()
-                .flatMap(MXML.Measure::notes)
-                .collect(Collectors.groupingBy(b -> b.voice));
 
-        // TODO order of keys. Treemap?
         List<List<Integer>> notes = new ArrayList<>();
-        for (Map.Entry<Integer, List<MXML.Note>> voiceNotes : notesByVoice.entrySet()) {
-            List<Integer> list = voiceNotes.getValue().stream()
-                    .map(n -> n.pitch)
-                    .filter(Predicate.not(Objects::isNull)) // rest notes
-                    .map(PitchExtractor::mxmlPitchToMidiPitch)
-                    .toList();
+        for (int i = 0; i < mxml.parts.size(); i++) {
+            Map<Integer, List<MXML.Note>> notesByVoice = mxml.parts.get(i).measures.stream()
+                    .flatMap(MXML.Measure::notes)
+                    .collect(Collectors.groupingBy(b -> b.voice));
+            // TODO order of keys. Treemap?
+            for (Map.Entry<Integer, List<MXML.Note>> voiceNotes : notesByVoice.entrySet()) {
+                List<Integer> list = voiceNotes.getValue().stream()
+                        .map(n -> n.pitch)
+                        .filter(Predicate.not(Objects::isNull)) // rest notes
+                        .map(PitchExtractor::mxmlPitchToMidiPitch)
+                        .toList();
 
-            if (list.isEmpty()) {
-                // TODO lower staff with rests...
-                // Or is this nice?
-                continue;
+                if (list.isEmpty()) {
+                    // TODO lower staff with rests...
+                    // Or is this nice?
+                    continue;
+                }
+                notes.add(list);
             }
-            notes.add(list);
         }
         return notes;
     }

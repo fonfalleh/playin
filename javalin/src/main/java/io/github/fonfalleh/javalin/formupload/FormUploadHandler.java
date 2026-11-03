@@ -1,6 +1,5 @@
 package io.github.fonfalleh.javalin.formupload;
 
-import io.github.fonfalleh.javalin.muse.MuseReader;
 import io.github.fonfalleh.playin.indexer.Fields;
 import io.github.fonfalleh.playin.indexer.Indexer;
 import io.javalin.http.Context;
@@ -16,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 public class FormUploadHandler implements Handler {
 
@@ -28,9 +28,10 @@ public class FormUploadHandler implements Handler {
 
     @Override
     public void handle(@NotNull Context ctx) throws Exception {
+        // TODO Shouldn't have to know about solr, wrong abstraction layer
         SolrInputDocument doc = new SolrInputDocument();
 
-        enrichWithFileIfPresent(doc, ctx);
+        enrichWithFilesIfPresent(doc, ctx);
 
         for (String field : Fields.fieldnames()) {
             String formValue = ctx.formParam(field);
@@ -48,30 +49,21 @@ public class FormUploadHandler implements Handler {
         ctx.result("Song indexed successfully.");
     }
 
-    public void enrichWithFileIfPresent(SolrInputDocument doc, Context ctx) throws IOException {
-        UploadedFile file = ctx.uploadedFile("file");
-        if (file == null) {
+    public void enrichWithFilesIfPresent(SolrInputDocument doc, Context ctx) throws IOException {
+        List<UploadedFile> files = ctx.uploadedFiles("file");
+        if (files.isEmpty()) {
             return;
         }
         Path temps = Files.createTempDirectory("formupload");
+        for (UploadedFile file : files) {
+            String filename = file.filename();
+            String extension = filename.substring(filename.lastIndexOf(".") + 1);
 
-        String filename = file.filename();
-        String extension = filename.substring(filename.lastIndexOf(".") + 1);
+            Path path = temps.resolve("input." + extension);
+            FileUtil.streamToFile(file.content(), path.toString());
 
-        Path path = temps.resolve("input." + extension);
-        FileUtil.streamToFile(file.content(), path.toString());
-
-        enrichWithFile(doc, extension, path, temps);
-    }
-
-    private void enrichWithFile(SolrInputDocument doc, String extension, Path path, Path temps) {
-        if ("mscz".equals(extension) || "mscx".equals(extension)) {
-            MuseReader.runMuse(path);
-            // On success, creates out.xml
-            path = temps.resolve("out.xml");
+            indexer.enrichDocWithFile(path.toFile(), doc);
         }
-        // TODO Shouldn't have to know about solr, wrong abstraction layer
-        indexer.enrichDocWithFile(path.toFile(), doc);
     }
 
 }

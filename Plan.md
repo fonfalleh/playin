@@ -1051,11 +1051,11 @@ TODO it's actually super slow, but all time is spent in lilypond? 1,4 sec. Perha
 Fixed script to use javalin/solrj
 
 Ideas:
-- endpoint for uploading musicxml / musescore for indexing? Some page with forms?
-- rewrite indexing class, break out metadata handling
+- X endpoint for uploading musicxml / musescore for indexing? Some page with forms?
+- X rewrite indexing class, break out metadata handling
 - review metadata, blinka lilla has composer as "Composer / arranger" in xml (from mxml)
-- thumbnails/images for the search results
-- clickable metadata, make links from composers to facet filtering
+- TODO thumbnails/images for the search results
+- TODO clickable metadata, make links from composers to facet filtering
 - more facets?
 
 `musescore -o <file.xml/musicxml> input.mscx` to convert to musicxml 
@@ -1069,7 +1069,7 @@ Sorta works, needs polish.
 
 # 2026-06-24
 Ideas:
-- move sites to javalin, seems nice and self contained
+- X move sites to javalin, seems nice and self contained
 - break out things into more logical parts
   - webapp
   - indexer
@@ -1077,11 +1077,11 @@ Ideas:
   - solr plugins
 - check solrconfig.xml changes, perhaps using old defaults
 - Actually take a look att frontend/javascript parts so they are less terrible
-- OR... do it in java instead :D https://javalin.io/tutorials/jte
+- X OR... do it in java instead :D https://javalin.io/tutorials/jte
   - Sounds fun and educational to translate the existing files to jte and make sure to understand all bits.
 
 Did small sample with jte rendering input param (docs outdated/scattered around, but now it works)
-TODO what is jte-classes in parent root? Do they get generated each build?
+DONE what is jte-classes in parent root? Do they get generated each build?
 
 # 2026-06-28~
 
@@ -1157,8 +1157,8 @@ Could be versions defaults that's different. Apparently my local muse is older t
 
 On a quick glance only affects display, which we don't mind at this time.
 
-TODO make it work!
-TODO file command arg parse bug to muse?
+DONE make it work!
+WONTFIX (already an issue) file command arg parse bug to muse?
 
 ----
 # 2026-09-27
@@ -1190,9 +1190,77 @@ Lot's of things that can be improved on!
 Realized project needed refactoring in order to actually do something, so started with that.
 Taking this opportunity to review pom files and what parts make sense to group and what parts make sense to reuse.
 
+----
+# 2026-10-26~
+Working on integration tests. Surprisingly annoying to test uploading files using multipart forms.
+First class citizen in the framework, but not in the testing framework (doable, but ergonomics are... ech. At least somewhat happy I didn't need to manually create client within JavalinTest (which was my first attempt))
+Lots of hallucinations when looking for an answer, perhaps they worked in javalin <7
+Bruno-generated snippet did not work ootb either.
+Looked at some spec snippets but ultimately looked at what curl output using the following:
+
+```shell
+curl --request POST \                                                                                                                             INT 14:10:22
+  --url http://localhost:7070/fileupload \
+  --header 'Content-Type: multipart/form-data' \
+  --form id=1234 \
+  --form file=@foo.xml -v --trace-ascii -
+```
+
+Man, it's not pretty. But it seems to work running from intellij when already running solr (intellij doesn't pick up solr.port property from failsafe conf in pom).
+TODO get failsafe to work.
+
+Edit 2026-11-09: Lol oops wrote this in the wrong .md file earlier
+
 # 2026-11-02~
 ... seems like I accidentally removed some text here, but oh well. Git logs show progress.
 
 Added CrudHandler that can index songs by json, which might be more convenient than form uploads.
 
 Perhaps some e2e-tests next? Or think more about features or niceties.
+
+---
+## Status
+So maybe I need something more structured than just programming for what I feel like one hour at a time, and occasionally appending to this increasingly incorrectly named "not a diary".
+
+Goals
+- Make it easy to index songs that you have laying around
+  - This one shouldn't need a lot of work, the parts are already there in Indexer.java
+    - However, this is only convenient locally?
+  - Id generation / statekeeping is still somewhat an issue if one wants to change things without nuking index everytime
+  - Make Docker image for just uploading folders? This might actually be easier than making things work on more OSes
+    - Or, just create a indexing thing that does no parsing locally, i.e. use formupload. That's simple enough. (Right?)
+- Make it easy to have remote instance
+  - Auth/z?
+    - Multitenant? Different cores/collections depending on user NOTE: Searching multiple collections in one query requires solr cloud
+  - TLS ... javalin probably/hopefully has something nice?
+- More statekeeping than just writing to solr?
+  - Have page for modifying metadata?
+  - Have DB? But nice to not need more things running
+  - version-controllable index?
+  - save uploads in folder structure that mirrors what indexer wants?
+    - This feels like the winner
+- Gherkin tests as documentation?
+- More features!
+  - Better presentation than title + composer
+  - Highlighting?
+  - "IR" format for cooler retrieval of match in file
+    - Contain measure count etc
+      - Regex analyzer for removing tokens? Or clean at the same time as translating note names. (See repeated notes in relative pitch filter)  
+    - have lily as base-format in solr field, convert as part of analysis (i.e. display note names, use midi notes behind the scenes.)
+      - Not possible (to do accurately) from midi, but easy from mxml and lilypond
+  - Data validation before indexing?
+  - More clever stuff with fields
+
+----
+Small progress for indexer and indexing locally, created a muse-enricher, but mscore is not on $PATH by default. TODO Find some clever solution sometime.
+It "works on my machine", but it would probably be nice if it worked on other peoples machines as well.
+Some requirements:
+- Java 25
+- Maven
+- docker
+- lilypond
+- musescore
+- ...linux? bash? I... take those for granted
+
+
+Also, new Solr minor version? Seems not so small tough- 

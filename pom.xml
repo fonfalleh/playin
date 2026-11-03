@@ -20,6 +20,7 @@
     <modules>
         <module>musicformats</module>
         <module>solr</module>
+        <module>songuploader</module> <!-- Placed here because ITs in javalin depend on this. TODO rework. -->
         <module>javalin</module>
     </modules>
 
@@ -59,9 +60,6 @@
                 <!-- Put in parent because if javalin is run from project root it will generate classes in root. Is inherited by others. -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
-                <configuration>
-                    <directory>jte-classes</directory>
-                </configuration>
                 <executions>
                     <execution>
                         <id>clean-jte-classes</id>
@@ -70,6 +68,20 @@
                             <goal>clean</goal>
                         </goals>
                         <phase>clean</phase>
+                        <configuration>
+                            <directory>jte-classes</directory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>default-clean</id>
+                        <inherited>true</inherited>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                        <phase>clean</phase>
+                        <configuration>
+                            <directory>target</directory>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

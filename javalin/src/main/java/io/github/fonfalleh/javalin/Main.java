@@ -4,8 +4,8 @@ import gg.jte.TemplateEngine;
 import gg.jte.resolve.DirectoryCodeResolver;
 import io.github.fonfalleh.config.Enrichers;
 import io.github.fonfalleh.config.SolrClientFactory;
-import io.github.fonfalleh.javalin.lily.LilyHandler;
 import io.github.fonfalleh.javalin.formupload.FormUploadHandler;
+import io.github.fonfalleh.javalin.lily.LilyHandler;
 import io.github.fonfalleh.javalin.search.SolrJSearchHandler;
 import io.github.fonfalleh.javalin.search.SongSearchHandler;
 import io.github.fonfalleh.playin.indexer.Indexer;
@@ -27,7 +27,6 @@ public class Main {
     private static final String FORMUPLOAD = "/formupload";
 
     static void main() {
-        
         TemplateEngine templateEngine = createTemplateEngine();
 
         Map<String, SolrDocEnricher> enricherMap = Enrichers.getEnricherMap();

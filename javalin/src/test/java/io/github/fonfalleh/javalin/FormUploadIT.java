@@ -2,24 +2,36 @@ package io.github.fonfalleh.javalin;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.fonfalleh.songuploader.FormUploadHelper;
 import io.javalin.Javalin;
 import io.javalin.testtools.HttpClient;
 import io.javalin.testtools.JavalinTest;
 import io.javalin.testtools.Request;
 import io.javalin.testtools.Response;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.common.SolrInputDocument;
+import org.approvaltests.Approvals;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 import java.net.http.HttpRequest;
+import java.util.List;
 
+/**
+ * Note: Tests that call musescore behind the scenes probably needs to explicitly set <code>museBinary</code> property
+ * to absolute path of a musescore binary if not on PATH (i.e. if located in e.g. ~/.local/bin)
+ */
 class FormUploadIT extends ITBase {
 
     ObjectMapper mapper = new ObjectMapper();
 
-    private static final String MULTIFORM_BOUNDARY = "---Javalin integration tests";
+    private static final String IT_MULTIFORM_BOUNDARY = "---Javalin integration tests";
     private static final Logger log = LoggerFactory.getLogger(FormUploadIT.class);
 
     @Test
@@ -39,8 +51,9 @@ class FormUploadIT extends ITBase {
 
     @Test
     void testMusicXmlUpload() {
-        HttpRequest.BodyPublisher bodyPublisher = constructBodyPublisher(
-                "songs/blinka_lilla/blinka_lilla.musicxml",
+        HttpRequest.BodyPublisher bodyPublisher = FormUploadHelper.constructBodyPublisher(
+                IT_MULTIFORM_BOUNDARY,
+                List.of("target/songs/blinka_lilla/blinka_lilla.musicxml", "target/songs/blinka_lilla/blinka_lilla.musicxml"),
                 "id", "blinka_xml"
         );
 
@@ -52,7 +65,8 @@ class FormUploadIT extends ITBase {
 
     @Test
     void testNoFileUpload() {
-        HttpRequest.BodyPublisher bodyPublisher = constructBodyPublisher(
+        HttpRequest.BodyPublisher bodyPublisher = FormUploadHelper.constructBodyPublisher(
+                IT_MULTIFORM_BOUNDARY,
                 null,
                 "id", "nofile",
                 "title", "No file"
@@ -68,15 +82,16 @@ class FormUploadIT extends ITBase {
         return client.request(
                 new Request.Builder()
                         .url("http://localhost:" + server.port() + "/formupload")
-                        .header("Content-Type", "multipart/form-data; boundary=" + MULTIFORM_BOUNDARY)
+                        .header("Content-Type", "multipart/form-data; boundary=" + IT_MULTIFORM_BOUNDARY)
                         .post(bodyPublisher)
                         .build());
     }
 
     @Test
     void testMidiUpload() {
-        HttpRequest.BodyPublisher bodyPublisher = constructBodyPublisher(
-                "songs/pacius_vårsång/vårsång.mid",
+        HttpRequest.BodyPublisher bodyPublisher = FormUploadHelper.constructBodyPublisher(
+                IT_MULTIFORM_BOUNDARY,
+                List.of("target/songs/pacius_vårsång/vårsång.mid"),
                 "id", "vårsång_midi",
                 "title", "Vårsång"
         );
@@ -86,41 +101,35 @@ class FormUploadIT extends ITBase {
         });
     }
 
-    private static HttpRequest.BodyPublisher constructBodyPublisher(String filePathString, String... formNameAndValue) {
-        try {
-            StringBuilder builder = new StringBuilder();
+    @Test
+    void testMusescoreUpload() throws SolrServerException, IOException {
+        HttpRequest.BodyPublisher bodyPublisher = FormUploadHelper.constructBodyPublisher(
+                IT_MULTIFORM_BOUNDARY,
+                List.of("target/songs/pacius_sång_för_nordiska_ynglingar/Sång_foer_Nordiska_ynglingar.mscx"),
+                "id", "pacius_sång_för_nordiska_ynglingar_muse"
+        );
+        JavalinTest.test(app, (server, client) -> {
+            Response response = postMultiPartForm(server, client, bodyPublisher);
+            Assertions.assertEquals(200, response.code());
+        });
 
-            builder.append("--" + MULTIFORM_BOUNDARY + "\r\n");
-            for (int i = 0; i < formNameAndValue.length; i += 2) {
-                builder.append("Content-Disposition: form-data; name=\"").append(formNameAndValue[i]).append("\"\r\n\r\n")
-                        .append(formNameAndValue[i + 1]);
-
-                if (i + 2 == formNameAndValue.length && filePathString == null) {
-                    // Skip separating boundary if last input and no file specified
-                    break;
-                }
-                builder.append("\r\n--" + MULTIFORM_BOUNDARY + "\r\n");
-            }
-
-            if (filePathString == null) {
-                builder.append("\r\n--" + MULTIFORM_BOUNDARY + "--");
-                return HttpRequest.BodyPublishers.ofString(builder.toString());
-            }
-
-            // A little ugly, but seems to do the trick. Resources are copied into target during build. Couldn't get getResource() to work.
-            File file = new File("target/" + filePathString);
-            builder.append("Content-Disposition: form-data; name=\"file\"; filename=\"").append(file.getName()).append("\"\r\n");
-            builder.append("Content-Type: application/octet-stream\r\n\r\n"); //Octet stream seems to be generic binary, so seems ok
-
-            return HttpRequest.BodyPublishers.concat(
-                    HttpRequest.BodyPublishers.ofString(builder.toString()),
-                    HttpRequest.BodyPublishers.ofFile(file.toPath()),
-                    HttpRequest.BodyPublishers.ofString("\r\n--" + MULTIFORM_BOUNDARY + "--")
-            );
-        } catch (Exception e) {
-            log.error("Exception thrown during body construction", e);
-            throw new RuntimeException(e);
-        }
-
+        ArgumentCaptor<SolrInputDocument> captor = ArgumentCaptor.forClass(SolrInputDocument.class);
+        Mockito.verify(solrClient).add(captor.capture());
+        SolrInputDocument value = captor.getValue();
+        Approvals.verify(value.jsonStr());
     }
+
+    //TODO perhaps don't have this here? Kinda weird architecturally.
+    @Test
+    void testSongUploader() throws SolrServerException, IOException {
+        JavalinTest.test(app, (server, client) -> {
+            URI uri = FormUploadHelper.getUriForPort(server.port());
+            FormUploadHelper.uploadDirectory("target/songs/pacius_sång_för_nordiska_ynglingar", uri);
+        });
+        ArgumentCaptor<SolrInputDocument> captor = ArgumentCaptor.forClass(SolrInputDocument.class);
+        Mockito.verify(solrClient).add(captor.capture());
+        SolrInputDocument value = captor.getValue();
+        Approvals.verify(value.jsonStr());
+    }
+
 }

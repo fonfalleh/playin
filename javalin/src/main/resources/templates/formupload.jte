@@ -11,7 +11,7 @@
 <form method="post" action="/formupload" enctype="multipart/form-data">
 
     <label for="file">File to upload</label><br>
-    <input type="file" id="file" name="file"><br>
+    <input type="file" id="file" name="file" multiple><br>
 
 
 @for(Fields field: Fields.values())

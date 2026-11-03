@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MxmlSolrEnricher implements SolrDocEnricher {
@@ -41,13 +42,13 @@ public class MxmlSolrEnricher implements SolrDocEnricher {
     }
 
     private static void addLyrics(SolrInputDocument doc, MXML mxml) {
-        List<String> lyrics = new LyricExtractor().extract(mxml);
+        List<String> lyrics = new ArrayList<>(LyricExtractor.extractFrom(mxml));
         if (!lyrics.isEmpty()) doc.addField(Fields.LYRICS.getName(), lyrics);
     }
 
     private static void addPitches(SolrInputDocument doc, MXML mxml) {
         // TODO verify adding lists...
-        doc.addField(Fields.PITCHES.getName(), Util.pitchesToString(PitchExtractor.extract(mxml)));
+        doc.addField(Fields.PITCHES.getName(), new ArrayList<>(Util.pitchesToString(PitchExtractor.extract(mxml))));
     }
 
     private MXML parseXmlFile(File file) {
