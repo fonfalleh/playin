@@ -86,6 +86,18 @@ class FormUploadIT extends ITBase {
         });
     }
 
+    @Test
+    void testMusescoreUpload() {
+        HttpRequest.BodyPublisher bodyPublisher = constructBodyPublisher(
+                "songs/pacius_sång_för_nordiska_ynglingar/Sång_foer_Nordiska_ynglingar.mscx",
+                "id", "pacius_sång_för_nordiska_ynglingar_muse"
+        );
+        JavalinTest.test(app, (server, client) -> {
+            Response response = postMultiPartForm(server, client, bodyPublisher);
+            Assertions.assertEquals(200, response.code());
+        });
+    }
+
     private static HttpRequest.BodyPublisher constructBodyPublisher(String filePathString, String... formNameAndValue) {
         try {
             StringBuilder builder = new StringBuilder();

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 public abstract class ITBase {
 
     Javalin app;
+    Indexer indexer;
 
     @BeforeEach
     void setup() {
@@ -18,7 +19,7 @@ public abstract class ITBase {
         SolrClient solrClient = SolrClientFactory.getClient();
 
         SongSearchHandler songSearchHandler = new SongSearchHandler(solrClient);
-        Indexer indexer = new Indexer(Enrichers.getEnricherMap(), solrClient);
+        indexer = new Indexer(Enrichers.getEnricherMap(), solrClient);
 
         app = Main.javalinApp(songSearchHandler, indexer, Main.createTemplateEngine(), solrClient);
     }

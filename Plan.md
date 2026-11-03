@@ -1051,11 +1051,11 @@ TODO it's actually super slow, but all time is spent in lilypond? 1,4 sec. Perha
 Fixed script to use javalin/solrj
 
 Ideas:
-- endpoint for uploading musicxml / musescore for indexing? Some page with forms?
-- rewrite indexing class, break out metadata handling
+- X endpoint for uploading musicxml / musescore for indexing? Some page with forms?
+- X rewrite indexing class, break out metadata handling
 - review metadata, blinka lilla has composer as "Composer / arranger" in xml (from mxml)
-- thumbnails/images for the search results
-- clickable metadata, make links from composers to facet filtering
+- TODO thumbnails/images for the search results
+- TODO clickable metadata, make links from composers to facet filtering
 - more facets?
 
 `musescore -o <file.xml/musicxml> input.mscx` to convert to musicxml 
@@ -1069,7 +1069,7 @@ Sorta works, needs polish.
 
 # 2026-06-24
 Ideas:
-- move sites to javalin, seems nice and self contained
+- X move sites to javalin, seems nice and self contained
 - break out things into more logical parts
   - webapp
   - indexer
@@ -1077,11 +1077,11 @@ Ideas:
   - solr plugins
 - check solrconfig.xml changes, perhaps using old defaults
 - Actually take a look att frontend/javascript parts so they are less terrible
-- OR... do it in java instead :D https://javalin.io/tutorials/jte
+- X OR... do it in java instead :D https://javalin.io/tutorials/jte
   - Sounds fun and educational to translate the existing files to jte and make sure to understand all bits.
 
 Did small sample with jte rendering input param (docs outdated/scattered around, but now it works)
-TODO what is jte-classes in parent root? Do they get generated each build?
+DONE what is jte-classes in parent root? Do they get generated each build?
 
 # 2026-06-28~
 
@@ -1157,8 +1157,8 @@ Could be versions defaults that's different. Apparently my local muse is older t
 
 On a quick glance only affects display, which we don't mind at this time.
 
-TODO make it work!
-TODO file command arg parse bug to muse?
+DONE make it work!
+WONTFIX (already an issue) file command arg parse bug to muse?
 
 ----
 # 2026-09-27
@@ -1196,3 +1196,47 @@ Taking this opportunity to review pom files and what parts make sense to group a
 Added CrudHandler that can index songs by json, which might be more convenient than form uploads.
 
 Perhaps some e2e-tests next? Or think more about features or niceties.
+
+---
+## Status
+So maybe I need something more structured than just programming for what I feel like one hour at a time, and occasionally appending to this increasingly incorrectly named "not a diary".
+
+Goals
+- Make it easy to index songs that you have laying around
+  - This one shouldn't need a lot of work, the parts are already there in Indexer.java
+    - However, this is only convenient locally?
+  - Id generation / statekeeping is still somewhat an issue if one wants to change things without nuking index everytime
+  - Make Docker image for just uploading folders? This might actually be easier than making things work on more OSes
+    - Or, just create a indexing thing that does no parsing locally, i.e. use formupload. That's simple enough. (Right?)
+- Make it easy to have remote instance
+  - Auth/z?
+  - TLS ... javalin probably/hopefully has something nice?
+- More statekeeping than just writing to solr?
+  - Have page for modifying metadata?
+  - Have DB? But nice to not need more things running
+  - version-controllable index?
+  - save uploads in folder structure that mirrors what indexer wants?
+    - This feels like the winner
+- Gherkin tests as documentation?
+- More features!
+  - Better presentation than title + composer
+  - Highlighting?
+  - "IR" format for cooler retrieval of match in file
+    - Contain measure count etc
+    - have lily as base-format in solr field, convert as part of analysis (i.e. display note names, use midi notes behind the scenes.)
+  - Data validation before indexing
+  - More clever stuff with fields
+
+----
+Small progress for indexer and indexing locally, created a muse-enricher, but mscore is not on $PATH by default. Find some clever solution sometime.
+It "works on my machine", but it would probably be nice if it worked on other peoples machines as well.
+Some requirements:
+- Java 25
+- Maven
+- docker
+- lilypond
+- musescore
+- ...linux? bash? I... take those for granted
+
+
+Also, new Solr minor version? Seems not so small tough- 

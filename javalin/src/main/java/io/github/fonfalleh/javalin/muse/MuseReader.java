@@ -1,5 +1,8 @@
 package io.github.fonfalleh.javalin.muse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +13,7 @@ import java.util.List;
 public class MuseReader {
 
     static final String museBinary;
+    private static final Logger log = LoggerFactory.getLogger(MuseReader.class);
 
     static {
         museBinary = System.getProperty("museBinary", "mscore");
@@ -23,13 +27,14 @@ public class MuseReader {
 
         commands.forEach(System.out::println);
 
-        ProcessBuilder processBuilder = new ProcessBuilder(commands).directory(new File(museFile.getParent().toString()));
+        ProcessBuilder processBuilder = new ProcessBuilder(commands).directory(museFile.getParent().toFile());
 
         Process process = null;
         try {
             process = processBuilder.start();
             process.waitFor();
         } catch (IOException | InterruptedException e) {
+            log.error("Exec failed:", e);
             throw new RuntimeException(e);
         }
 

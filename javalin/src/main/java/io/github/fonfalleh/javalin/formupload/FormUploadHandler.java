@@ -49,6 +49,7 @@ public class FormUploadHandler implements Handler {
     }
 
     public void enrichWithFileIfPresent(SolrInputDocument doc, Context ctx) throws IOException {
+        // TODO: support multiple files?
         UploadedFile file = ctx.uploadedFile("file");
         if (file == null) {
             return;
@@ -64,6 +65,7 @@ public class FormUploadHandler implements Handler {
         enrichWithFile(doc, extension, path, temps);
     }
 
+    // TODO remove this now that MusescoreSolrEnricher exits?
     private void enrichWithFile(SolrInputDocument doc, String extension, Path path, Path temps) {
         if ("mscz".equals(extension) || "mscx".equals(extension)) {
             MuseReader.runMuse(path);
