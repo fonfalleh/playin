@@ -17,7 +17,6 @@ import java.util.Optional;
 public class FormUploadHelper {
     private static final Logger log = LoggerFactory.getLogger(FormUploadHelper.class);
 
-
     public static URI getUriForPort(int port) {
         return URI.create("http://localhost:" + port + "/formupload");
     }
@@ -72,7 +71,6 @@ public class FormUploadHelper {
         }
     }
 
-
     private static String newBoundary() {
         return "boundary" + System.nanoTime();
     }
@@ -99,7 +97,6 @@ public class FormUploadHelper {
             }
 
             HttpRequest.BodyPublisher[] filePublishers = createFilePublishers(multiFormBoundary, filePathStrings);
-
 
             return HttpRequest.BodyPublishers.concat(
                     HttpRequest.BodyPublishers.ofString(builder.toString()),
