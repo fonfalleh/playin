@@ -3,27 +3,33 @@ package io.github.fonfalleh.javalin;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.fonfalleh.songuploader.FormUploadHelper;
+import io.javalin.Javalin;
 import io.javalin.testtools.JavalinTest;
 import io.javalin.testtools.Response;
-import io.javalin.testtools.ResponseBody;
+import io.javalin.testtools.TestConfig;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 //TODO bad name
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class EndToEndIT extends ITBase {
 
+    private static final Logger log = LoggerFactory.getLogger(EndToEndIT.class);
     ObjectMapper mapper = new ObjectMapper();
 
-    @Test
-    @Order(1) // TODO turn into a beforeach instead? "app" has lifetime per method so should be shared?
-    void indexStoff() {
+    static void indexStoff(Javalin app) {
         JavalinTest.test(app, (server, client) -> {
             FormUploadHelper.uploadChildDirectories( // TODO doesn't listen to errors in solr, just fire and forget
                     EndToEndIT.class.getResource("/songs").getPath(),
@@ -32,8 +38,34 @@ public class EndToEndIT extends ITBase {
         //TODO wip - verify somehow (also probably clean up example songs)
     }
 
+    @BeforeEach
+    void ensureIndexed() {
+        if (!verifyIndexedDocs()) {
+            indexStoff(app); // TODO can't init app twice :(
+        }
+    }
+
+    private boolean verifyIndexedDocs() {
+        Set<String> wantedIds = Set.of(
+                "bach_oberkeet",
+                "blinka_lilla",
+                "juljul_nordqvist",
+                "pacius_fredman13",
+                "pacius_sång_för_nordiska_ynglingar_muse",
+                "pacius_studentsång",
+                "pacius_vårsång",
+                "prinsgustaf_vårsång"
+        );
+        try {
+            return solrClient.getById(wantedIds).getNumFound() == wantedIds.size();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
     @Test
-    @Order(2)
     void testSearch() {
         JavalinTest.test(app, (server, client) -> {
 
