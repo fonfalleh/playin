@@ -80,6 +80,8 @@ public class SongSearchHandler implements Handler {
 
         setQuery(query, request);
         setComposerFilter(composer, request);
+        request.returnFields("*", "score", "[explain style=nl]");
+        //request.withParam("fields", "*,[explain style=nl]");
         return request;
     }
 
